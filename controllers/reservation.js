@@ -74,6 +74,7 @@ exports.postReservation = (req, res, next) => {
   let reservation = new Reservation({
     user: req.body.userId,
     property: req.body.propertyId,
+    comments: req.body.comments,
     status: "pending",
     startDate: new Date(req.body.startDate),
     endDate: new Date(req.body.endDate)
@@ -100,6 +101,7 @@ exports.modifyReservation = (req, res, next) => {
       //if valid, update:
       reservation.startDate = req.body.startDate;
       reservation.endDate = req.body.startDate;
+      reservation.comments = req.body.comments;
       reservation.status = 'pending';
       return reservation.save();
     })
