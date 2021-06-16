@@ -1,6 +1,6 @@
-const Reservation = require('../../models/Beemazon/reservation');
-const Property = require('../../models/Beemazon/property');
-const User = require('../../models/Beemazon/User');
+const Reservation = require('../models/reservation');
+const Property = require('../models/property');
+const User = require('../models/User');
 
 
 function getReservationById(req) {
@@ -41,6 +41,7 @@ exports.getReservations = (req, res, next) => {
     });   
 };
 
+//get reservationby a specific reservationId (in params)
 exports.getReservation = (req, res, next) => {        
   getReservationById(req)  
   .then(reservation => {          
@@ -53,6 +54,7 @@ exports.getReservation = (req, res, next) => {
   });   
 };
 
+//get all reservations for a user (userId in params)
 exports.getUserReservations = (req, res, next) => {      
   Reservation
     .find({ user: req.params.userId })   
@@ -66,6 +68,7 @@ exports.getUserReservations = (req, res, next) => {
     });   
 };
 
+//Add a new reservation
 exports.postReservation = (req, res, next) => {
   //check validation in middleware for valid dates
 
