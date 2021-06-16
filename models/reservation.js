@@ -13,15 +13,15 @@ const reservationSchema = new Schema({
     ref: 'Property' 
   },
   status: {
-    type: Schema.Types.String,
+    type: String,
     required: true    
   }, 
   startDate: {
-    type: Schema.Types.Date,
+    type: Date,
     required: true    
   }, 
   endDate: {
-    type: Schema.Types.Date,
+    type: Date,
     required: true    
   }
 });
