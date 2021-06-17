@@ -1,44 +1,58 @@
 const Reservation = require('../models/reservation');
 const Property = require('../models/property');
 const User = require('../models/User');
+const utils = require('../util/utilities');
 
 
-function getReservationById(req) {
-  return Reservation 
+function getReservationById(req) {  
+  return Reservation     
     .findById(req.params.reservationId)
     .then(reservation => {
       if (!reservation) {
         const err = new Error('Reservation not found');
         err.statusCode = 404;
         throw error;
-      }
-      //ensure user is authorized (either the author or an admin)
-      
+      }            
       return reservation;
     });    
 }
 
 //find all reservations for the specified property (id in params)
-//with a start date <= params.endDate 
-exports.getReservations = (req, res, next) => {      
-  let startDay = new Date(req.params.startDate);
-  let endDay = new Date(req.params.endDate);
-  Reservation
-    .find({ 
-      property: req.params.propertyId, 
-      $or:[
-        { startDate: { $gte: startDay, $lte: endDay } }, 
-        { endDate: { $gte: startDay, $lte: endDay } }
-      ]
-    })  
-    .then(reservations => {          
-        res.status(200).json({ reservations });          
-    })    
-    .catch(err => {
-      const error = new Error(err);
-      error.statusCode = 500;
-      next(error);
-    });   
+//with a start date <= qeury.endDate 
+exports.getReservations = (req, res, next) => {
+  try {       
+    let startDay = new Date(req.query.startDate);
+    let endDay = new Date(req.query.endDate);        
+    if(utils.isValidDate(startDay) && utils.isValidDate(endDay)) {          
+      Reservation
+        .find({ 
+          property: req.params.propertyId,
+          $or:[
+            { startDate: { $gte: startDay, $lte: endDay } }, 
+            { endDate: { $gte: startDay, $lte: endDay } }
+          ]   
+        })  
+        .then(reservations => {                               
+          res.status(200).json({ reservations });          
+        })    
+        .catch(err => {
+          console.log(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          next(error);
+        });   
+    } else {      
+        console.log("here");
+        const error = new Error("Invalid Date Format");
+        error.statusCode = 400;
+        throw(error);
+    }
+  } catch(err) {
+    console.log(err);
+    const error = new Error(err);
+    error.statusCode = 500;
+    throw(error);
+  }
 };
 
 //get reservationby a specific reservationId (in params)
@@ -54,10 +68,10 @@ exports.getReservation = (req, res, next) => {
   });   
 };
 
-//get all reservations for a user (userId in params)
+//get all reservations for a user 
 exports.getUserReservations = (req, res, next) => {      
   Reservation
-    .find({ user: req.params.userId })   
+    .find({ user: req.userId })   
     .then(reservations => {          
         res.status(200).json({ reservations });          
     })    
@@ -75,7 +89,7 @@ exports.postReservation = (req, res, next) => {
   //ensure user is authorized to post to this property
 
   let reservation = new Reservation({
-    user: req.body.userId,
+    user: req.userId,
     property: req.body.propertyId,
     comments: req.body.comments,
     status: "pending",
@@ -97,6 +111,11 @@ exports.postReservation = (req, res, next) => {
 exports.modifyReservation = (req, res, next) => {  
   getReservationById(req)
   .then(reservation => {
+      if(reservation.user.toString() !== req.userId.toString()) {        
+        const error = new Error("Unauthorized attempt to modify a reservation.");
+        error.statusCode = 401;
+        throw error;
+      }
       //check if dates are valid (not reserved and shorter max length but longer than min) in validation.
 
       //if not valid, return error
@@ -152,15 +171,19 @@ exports.approveReservation = (req, res, next) => {
 exports.deleteReservation = (req, res, next) => {
   getReservationById(req)
   .then(reservation => {
-      //delete      
-      return Reservation.findByIdAndRemove(req.params.reservationId);
-    })
-    .then(result => {
-      res.status(200).json({ message: 'Reservation has been canceled.'});
-    })
-    .catch(err => {
-      if (!err.statusCode) err.statusCode = 500;
-      next(err);
-    });
+    if(reservation.user.toString() !== req.userId.toString()) {        
+      const error = new Error("Unauthorized attempt to modify a reservation.");
+      error.statusCode = 401;
+      throw error;
+    }
+    return Reservation.findByIdAndRemove(req.params.reservationId);
+  })
+  .then(result => {
+    res.status(200).json({ message: 'Reservation has been canceled.'});
+  })
+  .catch(err => {
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
+  });
 };
 

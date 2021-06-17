@@ -10,20 +10,20 @@ const propertySchema = new Schema({
     type: String,
     required: true
   },
-  admins: [{ 
-    user: { 
+  admins: [ 
+    { 
       type: Schema.Types.ObjectId,
       required: true,
       ref: 'User' 
     }
-  }],  
-  members: [{ 
-    user: { 
+  ],  
+  members: [
+    {
       type: Schema.Types.ObjectId,
       required: true,
       ref: 'User' 
     }
-  }],   
+  ],   
   imageUrls: [{
     type: String,
     required: true
