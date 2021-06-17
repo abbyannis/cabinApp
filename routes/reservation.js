@@ -6,8 +6,9 @@ const router = express.Router();
 router.get('/:reservationId', reservationController.getReservation)
 
 //get all reservations for a single property
-router.get('/all/:propertyId', reservationController.getReservations);
+router.get('/list/:propertyId', reservationController.getReservations);
 
-
+//post a new reservation
+router.post('/:propertyId', reservationController.postReservation);
 
 module.exports = router;

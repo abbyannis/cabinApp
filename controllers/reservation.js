@@ -1,6 +1,7 @@
 const Reservation = require('../models/reservation');
 const Property = require('../models/property');
 const User = require('../models/User');
+const utils = require('../util/utilities');
 
 
 function getReservationById(req) {
@@ -19,26 +20,41 @@ function getReservationById(req) {
 }
 
 //find all reservations for the specified property (id in params)
-//with a start date <= params.endDate 
-exports.getReservations = (req, res, next) => {      
-  let startDay = new Date(req.params.startDate);
-  let endDay = new Date(req.params.endDate);
-  Reservation
-    .find({ 
-      property: req.params.propertyId, 
-      $or:[
-        { startDate: { $gte: startDay, $lte: endDay } }, 
-        { endDate: { $gte: startDay, $lte: endDay } }
-      ]
-    })  
-    .then(reservations => {          
-        res.status(200).json({ reservations });          
-    })    
-    .catch(err => {
-      const error = new Error(err);
-      error.statusCode = 500;
-      next(error);
-    });   
+//with a start date <= qeury.endDate 
+exports.getReservations = (req, res, next) => {
+  try {       
+    let startDay = new Date(req.query.startDate);
+    let endDay = new Date(req.query.endDate);        
+    if(utils.isValidDate(startDay) && utils.isValidDate(endDay)) {          
+      Reservation
+        .find({ 
+          property: req.params.propertyId,
+          $or:[
+            { startDate: { $gte: startDay, $lte: endDay } }, 
+            { endDate: { $gte: startDay, $lte: endDay } }
+          ]   
+        })  
+        .then(reservations => {                               
+          res.status(200).json({ reservations });          
+        })    
+        .catch(err => {
+          console.log(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          next(error);
+        });   
+    } else {      
+        console.log("here");
+        const error = new Error("Invalid Date Format");
+        error.statusCode = 400;
+        throw(error);
+    }
+  } catch(err) {
+    console.log(err);
+    const error = new Error(err);
+    error.statusCode = 500;
+    throw(error);
+  }
 };
 
 //get reservationby a specific reservationId (in params)

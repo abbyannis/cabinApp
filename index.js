@@ -49,7 +49,7 @@ app.use(
    .set('views', path.join(__dirname, 'views'))
    .set('view engine', 'ejs')
    .use(bodyParser.urlencoded({extended: false})) 
-   .use(csrfProtection)
+   //.use(csrfProtection)   
    .use(flash())
    .use('/', routes)
    .use(errorController.get404);
