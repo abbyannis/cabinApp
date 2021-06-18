@@ -27,7 +27,10 @@ const propertySchema = new Schema({
   imageUrls: [{
     type: String,
     required: true
-  }],  
+  }],
+  invites: [{ 
+      type: String     
+  }]  
 });
 
 module.exports = mongoose.model('Property', propertySchema);
