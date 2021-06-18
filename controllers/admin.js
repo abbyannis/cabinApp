@@ -2,13 +2,13 @@ const Property = require('../models/Property');
 const User = require('../models/User');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-const ROOTURL = process.env.ROOTURL || "http://localhost:5000";
+const ROOTURL = process.env.HEROKU_ORIGIN || "http://localhost:5000";
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_ACCOUNT || creds.EMAIL_ACCOUNT, 
-    pass: process.env.EMAIL_PWD || creds.EMAIL_PWD
+    user: process.env.EMAIL_ACCOUNT, 
+    pass: process.env.EMAIL_PWD
   }
 });
 
