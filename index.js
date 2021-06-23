@@ -36,15 +36,15 @@ const corsOptions = {
     collection: 'sessions'
 });
 
-app.use(
-   session({ 
-       secret: 'my secret', 
-       resave: false, 
-       saveUninitialized: false,
-       store: store,
-       isLoggedIn: false
-   }))
-   .use(favicon(__dirname + '/public/images/favicon.png'))
+// app.use(
+//    session({ 
+//        secret: 'my secret', 
+//        resave: false, 
+//        saveUninitialized: false,
+//        store: store,
+//        isLoggedIn: false
+//    }))
+app.use(favicon(__dirname + '/public/images/favicon.png'))
    .use(express.static(path.join(__dirname, 'public')))
    .set('views', path.join(__dirname, 'views'))
    .set('view engine', 'ejs')
