@@ -4,7 +4,10 @@ module.exports = (req, res, next) => {
   Property
     .find({
       _id: req.params.propertyId,
-      admins: req.userId 
+      $or:[
+        { users: req.userId }, 
+        { admins: req.userId }
+      ]   
     })    
     .then(property => {
       if (!property) {
