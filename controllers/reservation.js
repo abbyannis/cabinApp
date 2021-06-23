@@ -1,6 +1,6 @@
 const Reservation = require('../models/reservation');
 const Property = require('../models/property');
-const User = require('../models/User');
+const User = require('../models/user');
 const utils = require('../util/utilities');
 
 
