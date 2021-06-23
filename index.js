@@ -6,8 +6,8 @@ const routes = require('./routes');
 const favicon = require('serve-favicon');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const session = require('express-session');
-const MongoDBStore = require('connect-mongodb-session')(session);
+// const session = require('express-session');
+// const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const flash = require('connect-flash');
 const PORT = process.env.PORT || 5000;
@@ -26,25 +26,25 @@ const corsOptions = {
  const options = {
     useUnifiedTopology: true,
     useNewUrlParser: true,
-    useCreateIndex: true,
+   //  useCreateIndex: true,
     useFindAndModify: false,
     family: 4
  }
 
- const store = new MongoDBStore({
-    uri: MONGODB_URI,
-    collection: 'sessions'
-});
+// const store = new MongoDBStore({
+//     uri: MONGODB_URI,
+//     collection: 'sessions'
+// });
 
-app.use(
-   session({ 
-       secret: 'my secret', 
-       resave: false, 
-       saveUninitialized: false,
-       store: store,
-       isLoggedIn: false
-   }))
-   .use(favicon(__dirname + '/public/images/favicon.png'))
+// app.use(
+//    session({ 
+//        secret: 'my secret', 
+//        resave: false, 
+//        saveUninitialized: false,
+//        store: store,
+//        isLoggedIn: false
+//    }))
+app.use(favicon(__dirname + '/public/images/favicon.png'))
    .use(express.static(path.join(__dirname, 'public')))
    .set('views', path.join(__dirname, 'views'))
    .set('view engine', 'ejs')
