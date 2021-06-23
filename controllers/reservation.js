@@ -117,7 +117,7 @@ exports.modifyReservation = (req, res, next) => {
         throw error;
       }
       //check if dates are valid (not reserved and shorter max length but longer than min) in validation.
-
+      
       //if not valid, return error
       
       //if valid, update:
