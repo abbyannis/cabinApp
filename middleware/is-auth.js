@@ -56,3 +56,10 @@ module.exports = (req, res, next) => {
 // { expiresIn: '1h' }
 // );
 
+// This will also need to be added to set the token in the header
+// This was pulled from Max's React files, so syntax will probably need to be tweaked
+
+// headers: { 
+//     Authorization: 'Bearer ' + this.props.token
+//   }
+
