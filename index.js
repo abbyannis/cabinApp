@@ -31,10 +31,10 @@ const corsOptions = {
     family: 4
  }
 
- const store = new MongoDBStore({
-    uri: MONGODB_URI,
-    collection: 'sessions'
-});
+//  const store = new MongoDBStore({
+//     uri: MONGODB_URI,
+//     collection: 'sessions'
+// });
 
 // app.use(
 //    session({ 
@@ -49,6 +49,7 @@ app.use(favicon(__dirname + '/public/images/favicon.png'))
    .set('views', path.join(__dirname, 'views'))
    .set('view engine', 'ejs')
    .use(bodyParser.urlencoded({extended: false})) 
+   .use(bodyParser.json())
    .use((req, res, next) => {
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, PATCH, DELETE');

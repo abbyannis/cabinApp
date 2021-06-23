@@ -57,20 +57,22 @@ exports.getProperties = (req, res, next) => {
 //create a new property
 exports.postProperty = (req, res, next) => {        
   //check validation in middleware for valid fields
-
+  
+  console.log(req.body);
   let cabin = new Cabin({
     name: req.body.name,
     location: req.body.location,
-    admins: [req.params.userId],
+    admins: ["60cabc68a719ff57315c0a9c"],//[req.userId],
     members: [],
     imageUrls: req.body.imageUrls
   });
+  console.log(cabin);
   cabin
     .save()
     .then(result => {
       return res.status(201).json({cabin: result});
     })
-    .catch(err => {
+    .catch(err => {      
       if (!err.statusCode) err.statusCode = 500;
       next(err);    
     });
