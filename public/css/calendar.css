@@ -93,7 +93,13 @@
     float: left;
 }
 
-label {
+.reservation h1 {
+    font-family: verdana;
+    font-size: 2.5vw;
+    font-weight: normal;
+}
+
+.reservation label {
     font-family: verdana;
     width: 100%;
     padding: 0 1vw;
@@ -102,11 +108,11 @@ label {
     display: inline block;
 }
 
-input,
-textarea {
+.reservation input,
+.reservation textarea {
     font-family: verdana;
     width: 100%;
-    padding: 0.25vw 1vw;
+    padding: 1vw 1vw;
     margin: 1vw;
     font-size: 1vw;
     display: inline block;
@@ -114,7 +120,7 @@ textarea {
     border-radius: 5px;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 1000px) {
     .calendar {
       width: 95%;
     }
@@ -157,7 +163,10 @@ textarea {
         font-size: 4vw;
     }
 
-    label, input, textarea {
+    .reservation label, 
+    .reservation input, 
+    .reservation textarea,
+    .reservation h1 {
         font-size: 4vw;
     }
   }
