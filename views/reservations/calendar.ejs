@@ -37,6 +37,7 @@
                 </div>
             </div>
             <div class="reservation">
+                <h1>New Reservation</h1>
                 <form action="" method="POST">
                     <label for="start_date">Start Date</label>
                     <input type="date" id="start_date" name="start_date" min="<%= year %> + '-' + <%= month %> + '-01'">
@@ -47,7 +48,7 @@
                     <label for="phone">Phone</label>
                     <input type="text" id="phone" name="phone">
                     <label for="comments">Comments</label>
-                    <textarea id="comments" name="comments"></textarea>
+                    <textarea id="comments" name="comments" rows="6"></textarea>
                     <input type="hidden" id="userId" name="userId" value="">
                     <input type="hidden" id="_csrf" name="_csrf" value="">
                 </form>
