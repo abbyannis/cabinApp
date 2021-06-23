@@ -24,9 +24,9 @@ const userSchema = new Schema({
         type: Number,
         required: true
     },
-    photo: {
-        type: Image
-    },
+    // photo: {
+    //     type: Image
+    // },
     password: {
         type: String,
         required: true
