@@ -6,8 +6,8 @@ const routes = require('./routes');
 const favicon = require('serve-favicon');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const session = require('express-session');
-const MongoDBStore = require('connect-mongodb-session')(session);
+// const session = require('express-session');
+// const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const flash = require('connect-flash');
 const PORT = process.env.PORT || 5000;
@@ -26,12 +26,12 @@ const corsOptions = {
  const options = {
     useUnifiedTopology: true,
     useNewUrlParser: true,
-    useCreateIndex: true,
+   //  useCreateIndex: true,
     useFindAndModify: false,
     family: 4
  }
 
-//  const store = new MongoDBStore({
+// const store = new MongoDBStore({
 //     uri: MONGODB_URI,
 //     collection: 'sessions'
 // });
