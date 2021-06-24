@@ -9,10 +9,10 @@ const cors = require('cors');
 // const session = require('express-session');
 // const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
-const flash = require('connect-flash');
+//const flash = require('connect-flash');
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI_CABIN;
-const csrfProtection = csrf();
+const csrfProtection = csrf({cookie: true});
 const errorController = require('./controllers/error');
 
 const app = express();
@@ -56,8 +56,8 @@ app.use(favicon(__dirname + '/public/images/favicon.png'))
       res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
       next();
    })
-   //.use(csrfProtection)   
-   .use(flash())
+   // .use(csrfProtection)   
+   // .use(flash())
    .use('/', routes)
    .use(errorController.get404);
 
