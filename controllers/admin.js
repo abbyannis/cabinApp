@@ -3,6 +3,7 @@ const User = require('../models/user');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const ROOTURL = process.env.HEROKU_ORIGIN || "http://localhost:5000";
+const { validationResult } = require("express-validator");
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -12,31 +13,13 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-//finds a property that matches the property id in the request parameters
-// AND the user id (req.userId) is in the list of valid admins
-function getPropertyById(req) {
-  return Cabin 
-    .find({ 
-      _id: req.params.propertyId, 
-      admins: req.userId
-    })
-    .then(result => {
-      if (!result) {
-        const err = new Error('Property not found');
-        err.statusCode = 404;
-        throw error;
-      }      
-      return result;
-    });    
-}
-
 
 //get properties managed by this user
 exports.getProperties = (req, res, next) => {        
   try {    
     Cabin
       .find({ 
-        admins: req.params.userId     
+        admins: req.userId     
       })  
       .then(properties => {                               
         res.status(200).json({ properties });          
@@ -57,22 +40,24 @@ exports.getProperties = (req, res, next) => {
 //create a new property
 exports.postProperty = (req, res, next) => {        
   //check validation in middleware for valid fields
-  
-  console.log(req.body);
+  const errors = validationResult(req);
+  if(!errors.isEmpty()) {
+    return res.status(422).json( { errors });
+  }
   let cabin = new Cabin({
     name: req.body.name,
     location: req.body.location,
-    admins: ["60cabc68a719ff57315c0a9c"],//[req.userId],
+    admins: [req.userId],
     members: [],
-    imageUrls: req.body.imageUrls
-  });
-  console.log(cabin);
+    imageUrls: req.body.imageUrls || []
+  });  
   cabin
     .save()
     .then(result => {
       return res.status(201).json({cabin: result});
     })
-    .catch(err => {      
+    .catch(err => {  
+      console.log(err);         
       if (!err.statusCode) err.statusCode = 500;
       next(err);    
     });
@@ -81,7 +66,7 @@ exports.postProperty = (req, res, next) => {
 
 //fetch a property by the property id
 exports.getProperty = (req, res, next) => {
-  getPropertyById(req)
+  Cabin.getPropertyById(req.params.propertyId, req.userId)
   .then(cabin => {
     res.status(200).json({ cabin });
   })
@@ -94,26 +79,27 @@ exports.getProperty = (req, res, next) => {
 
 //updates an existing property
 exports.updateProperty = (req, res, next) => {        
-  //check validation in middleware for valid fields
-  
-  getPropertyById(req)
+  //check validation in middleware for valid fields    
+  const errors = validationResult(req);     
+  if(!errors.isEmpty()) {
+    return res.status(422).json( { errors });  
+  } 
+  Cabin.getPropertyById(req.params.propertyId, req.userId)
   .then(cabin => {
     cabin.name = req.body.name;
     cabin.location = req.body.location;  
-
     //this imageUrls bit probably needs some work
-    cabin.imageUrls = req.body.imageUrls;
-
-
+    cabin.imageUrls = req.body.imageUrls;       
     return cabin.save();
   })
-  .then(result => {
+  .then(result => {    
     res.status(200).json({
       message: 'Property has been updated.',
       cabin: result
     });
   })
   .catch(err => {
+    console.log(err);
     if (!err.statusCode) err.statusCode = 500;
     next(err);    
   });
@@ -121,9 +107,10 @@ exports.updateProperty = (req, res, next) => {
 
 //remove a property
 exports.deleteProperty = (req, res, next) => {
-  getPropertyById(req)
+  Cabin.getPropertyById(req.params.propertyId, req.userId)
   .then(cabin => {    
     const idx = cabin.admins.indexOf(req.userId);
+    console.log(idx);
     if(idx > -1) {
       cabin.admins.splice(idx, 1);
     }
@@ -144,57 +131,62 @@ exports.deleteProperty = (req, res, next) => {
 
 //invite a new user
 exports.inviteUser = (req, res, next) => {
-  //ensure valid inputs through validation
+  //ensure valid inputs through validation  
+  const pId = req.params.propertyId;
+  const userId = req.userId;
+  const email = req.body.email;
+  const errors = validationResult(req);
+  if(!errors.isEmpty()) {
+    return res.status(422).json( { errors });
+  }
   crypto.randomBytes(32, (err, buffer) => {
     if(err) {
       throw err;      
-    }
+    }    
     const token = buffer.toString('hex');
     let propertyName;
-    let userName;    
-    getPropertyById(req)
-    .then(cabin => {
+    let userName;        
+    Cabin.getPropertyById(pId, userId)
+    .then(cabin => {      
       propertyName = cabin.name;
-      cabin.invites.push(token);
+      cabin.invites.push(token);      
       return cabin.save();
     })
-    then(result => {
-      return User.findById(req.userId);
+    .then(result => {      
+      return User.findById(userId);
     })
-    .then(user => {
+    .then(user => {      
       if (!user) {
         const err = new Error('User not found');
         err.statusCode = 404;
         throw error;
-      }
-      userName = `${user.firstName} ${user.lastName}`;    
-      //send email to specified address with a new invite token
+      }      
+      userName = `${user.firstName} ${user.lastName}`;            
+      res.status(200).json({ message: "Invitation sent."});
+      //send email to specified address with a new invite token      
       transporter.sendMail({
-        to: req.body.email,
+        to: email,
         from: 'invites@atTheCabin.com',
         subject: `${userName} invites you to their cabin.'`,
         html: `<p>${userName} has invited you to join their group on 
         <a href='${ROOTURL}'>@theCabin</a> for their property entitled
-        ${propertyName}. <br><a href='${ROOTURL}/auth/invite/${token}'>Click here to accept their invitation</a>.</p>`
-      })
+        ${propertyName}. <br><a href='${ROOTURL}auth/invite/${token}'>Click here to accept their invitation</a>.</p>`
+      });      
     })
-    .then(result => {
-      res.status(200).json({ message: "Invitation sent."});
-    });
-  })
-  .catch(err => {
-    if (!err.statusCode) err.statusCode = 500;
-    next(err);   
+    .catch(err => {
+      if (!err.statusCode) err.statusCode = 500;
+      next(err);    
+    });        
   });
 }
 
 //remove a user from the property
 exports.removeUser = (req, res, next) => {
-  getPropertyById(req)
+  Cabin.getPropertyById(req.params.propertyId, req.userId)
   .then(cabin => {
-    const idx = cabin.users.indexOf(req.params.userId);
+    const idx = cabin.members.indexOf(req.params.userId);
     if(idx > -1) {
-      cabin.users.splice(idx, 1);      
+      cabin.members.splice(idx, 1);      
     } 
     return cabin.save();
   })
@@ -212,21 +204,20 @@ exports.removeUser = (req, res, next) => {
 
 //add an invited user to the property
 exports.addUser = (req, res, next) => {
+  const token = req.params.inviteToken;  
   Cabin 
-  .find({ 
-    invites: req.params.inviteToken      
+  .findOne({ 
+    invites: token      
   })
   .then(cabin => {
-    if (!cabin) {
+    if (!cabin) {    
       const err = new Error('Property not found');
       err.statusCode = 404;
       throw error;
-    }      
-    return result;
-  })
-  .then(cabin => {
-    cabin.users.push(req.params.userId);  
-    const idx = cabin.invites.indexOf(req.params.inviteToken); //remove token
+    }              
+    cabin.members.push(req.params.newUserId);  
+    const idx = cabin.invites.indexOf(token); //remove token
+    console.log(idx);          
     if(idx > -1) {
       cabin.invites.splice(idx, 1);      
     }  

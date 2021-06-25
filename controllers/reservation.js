@@ -2,8 +2,9 @@ const Reservation = require('../models/reservation');
 const Property = require('../models/property');
 const User = require('../models/user');
 const utils = require('../util/utilities');
+const { validationResult } = require("express-validator");
 
-
+//gets a reservation by specified id in the req params (req.params.reservationId)
 function getReservationById(req) {  
   return Reservation     
     .findById(req.params.reservationId)
@@ -15,6 +16,12 @@ function getReservationById(req) {
       }            
       return reservation;
     });    
+}
+
+//checks if specified in/out dates are valid based on existing reservations
+//returns true if they are, false if not.
+function checkDates(inDate, outDate, propertyId) {
+
 }
 
 //find all reservations for the specified property (id in params)
@@ -83,14 +90,20 @@ exports.getUserReservations = (req, res, next) => {
 };
 
 //Add a new reservation
-exports.postReservation = (req, res, next) => {
-  //check validation in middleware for valid dates
-
-  //ensure user is authorized to post to this property
-
+exports.postReservation = (req, res, next) => {   
+  //check validation in middleware for valid fields
+  const errors = validationResult(req);
+  if(!errors.isEmpty()) {
+    return res.status(422).json( { errors }); 
+  } 
+  //check if dates are valid (not reserved and shorter max length but longer than min) in validation.
+      
+  //if not valid, return error
+      
+  //if valid, create:
   let reservation = new Reservation({
     user: req.userId,
-    property: req.body.propertyId,
+    property: req.params.propertyId,
     comments: req.body.comments,
     status: "pending",
     startDate: new Date(req.body.startDate),
@@ -109,6 +122,11 @@ exports.postReservation = (req, res, next) => {
 
 //Modifies reservation dates based on request body
 exports.modifyReservation = (req, res, next) => {  
+  //check validation in middleware for valid fields
+  const errors = validationResult(req);
+  if(!errors.isEmpty()) {
+    return res.status(422).json( { errors });
+  } 
   getReservationById(req)
   .then(reservation => {
       if(reservation.user.toString() !== req.userId.toString()) {        
@@ -150,7 +168,7 @@ exports.approveReservation = (req, res, next) => {
         return Reservation.findByIdAndRemove(req.params.reservationId);
       } else {
         const error = new Error("Invalid reservation status received.");
-        error.statusCode = 400;
+        error.statusCode = 422;
         throw error;
       } 
     })    
