@@ -14,8 +14,11 @@ const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI_CABIN;
 const csrfProtection = csrf({cookie: true});
 const errorController = require('./controllers/error');
+const cookie = require('cookie-parser');
 
 const app = express();
+
+app.use(cookie());
 
 const corsOptions = {
     origin: process.env.HEROKU_ORIGIN,
@@ -26,7 +29,7 @@ const corsOptions = {
  const options = {
     useUnifiedTopology: true,
     useNewUrlParser: true,
-   //  useCreateIndex: true,
+    useCreateIndex: true,
     useFindAndModify: false,
     family: 4
  }

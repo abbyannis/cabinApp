@@ -8,11 +8,12 @@
         <% if (errorMessage) { %>
             <div class="user-message user-message--error"><%= errorMessage %></div>
         <% } %>
-        <form class="login-form" action="auth/login" method="POST">
+        <form class="login-form" action="../auth/login" method="POST">
             <div class="form-control">
                 <label for="email">Email Address</label>
                 <input
-                class="<%= validationErrors.find(e => e.param === 'email') ? 'invalid' : '' %>" 
+                    autocomplete="email"
+                    class="<%= validationErrors.find(e => e.param === 'email') ? 'invalid' : '' %>" 
                     type="text" 
                     name="email" 
                     id="email" 
@@ -22,6 +23,7 @@
             <div class="form-control">
                 <label for="password">Password</label>
                 <input
+                    autocomplete="current-password"
                     class="<%= validationErrors.find(e => e.param === 'password') ? 'invalid' : '' %>" 
                     type="password" 
                     name="password" 
@@ -31,7 +33,7 @@
             </div>
             <div class="text-center">
                 <input type="hidden" name="_csrf" value="">
-                <button class="btn btn-default" type="submit">Login</button>
+                <button class="btn btn-default" id="login">Login</button>
             </div>
         </form>
         <div class="centered">
