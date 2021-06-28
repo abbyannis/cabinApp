@@ -9,13 +9,16 @@ const cors = require('cors');
 // const session = require('express-session');
 // const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
-const flash = require('connect-flash');
+//const flash = require('connect-flash');
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI_CABIN;
-const csrfProtection = csrf();
+const csrfProtection = csrf({cookie: true});
 const errorController = require('./controllers/error');
+const cookie = require('cookie-parser');
 
 const app = express();
+
+app.use(cookie());
 
 const corsOptions = {
     origin: process.env.HEROKU_ORIGIN,
@@ -26,7 +29,7 @@ const corsOptions = {
  const options = {
     useUnifiedTopology: true,
     useNewUrlParser: true,
-   //  useCreateIndex: true,
+    useCreateIndex: true,
     useFindAndModify: false,
     family: 4
  }
@@ -56,8 +59,8 @@ app.use(favicon(__dirname + '/public/images/favicon.png'))
       res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
       next();
    })
-   //.use(csrfProtection)   
-   .use(flash())
+   // .use(csrfProtection)   
+   // .use(flash())
    .use('/', routes)
    .use(errorController.get404);
 

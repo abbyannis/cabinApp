@@ -1,6 +1,12 @@
+const fetch = require('node-fetch');
+const jwt = require('jsonwebtoken');
+const { json } = require('body-parser');
+
 // loads calendar for current month
 // will need to add way to highlight unavailable dates
 exports.getIndex = (req, res, next) => {
+    // const cookie = req.cookies.JWT_TOKEN;
+    // console.log(cookie);
     // this will need to reworked to dynamically create this array
     const images = ['images/landscape3.jpeg', '/images/2021-06-10EclipseFlybywm1066.jpeg', '/images/landscape2.jpeg', '/images/AuroraClouds_Boffelli_1080.jpeg', '/images/landscape1.jpeg']
     const dates = [];
@@ -19,18 +25,20 @@ exports.getIndex = (req, res, next) => {
     for(i = 0; i < daysInMonth; i++) {
         dates[i] = { date: new Date(year, month, i + 1), available: true };
     }
+    //res.status(200).json({ 'message': 'Success!' })
     res.render('index', {
-    // res.render('reservations/calendar', {
-        pageTitle: 'Dashboard',
-        path: '/',
-        dates: dates, 
-        month: month,
-        monthName: monthName,
-        year: year,
-        startDay: startDay,
-        currentMonth: month,
-        currentYear: year,
-        images: images
-    });
+        // res.render('reservations/calendar', {
+            pageTitle: 'Dashboard',
+            path: '/',
+            dates: dates, 
+            month: month,
+            monthName: monthName,
+            year: year,
+            startDay: startDay,
+            currentMonth: month,
+            currentYear: year,
+            images: images,
+            currentUser: req.userId
+        });
 }
   
