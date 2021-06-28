@@ -56,5 +56,4 @@ router.post('/properties/:propertyId/add/:inviteToken', adminController.addUser)
 //remove a user from a property
 router.delete('/properties/:propertyId/remove/:userId', adminController.removeUser);
 
-
 module.exports = router;
