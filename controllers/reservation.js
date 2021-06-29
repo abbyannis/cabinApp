@@ -1,6 +1,6 @@
 const Reservation = require('../models/reservation');
 const Property = require('../models/property');
-const User = require('../models/User');
+const User = require('../models/user');
 const utils = require('../util/utilities');
 
 
@@ -117,7 +117,7 @@ exports.modifyReservation = (req, res, next) => {
         throw error;
       }
       //check if dates are valid (not reserved and shorter max length but longer than min) in validation.
-
+      
       //if not valid, return error
       
       //if valid, update:

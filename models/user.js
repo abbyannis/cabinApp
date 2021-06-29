@@ -25,11 +25,16 @@ const userSchema = new Schema({
         required: true
     },
     photo: {
-        type: Image
+        type: String
     },
     password: {
         type: String,
         required: true
     },
-    timestamps: true
-})
+    resetToken: String,
+    resetTokenExpiration: Date,    
+}, { 
+    timestamps: true 
+});
+
+module.exports = mongoose.model('User', userSchema);

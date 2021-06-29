@@ -1,36 +1,46 @@
 const jwt = require('jsonwebtoken');
+const whitelist = require('../models/whitelist');
 
 // This will give access to req.userId on any routes isAuth is added to
 // See below for additional code that needs to be included in other files
 module.exports = (req, res, next) => {
-    // get header containing token
-    const authHeader = req.get('Authorization');
+    // get token from cookie
+    const token = req.cookies.JWT_TOKEN;
     // if no token, throw error
-    if (!authHeader) {
+    if (!token) {
         const error = new Error('Not authenticated');
         error.statusCode = 401;
         throw error;
     }
-    // extract token
-    const token = authHeader.split(' ')[1];
-    let decodedToken;
-    try {
-        // set decodedToken to token
-        // secret here and in user/auth file must match
-        decodedToken = jwt.verify(token, 'weneedasecrethere');
-    } catch (err) {
-        err.statusCode = 500;
-        throw err;
-    }
-    // if no token, throw error
-    if (!decodedToken) {
-        const error = new Error('Not authenticated');
-        error.statusCode = 401;
-        throw error;
-    }
-    // get user ID from token
-    req.userId = decodedToken.userId;
-    next();
+    // to make sure user has not logged out before token expiration
+    whitelist.find({ dbToken: token })
+        .then(dbToken => {
+            if(dbToken) {
+                let decodedToken;
+            try {
+                // set decodedToken to token
+                decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
+            } catch (err) {
+                err.statusCode = 500;
+                throw err;
+            }
+            // if no token, throw error
+            if (!decodedToken) {
+                const error = new Error('Not authenticated');
+                error.statusCode = 401;
+                throw error;
+            }
+            // get user ID from token
+            req.userId = decodedToken.userId;
+            next();
+            }
+        })
+        .catch(err => {
+            if(!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        });
 };
 
 
@@ -55,4 +65,11 @@ module.exports = (req, res, next) => {
 // 'weneedasecrethere', 
 // { expiresIn: '1h' }
 // );
+
+// This will also need to be added to set the token in the header
+// This was pulled from Max's React files, so syntax will probably need to be tweaked
+
+// headers: { 
+//     Authorization: 'Bearer ' + this.props.token
+//   }
 
