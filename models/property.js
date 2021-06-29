@@ -33,6 +33,24 @@ const propertySchema = new Schema({
   }]  
 });
 
+//finds a property that matches the property id 
+// AND the user id is in the list of valid admins
+propertySchema.statics.getPropertyById = function(propertyId, userId) {
+  return this 
+      .findOne({ 
+        _id: propertyId, 
+        admins: userId
+      })
+      .then(result => {
+        if (!result) {
+          const err = new Error('Property not found');
+          err.statusCode = 404;
+          throw error;
+        }      
+        return result;
+      });
+};
+
 module.exports = mongoose.model('Property', propertySchema);
 
 

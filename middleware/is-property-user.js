@@ -5,7 +5,7 @@ module.exports = (req, res, next) => {
     .find({
       _id: req.params.propertyId,
       $or:[
-        { users: req.userId }, 
+        { members: req.userId }, 
         { admins: req.userId }
       ]   
     })    
