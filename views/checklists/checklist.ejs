@@ -1,8 +1,30 @@
 <%- include('includes/head.ejs') %>
+<link rel="stylesheet" href="/css/form.css">
 </head>
 
 <body>
     <main>
         <%- include('includes/nav.ejs') %>
+        <h2>Cabin checklist</h2>
+        <div class="checklist-box">
+            <form class="cabin-checklist "action="/checklists/checklist" method="POST">
+            <%=  for(task of userTaskLog) {
+                <input type="checkbox" name="<%= task.title%>" id="task1">
+                <label for="task1"><%= description.task%></label><br>
+            </form>
+            <% }  else { %>
+            <form class="cabin-checklist "action="/checklists/checklist" method="POST">
+                <input type="checkbox" name="task1" id="task1" value="Cleaned">
+                <label for="task1">Cabin Cleaned</label><br>
+                <input type="checkbox" name="task2" id="task2" value="Key Returned">
+                <label for="task2">Key Returned</label><br>
+                <input type="checkbox" name="task3" id="task3" value="Lights">
+                <label for="task3">Lights Shut Off</label><br>
+                <input type="checkbox" name="task4" id="task4" value="trash">
+                <label for="task4">Take out Trash</label><br>
+                <button type="submit" class="btn">Submit</button>
+            </form>
+            <% } %>
+        </div>
     </main>
 <%- include('includes/end.ejs') %>
