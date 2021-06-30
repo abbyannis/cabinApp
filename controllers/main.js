@@ -38,7 +38,8 @@ exports.getIndex = (req, res, next) => {
             currentMonth: month,
             currentYear: year,
             images: images,
-            currentUser: req.userId
+            currentUser: req.session.user,
+            isAuthenticate: req.session.LoggedIn
         });
 }
   

@@ -1,8 +1,8 @@
 const mainController = require('../controllers/main');
 const express = require('express');
 const router = express.Router();
-const isUser = require('../middleware/current-user');
+const isAuth = require('../middleware/is-auth');
 
-router.get('/', isUser, mainController.getIndex);
+router.get('/', mainController.getIndex);
 
 module.exports = router;

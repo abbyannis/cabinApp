@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
 const { validationResult } = require('express-validator');
-const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 const Whitelist = require('../models/whitelist');
@@ -16,17 +15,24 @@ const transporter = nodemailer.createTransport(sendgridTransport({
 }));
  
 exports.getLogin = (req, res, next) => {
+    let message = req.flash('error');
+    if (message.length > 0) {
+        message = message[0];
+    } else {
+        message = null;
+    }
     res.render('auth/login', {
         path: '/login',
         pageTitle: 'Login',
-        errorMessage: "",
-    //  userType: req.session.userType,
-        currentUser: req.userId,
+        errorMessage: message,
+        userType: req.session.userType,
+        currentUser: req.session.user,
         oldInput: {
             email: '',
             password: ''
         },
-        validationErrors: []
+        validationErrors: [],
+        isAuthenticated: req.session.isLoggedIn
     });
 };
 
@@ -35,7 +41,7 @@ exports.getSignup = (req, res, next) => {
         path: '/signup',
         pageTitle: 'Signup',
         errorMessage: "",
-        currentUser: req.userId,
+        currentUser: req.session.user,
         oldInput: {
             first: "",
             last: "", 
@@ -45,7 +51,8 @@ exports.getSignup = (req, res, next) => {
             password: "", 
             confirmPassword: "" 
         },
-        validationErrors: []
+        validationErrors: [],
+        isAuthenticated: req.session.isLoggedIn
     });
 };
 
@@ -54,26 +61,28 @@ exports.getReset = (req, res, next) => {
         path: '/reset',
         pageTitle: 'Reset Password',
         errorMessage: "",
-        // userType: req.session.userType,
-        currentUser: req.userId
+        userType: req.session.userType,
+        currentUser: req.session.user,
+        isAuthenticated: req.session.isLoggedIn
     });
 };
  
 exports.getProfile = (req, res, next) => {
-    // let message = req.flash('notification');
-    // if (message.length > 0) {
-    //     message = message[0];
-    // } else {
-    //     message = null;
-    // }
-    User.findById(req.userId)
+    let message = req.flash('notification');
+    if (message.length > 0) {
+        message = message[0];
+    } else {
+        message = null;
+    }
+    User.findById(req.session.user)
         .then(user => {
+            console.log(req.session.isLoggedIn)
             res.render('auth/edit-profile', {
                 path: '/edit-profile',
                 pageTitle: 'Edit Profile',
                 errorMessage: "",
-                message: "",
-                // userType: req.session.userType,
+                message: message,
+                userType: req.session.userType,
                 currentUser: user,
                 oldInput: {
                     first: user.firstName,
@@ -82,34 +91,36 @@ exports.getProfile = (req, res, next) => {
                     password: "", 
                     confirmPassword: "" 
                 },
-                validationErrors: []
+                validationErrors: [],
+                isAuthenticated: req.session.isLoggedIn
             });
         })
     
 };
 
 exports.getUpdatePassword = (req, res, next) => {
-    const userId = req.userId;
+    const userId = req.session.user;
     console.log(userId);
     User.findById(userId)
         .then(user => {
-            // let message = req.flash('notification');
-            // if (message.length > 0) {
-            //     message = message[0];
-            // } else {
-            //     message = null;
-            // }
+            let message = req.flash('notification');
+            if (message.length > 0) {
+                message = message[0];
+            } else {
+                message = null;
+            }
             
             res.render('auth/update-password', {
                 path: '/update-password',
                 pageTitle: 'Update Password',
                 errorMessage: "",
-                message: "",
-                // userType: req.session.userType,
+                message: message,
+                userType: req.session.userType,
                 currentUser: user,
                 password: "",
                 confirmPassword: "",
-                userId: userId, 
+                userId: userId,
+                isAuthenticated: req.session.isLoggedIn 
             });
         })
         .catch(err => {
@@ -124,21 +135,22 @@ exports.getNewPassword = (req, res, next) => {
     const token = req.params.token;
     User.findOne({resetToken: token, resetTokenExpiration: {$gt: Date.now()}})
         .then(user => {
-            // let message = req.flash('error');
-            // console.log(message);
-            // if (message.length > 0) {
-            //     message = message[0];
-            // } else {
-            //     message = null;
-            // }
+            let message = req.flash('error');
+            console.log(message);
+            if (message.length > 0) {
+                message = message[0];
+            } else {
+                message = null;
+            }
             res.render('auth/new-password', {
                 path: '/new-password',
                 pageTitle: 'New Password',
                 errorMessage: "",
-                // userType: req.session.userType,
-                currentUser: req.userId,
+                userType: req.session.userType,
+                currentUser: req.session.user,
                 userId: user._id.toString(), 
-                passwordToken: token
+                passwordToken: token,
+                isAuthenticated: req.session.isLoggedIn
             });
         })
         .catch(err => {
@@ -158,13 +170,14 @@ exports.postLogin = (req, res, next) => {
             path: '/login',
             pageTitle: 'Login',
             errorMessage: errors.array()[0].msg,
-            // userType: req.session.userType,
-            currentUser: req.userId,
+            userType: req.session.userType,
+            currentUser: req.session.user,
             oldInput: {
                 email: email,
                 password: password
             },
-            validationErrors: errors.array()
+            validationErrors: errors.array(),
+            isAuthenticated: req.session.isLoggedIn
         });
     }
     User.findOne({email: email})
@@ -174,56 +187,40 @@ exports.postLogin = (req, res, next) => {
                     path: '/login',
                     pageTitle: 'Login',
                     errorMessage: 'Invalid email or password',
-                    // userType: req.session.userType,
-                    currentUser: req.userId,
+                    userType: req.session.userType,
+                    currentUser: req.session.user,
                     oldInput: {
                         email: email,
                         password: password
                     },
-                    validationErrors: []
+                    validationErrors: [],
+                    isAuthenticated: req.session.isLoggedIn
                 });
             }
             bcrypt.compare(password, user.password)
                 .then(doMatch => {
                     const created = new Date().toISOString();
                     if (doMatch) {
-                        const token = jwt.sign({
-                            email: user.email, 
-                            userId: user._id.toString()
-                        }, 
-                        process.env.TOKEN_SECRET, 
-                        { expiresIn: '1hr' }
-                        );
-                        const whitelist = new Whitelist({
-                            token: token,
-                            createdAt: created
-                        });
-                        return whitelist.save()
-                        .then(result => {
-                            res.cookie("JWT_TOKEN", token, { 
-                                maxAge: 3600000, 
-                                httpOnly: true 
-                            });
-                            return res.redirect('/');
-                        })
-                        .catch(err => {
-                            if(!err.statusCode) {
-                                err.statusCode = 500;
-                            }
-                            next(err);
+                        req.session.isLoggedIn = true;
+                        req.session.userType = user.userType;
+                        req.session.user = user;
+                        return req.session.save((err) => {
+                            console.log(err);
+                            res.redirect('/');
                         });
                     }
                     return res.status(422).render('auth/login', {
                         path: '/login',
                         pageTitle: 'Login',
                         errorMessage: 'Invalid email or password',
-                        // userType: req.session.userType,
-                        currentUser: req.userId,
+                        userType: req.session.userType,
+                        currentUser: req.session.user,
                         oldInput: {
                             email: email,
                             password: password
                         },
-                        validationErrors: []
+                        validationErrors: [],
+                        isAuthenticated: req.session.isLoggedIn
                     });
                 })
                 .catch(err => {
@@ -240,17 +237,9 @@ exports.postLogin = (req, res, next) => {
 };
 
 exports.postLogout = (req, res, next) => {
-    // delete token from whitelist collection and clear cookie
-    Whitelist.findOneAndDelete({ token: req.cookies.JWT_TOKEN })
-    .then(result => {
-        res.cookie("JWT_TOKEN", "", { maxAge: 1, httpOnly: true });
+    req.session.destroy(err => {
+        console.log(err);
         res.redirect('/');
-    })
-    .catch(err => {
-        if(!err.statusCode) {
-            err.statusCode = 500;
-        }
-        next(err);
     });
 };
 
@@ -269,7 +258,7 @@ exports.postSignup = (req, res, next) => {
             path: '/signup',
             pageTitle: 'Signup',
             errorMessage: errors.array()[0].msg,
-            currentUser: req.userId,
+            currentUser: req.session.user,
             oldInput: { 
                 first: first,
                 last: last,
@@ -279,7 +268,8 @@ exports.postSignup = (req, res, next) => {
                 password: password, 
                 confirmPassword: confirmPassword 
             },
-            validationErrors: errors.array()
+            validationErrors: errors.array(),
+            isAuthenticated: req.session.isLoggedIn
         });
     }
     
@@ -294,6 +284,7 @@ exports.postSignup = (req, res, next) => {
                 phone: phone,
                 photo: '',
                 password: hashedPassword,
+                isAuthenticated: req.session.isLoggedIn
             });
             return user.save();
         })
@@ -327,7 +318,7 @@ exports.postReset = (req, res, next) => {
         User.findOne({email: req.body.email})
             .then(user => {
                 if (!user) {
-                    // req.flash('error', 'No account found.');
+                    req.flash('error', 'No account found.');
                     return res.redirect('/auth/reset');
                 }
                 user.resetToken = token;
@@ -369,8 +360,8 @@ exports.postUpdateProfile = (req, res, next) => {
             pageTitle: 'Edit Profile',
             errorMessage: errors.array()[0].msg,
             message: "",
-            // userType: req.session.user.userType,
-            currentUser: req.userId,
+            userType: req.session.user.userType,
+            currentUser: req.session.user,
             oldInput: { 
                 first: first,
                 last: last,
@@ -378,10 +369,11 @@ exports.postUpdateProfile = (req, res, next) => {
                 password: "", 
                 confirmPassword: "" 
             },
-            validationErrors: errors.array()
+            validationErrors: errors.array(),
+            isAuthenticated: req.session.isLoggedIn
         });
     }
-    User.findById(req.userId).then(user => {
+    User.findById(req.session.user).then(user => {
         console.log(user);
         user.firstName = first;
         user.lastName = last;
@@ -389,7 +381,7 @@ exports.postUpdateProfile = (req, res, next) => {
         return user.save()
     })  
     .then(result => {
-        // req.flash('notification', 'Profile Updated');
+        req.flash('notification', 'Profile Updated');
         res.redirect('../auth/edit-profile');
     })
     .catch(err => {
@@ -403,7 +395,7 @@ exports.postUpdateProfile = (req, res, next) => {
 exports.postUpdatePassword = (req, res, next) => {
     const newPassword = req.body.password;
     const newConfirmPassword = req.body.confirmPassword;
-    const userId = req.userId;
+    const userId = req.session.user;
     let resetUser;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -412,15 +404,16 @@ exports.postUpdatePassword = (req, res, next) => {
             pageTitle: 'UpdatePassword',
             errorMessage: errors.array()[0].msg,
             message: "",
-            // userType: req.session.userType,
-            currentUser: req.userId,
+            userType: req.session.userType,
+            currentUser: req.session.user,
             password: newPassword,
             confirmPassword: newConfirmPassword,
             userId: userId,
-            validationErrors: errors.array()
+            validationErrors: errors.array(),
+            isAuthenticated: req.session.isLoggedIn
         });
     }
-    User.findById(req.userId)
+    User.findById(req.session.user)
     .then(user => {
         resetUser = user;
         return bcrypt.hash(newPassword, 12);
@@ -430,7 +423,7 @@ exports.postUpdatePassword = (req, res, next) => {
         return resetUser.save();
     })  
     .then(result => {
-        // req.flash('notification', 'Password Updated');
+        req.flash('notification', 'Password Updated');
         res.redirect('../auth/update-password');
     })
     .catch(err => {
@@ -453,7 +446,7 @@ exports.postNewPassword = (req, res, next) => {
     //         path: '/reset',
     //         pageTitle: 'New Password',
     //         errorMessage: errors.array()[0].msg,
-    //         currentUser: req.userId,
+    //         currentUser: req.session.user,
     //         validationErrors: errors.array()
     //     });
     // }
