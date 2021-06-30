@@ -154,6 +154,6 @@ authController.postUpdatePassword);
 
 router.post('/reset', authController.postReset);
 
-router.get('/invite/:inviteToken', authController.acceptInvite);
+//router.get('/invite/:inviteToken', authController.acceptInvite);
 
 module.exports = router;
