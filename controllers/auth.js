@@ -76,7 +76,6 @@ exports.getProfile = (req, res, next) => {
     }
     User.findById(req.session.user)
         .then(user => {
-            console.log(req.session.isLoggedIn)
             res.render('auth/edit-profile', {
                 path: '/edit-profile',
                 pageTitle: 'Edit Profile',
@@ -99,8 +98,7 @@ exports.getProfile = (req, res, next) => {
 };
 
 exports.getUpdatePassword = (req, res, next) => {
-    const userId = req.session.user;
-    console.log(userId);
+    const userId = req.session.userId;
     User.findById(userId)
         .then(user => {
             let message = req.flash('notification');
@@ -136,7 +134,6 @@ exports.getNewPassword = (req, res, next) => {
     User.findOne({resetToken: token, resetTokenExpiration: {$gt: Date.now()}})
         .then(user => {
             let message = req.flash('error');
-            console.log(message);
             if (message.length > 0) {
                 message = message[0];
             } else {
@@ -374,7 +371,6 @@ exports.postUpdateProfile = (req, res, next) => {
         });
     }
     User.findById(req.session.user).then(user => {
-        console.log(user);
         user.firstName = first;
         user.lastName = last;
         user.email = email;
