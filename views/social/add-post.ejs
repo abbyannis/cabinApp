@@ -1,0 +1,27 @@
+<%- include('../includes/head.ejs') %>
+</head>
+
+<body>
+    <main>
+        <%- include('../includes/nav.ejs') %>
+        <form action="/social/postAddPhoto" method="POST">
+            <div class="form-control">
+                <label for="image">Image</label>
+                <input 
+                    type="file" 
+                    name="image" 
+                    id="image" />
+            </div>
+            <div class="form-control">
+                <label for="title">Description</label>
+                <textarea 
+                    class=""
+                    type="text" 
+                    name="description" 
+                    id="description" 
+                    value=""></textarea>
+            </div>
+            <button class="btn" type="submit">Submit Image</button>
+        </form>
+    </main>
+<%- include('../includes/end.ejs') %>

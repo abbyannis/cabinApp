@@ -34,6 +34,20 @@ const corsOptions = {
     family: 4
  }
 
+ const socialRoutes = require('./routes/social')
+
+ const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg'
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
 // const store = new MongoDBStore({
 //     uri: MONGODB_URI,
 //     collection: 'sessions'
@@ -62,6 +76,7 @@ app.use(favicon(__dirname + '/public/images/favicon.png'))
    // .use(csrfProtection)   
    // .use(flash())
    .use('/', routes)
+   .use(socialRoutes)
    .use(errorController.get404);
 
 mongoose

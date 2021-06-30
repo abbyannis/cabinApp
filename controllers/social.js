@@ -1,13 +1,14 @@
-
+const Photo = require('../models/social-post');
 
 // get all photos
 exports.getPhotos = (req, res, next) => {
     Photo.find()
     .then(photos => {
-        res.render('' , { // not sure what to put here yet
+        res.render('social/add-post' , { 
             photos: photos,
             pageTitle: 'All Photos',
-            path: '/photos'
+            path: '/photos',
+            currentUser: req.userId
         });
     })
     .catch(err => {
@@ -23,10 +24,11 @@ exports.getPhoto = (req, res, next) => {
     const photoId = req.params.photoId;
     Photo.findById(photoId)
     .then(photo => {
-        res.render('', { // not sure what to put here yet
+        res.render('', { // TODO:
             photo: photo,
             pageTitle: photo.title,
-            path: '/photos'
+            path: '/photos/:photoId',
+            currentUser: req.userId
         });
     })
     .catch(err => {
@@ -42,9 +44,9 @@ exports.postAddPhoto = (req, res, next) => {
     const image = req.file;
     const description = req.body.description;
     if (!image) {
-      return res.status(422).render('admin/add-photo', {
+      return res.status(422).render('/add-photo', {
         pageTitle: 'Add Photo',
-        path: '/admin/add-photo',
+        path: '/add-photo',
         editing: false,
         hasError: true,
         photo: {
