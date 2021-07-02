@@ -1,6 +1,4 @@
-//will be waht the admin sees and can add things to the checklist 
-
-const mongoose = require('mongose');
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const checkListMasterSchema = new Schema({
@@ -13,11 +11,11 @@ const checkListMasterSchema = new Schema({
             type: String,
             required: true
         },
-        completed: {
-            type: Boolean,
-            required: true
-        }
+        // completed: {
+        //     type: Boolean,
+        //     required: true
+        // }
     }
 })
 
-module.exports.model('CheckList-Master', checkListMasterSchema);
+module.exports = mongoose.model('CheckList-Master', checkListMasterSchema);

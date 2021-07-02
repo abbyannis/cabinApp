@@ -1,5 +1,6 @@
 const Cabin = require('../models/property');
 const User = require('../models/user');
+const ChecklistMaster = require('../models/checklist-master');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const ROOTURL = process.env.HEROKU_ORIGIN || "http://localhost:5000";
@@ -234,3 +235,94 @@ exports.addUser = (req, res, next) => {
     next(err);   
   });
 }
+
+//checklist auth
+exports.getAddChecklist = (req, res, next) => {
+  res.render('admin/edit-checklist', {
+      pageTitle: "Add Checklist",
+      path: '/admin/edit-checklist',
+      editing: false,
+      currentUser: req.userId
+  });
+}
+exports.postAddChecklist = (req, res, next) => {
+  const title = req.body.title;
+  const description = req.body.description;
+  res.render('admin/edit-checklist', {
+      pageTitle: 'Add New Task',
+      path: '/admin/edit-checklist',
+      editing: false,
+      currentUser: req.userId,
+      checklist: {
+          title: title,
+          description: description
+      }
+  });
+  const checklist = new ChecklistMaster({
+      title: title, 
+      description: description 
+  });
+  Cabin.getPropertyById(req.params.propertyId, req.userId)
+    .save()
+    .then(cabin => {
+          cabin.checklist.push(checklist);
+          console.log('New Task Created');
+          res.redirect('/checklists/checklist')
+      })
+      .catch(err => {
+          console.log(err);
+      });
+
+};
+
+exports.getEditChecklist = (req, res, next) => {
+  const editMode = req.query.edit;
+  // if (!editMode) {
+  //   return res.redirect('/');
+  // }
+  const propId = req.params.propertyId;
+  Cabin.findById(propId)
+    .then(checklist => {
+      // if (!checklist) {
+      //   return res.redirect('/');
+      // }
+      res.render('admin/edit-checklist', {
+        pageTitle: 'Edit Checklist',
+        path: '/admin/edit-checklist',
+        currentUser: req.userId,
+        editing: editMode
+      });
+    })
+    .catch(err => console.log(err));
+};
+
+// save editied checklist
+exports.postEditChecklist = (req, res, next) => {
+  const propId = req.body.propertyId;
+  const updatedTitle = req.body.title;
+  const updatedDesc = req.body.description;
+  
+    res.status(422).render('admin/edit-checklist', {
+      pageTitle: 'Edit Checklist',
+      path: '/admin/edit-checklist',
+      editing: true,
+      currentUser: req.userId,
+      checklist: {
+        title: updatedTitle,
+        description: updatedDesc,
+        _id: propId
+      }
+    });
+  
+
+  Cabin.findById(propId)
+    .then(checklist => {
+      checklist.title = updatedTitle;
+      checklist.description = updatedDesc;
+      return checklist.save().then(result => {
+        console.log('Checklist has been updated!');
+        res.redirect('/admin/edit-chechlist');
+      });
+    })
+    .catch(err => console.log(err));
+};

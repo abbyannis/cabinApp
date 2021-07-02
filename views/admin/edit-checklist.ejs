@@ -1,8 +1,19 @@
-<%- include('includes/head.ejs') %>
+<%- include('../includes/head.ejs') %>
 </head>
 
 <body>
     <main>
-        <%- include('includes/nav.ejs') %>
+        <%- include('../includes/nav.ejs') %>
+        <form id="checklist-Form"class="checklist-form" action="/admin/<% if (editing) { %>edit-checklist<% } else { %>add-checklist<% } %>" method="POST">
+            <div class="form-control">
+                <label for="title">Title</label>
+                <input type="text" name="title" id="title" value="<% if (editing) { %><%= task.title %><% } %>">
+            </div>
+            <div class="form-control">
+                <label for="description">Description</label>
+                <textarea name="description" id="description" rows="5"><% if (editing) { %><%= task.description %><% } %></textarea>
+            </div>
+            <button class="btn" type="submit"><% if (editing) { %>Update Checklist<% } else { %>Create Task<% } %></button>
+        </form>
     </main>
-<%- include('includes/end.ejs') %>
+<%- include('../includes/end.ejs') %>

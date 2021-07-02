@@ -56,5 +56,13 @@ router.post('/properties/:propertyId/add/:inviteToken', adminController.addUser)
 //remove a user from a property
 router.delete('/properties/:propertyId/remove/:userId', adminController.removeUser);
 
+//Checklist ADMIN routes
+router.get('/edit-checklist', adminController.getEditChecklist);
+
+router.get('/add-checklist',  adminController.getAddChecklist);
+
+router.post('/edit-checklist', adminController.postEditChecklist);
+
+router.post('/add-checklist', adminController.postAddChecklist);
 
 module.exports = router;
