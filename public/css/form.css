@@ -1,7 +1,8 @@
 .login-form {
     width: 20rem;
+    padding: 1rem 0;
     max-width: 90%;
-    margin: auto;
+    margin: 1rem auto;
     display: block;
     border: 1px solid #8cb1a8;
     border-radius: 2px;

@@ -11,7 +11,9 @@ router.get('/login', authController.getLogin);
 
 router.get('/signup', authController.getSignup);
 
-router.get('/edit-profile', isAuth, authController.getProfile);
+router.get('/edit-profile', isAuth, authController.getEditProfile);
+
+router.get('/profile', isAuth, authController.getProfile);
 
 router.get('/update-password', authController.getUpdatePassword);
 
