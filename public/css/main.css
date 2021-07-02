@@ -1,3 +1,9 @@
+:root {
+    --alt-color: #6a837d;
+    --main-color: #0b3d44;
+    --border-color: #8cb1a8;
+}
+
 .main-header {
     width: 100%;
     height: 3.5rem;
@@ -35,7 +41,7 @@
     background: transparent;
     border: none;
     text-decoration: none;
-    color: #6a837d;
+    color: var(--alt-color);
     cursor: pointer;
 }
 
@@ -44,8 +50,8 @@
 .main-header-item a.active,
 .main-header-item button:hover,
 .main-header-item button:active {
-    color: #0b3d44;
-    border-bottom: 5px solid #8cb1a8;
+    color: var(--main-color);
+    border-bottom: 5px solid var(--border-color);
 }
 
 .user-message {
@@ -64,4 +70,29 @@
 .user-message--error {
     border: #B00000;
     background: #B00000;
+}
+
+.invisible {
+    display: none;
+}
+
+.selectable-list-item {
+    list-style: none;    
+    max-width: 90%;
+    padding: 20px 20px;
+    margin: 10px 10px;
+    box-shadow: 7px 7px 16px -9px #000000;
+    border: 1px solid var(--main-color);
+    background-color: var(--border-color);
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;    
+}
+
+.selectable-list-item:hover {
+    cursor: pointer;
+}
+
+.alt-text {
+    font-size: 1.25rem;
 }

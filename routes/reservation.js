@@ -1,5 +1,6 @@
 const reservationController = require('../controllers/reservation');
 const propUser = require('../middleware/is-property-user');
+const propAdmin = require('../middleware/is-admin');
 const express = require('express');
 const utils = require('../util/utilities');
 const { body } = require('express-validator');
@@ -7,6 +8,9 @@ const router = express.Router();
 
 //get by reservation id (in query)
 router.get('/:propertyId/:reservationId', propUser, reservationController.getReservation)
+
+//get all pending reservations
+router.get('/:propertyId/pending', propAdmin, reservationController.getPendingReservations);
 
 //get all reservations for a single property
 router.get('/:propertyId', propUser, reservationController.getReservations);

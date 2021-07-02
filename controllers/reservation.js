@@ -49,6 +49,25 @@ exports.getReservations = (req, res, next) => {
   }
 };
 
+//find all reservations for the specified property (id in params)
+//with status set to pending
+exports.getPendingReservations = (req, res, next) => {            
+  Reservation
+    .find({ 
+      property: req.params.propertyId,
+      status: "pending"            
+    })  
+    .then(reservations => {                               
+      res.status(200).json({ reservations });          
+    })    
+    .catch(err => {
+      console.log(err);
+      const error = new Error(err);
+      error.statusCode = 500;
+      next(error);
+    });   
+};
+
 //get reservationby a specific reservationId (in params)
 exports.getReservation = (req, res, next) => {        
   Reservation.getReservationById(req.params.reservationId)  

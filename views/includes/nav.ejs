@@ -5,7 +5,7 @@
     <nav class="main-header-nav">
         <ul class="main-header-item-list">
             <li class="main-header-item"><a class="<%= path === '/' ? 'active' : '' %>" href="/">Dashboard</a></li>
-            <% if (currentUser) { %>
+            <% if (isAuthenticated) { %>
                 <li class="main-header-item"><a class="<%= path === '/reservation' ? 'active' : '' %>" href="/">Calendar</a></li>
                 <li class="main-header-item"><a class="<%= path === '/inventory' ? 'active' : '' %>" href="/">Inventory</a></li>
                 <li class="main-header-item"><a class="<%= path === '/maintenance' ? 'active' : '' %>" href="/">Maintenance</a></li>
@@ -15,11 +15,10 @@
                 <li class="main-header-item"><a class="<%= path === '/login' ? 'active' : '' %>" href="/auth/Login">Login</a></li>
                 <li class="main-header-item"><a class="<%= path === '/register' ? 'active' : '' %>" href="/auth/signup">Register</a></li>
             <% } %>
-            <% if (currentUser) { %>
-                <li class="main-header-item"><a class="<%= path === '/edit-profile' ? 'active' : '' %>" href="/auth/edit-profile">Edit Profile</a></li>
+            <% if (isAuthenticated) { %>
                 <li class="main-header-item">
                     <form action="../auth/logout" method="POST">
-                        <input type="hidden" name="_csrf" value="">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <button type="submit">Logout</button>
                     </form>
                 </li>

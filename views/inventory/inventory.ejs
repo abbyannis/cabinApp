@@ -1,8 +1,23 @@
 <%- include('includes/head.ejs') %>
+<link rel="stylesheet" href="/css/form.css">
 </head>
 
 <body>
     <main>
         <%- include('includes/nav.ejs') %>
+        <h2>Inventory</h2>
+        <div class="inventory">
+            <ul>
+                <% for (var i = 0; i < userInventory; i++) { %>
+                    <li> <%= userInventory[i] %> </li>
+                <% } %>
+            </ul>
+            
+            <form class="cabin-inventory"action="/items/inventory" method="POST">
+                <input type="text" class="" name="Add Item" placeholder="Add to list">
+                <button type="submit" name="button">Add</button>
+            </form>
+            <% } %>
+        </div>
     </main>
 <%- include('includes/end.ejs') %>

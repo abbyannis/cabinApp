@@ -4,21 +4,22 @@ const { check, body } = require('express-validator');
 const authController = require('../controllers/auth');
 const User = require('../models/user');
 const isAuth = require('../middleware/is-auth');
-const isUser = require('../middleware/current-user');
 
 const router = express.Router();
 
-router.get('/login', isUser, authController.getLogin);
+router.get('/login', authController.getLogin);
 
-router.get('/signup', isUser, authController.getSignup);
+router.get('/signup', authController.getSignup);
 
-router.get('/edit-profile', isAuth, authController.getProfile);
+router.get('/edit-profile', isAuth, authController.getEditProfile);
 
-router.get('/update-password', isAuth, authController.getUpdatePassword);
+router.get('/profile', isAuth, authController.getProfile);
 
-router.get('/reset', isUser, authController.getReset);
+router.get('/update-password', authController.getUpdatePassword);
 
-router.get('/reset/:token', isUser, authController.getNewPassword);
+router.get('/reset', authController.getReset);
+
+router.get('/reset/:token', authController.getNewPassword);
 
 router.post('/login',
     [
@@ -153,5 +154,7 @@ router.post('/update-password',
 authController.postUpdatePassword);
 
 router.post('/reset', authController.postReset);
+
+//router.get('/invite/:inviteToken', authController.acceptInvite);
 
 module.exports = router;

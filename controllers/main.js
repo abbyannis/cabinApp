@@ -2,9 +2,18 @@ const fetch = require('node-fetch');
 const jwt = require('jsonwebtoken');
 const { json } = require('body-parser');
 
+exports.getIndex = (req, res, next) => {
+res.render('properties', {
+    // res.render('reservations/calendar', {
+        pageTitle: 'Property List',
+        path: '/',        
+        currentUser: req.userId
+    });
+};
+
 // loads calendar for current month
 // will need to add way to highlight unavailable dates
-exports.getIndex = (req, res, next) => {
+exports.getProperties = (req, res, next) => {
     // const cookie = req.cookies.JWT_TOKEN;
     // console.log(cookie);
     // this will need to reworked to dynamically create this array
@@ -38,7 +47,8 @@ exports.getIndex = (req, res, next) => {
             currentMonth: month,
             currentYear: year,
             images: images,
-            currentUser: req.userId
+            currentUser: req.session.user,
+            isAuthenticate: req.session.LoggedIn
         });
 }
   
