@@ -5,7 +5,6 @@ const sendgridTransport = require('nodemailer-sendgrid-transport');
 const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
-const Whitelist = require('../models/whitelist');
 const { restart } = require('nodemon');
 
 const transporter = nodemailer.createTransport(sendgridTransport({
@@ -66,8 +65,16 @@ exports.getReset = (req, res, next) => {
         isAuthenticated: req.session.isLoggedIn
     });
 };
- 
+
 exports.getProfile = (req, res, next) => {
+    res.render('auth/profile', {
+        pageTitle: 'Profile',
+        path: '/profile',
+        user: req.session.user
+    })
+}
+ 
+exports.getEditProfile = (req, res, next) => {
     let message = req.flash('notification');
     if (message.length > 0) {
         message = message[0];
@@ -246,6 +253,7 @@ exports.postSignup = (req, res, next) => {
     const display = req.body.display;
     const email = req.body.email;
     const phone = req.body.phone;
+    const imageUrl = req.body.imageUrl;
     const password = req.body.password;
     const confirmPassword = req.body.confirmPassword;
 
@@ -273,13 +281,16 @@ exports.postSignup = (req, res, next) => {
     bcrypt
         .hash(password, 12)
         .then(hashedPassword => {
+            if(!imageUrl) {
+                imageUrl = '/images/avatar.jpg';
+            }
             const user = new User({
                 firstName: first,
                 lastName: last,
                 displayName: display,
                 email: email,
                 phone: phone,
-                photo: '',
+                photo: imageUrl,
                 password: hashedPassword,
                 isAuthenticated: req.session.isLoggedIn
             });
@@ -346,7 +357,10 @@ exports.postReset = (req, res, next) => {
 exports.postUpdateProfile = (req, res, next) => {
     const first = req.body.first;
     const last = req.body.last;
+    const display = req.body.display;
     const email = req.body.email;
+    const phone = req.body.phone;
+    const imageUrl = req.body.image;
     const userId = req.body.userId;
     const errors = validationResult(req);
     
@@ -363,6 +377,8 @@ exports.postUpdateProfile = (req, res, next) => {
                 first: first,
                 last: last,
                 email: email, 
+                display: display,
+                phone: phone,
                 password: "", 
                 confirmPassword: "" 
             },
@@ -370,10 +386,13 @@ exports.postUpdateProfile = (req, res, next) => {
             isAuthenticated: req.session.isLoggedIn
         });
     }
-    User.findById(req.session.user).then(user => {
+    User.findById(userId).then(user => {
         user.firstName = first;
         user.lastName = last;
+        user.displayName = display;
         user.email = email;
+        user.phone = phone;
+        if(imageUrl) user.photo = imageUrl;
         return user.save()
     })  
     .then(result => {
@@ -391,7 +410,7 @@ exports.postUpdateProfile = (req, res, next) => {
 exports.postUpdatePassword = (req, res, next) => {
     const newPassword = req.body.password;
     const newConfirmPassword = req.body.confirmPassword;
-    const userId = req.session.user;
+    const userId = req.body.userId;
     let resetUser;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

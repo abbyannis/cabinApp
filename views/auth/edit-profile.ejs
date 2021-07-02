@@ -33,24 +33,55 @@
                 >
             </div>
             <div class="form-control">
+                <label for="display">Display Name</label>
+                <input 
+                    class="<%= validationErrors.find(e => e.param === 'last') ? 'invalid' : '' %>"    
+                    type="text" 
+                    name="display" 
+                    id="display" 
+                    value="<%= currentUser.displayName %>"
+                >
+            </div>
+            <div class="form-control">
                 <label for="email">Email Address</label>
                 <input 
-                    class="<%= validationErrors.find(e => e.param === 'email') ? 'invalid' : '' %>"
+                    class="<%= validationErrors.find(e => e.param === 'display') ? 'invalid' : '' %>"
                     type="text" 
                     name="email" 
                     id="email" 
                     value="<%= currentUser.email %>"
                 >
             </div>
+            <div class="form-control">
+                <label for="phone">Phone</label>
+                <input 
+                    class="<%= validationErrors.find(e => e.param === 'phone') ? 'invalid' : '' %>"
+                    type="text" 
+                    name="phone" 
+                    id="phone" 
+                    value="<%= currentUser.phone %>"
+                >
+            </div>
+            <div class="form-control">
+                <label for="image">Profile Picture</label>
+                <input
+                    type="file" 
+                    name="image" 
+                    id="image" 
+                >
+            </div>
             <div class="centered">
-                <input type="hidden" name="userId" value="<%= currentUser %>">
+                <input type="hidden" name="userId" value="<%= currentUser._id %>">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <button class="btn btn-default" type="submit">Update Profile</button>
             </div>
-            
+            <!-- <div class="centered">
+                <a href="../auth/update-password">Change Password</a>
+            </div>     -->
             <div class="centered">
-                <a href="../auth/update-password">Update Password</a>
-            </div>
+                <a href="../auth/profile">Return to Account</a>
+            </div>        
         </form>
+        
     </main>
 <%- include('../includes/end.ejs') %>
