@@ -1,5 +1,4 @@
 const fetch = require('node-fetch');
-const jwt = require('jsonwebtoken');
 const { json } = require('body-parser');
 
 const Property = require('../models/property');
