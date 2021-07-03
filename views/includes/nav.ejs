@@ -6,7 +6,7 @@
         <ul class="main-header-item-list">
             <li class="main-header-item"><a class="<%= path === '/' ? 'active' : '' %>" href="/">Dashboard</a></li>
             <% if (isAuthenticated) { %>
-                <li class="main-header-item"><a class="<%= path === '/reservation' ? 'active' : '' %>" href="/">Calendar</a></li>
+                <li class="main-header-item"><a class="<%= path === '/reservation' ? 'active' : '' %>" href="/">Reservation</a></li>
                 <li class="main-header-item"><a class="<%= path === '/inventory' ? 'active' : '' %>" href="/">Inventory</a></li>
                 <li class="main-header-item"><a class="<%= path === '/maintenance' ? 'active' : '' %>" href="/">Maintenance</a></li>
                 <li class="main-header-item"><a class="<%= path === '/account' ? 'active' : '' %>" href="/auth/profile">Account</a></li>
@@ -17,7 +17,7 @@
             <% } %>
             <% if (isAuthenticated) { %>
                 <li class="main-header-item">
-                    <form action="../auth/logout" method="POST">
+                    <form action="../../../auth/logout" method="POST">
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <button type="submit">Logout</button>
                     </form>
