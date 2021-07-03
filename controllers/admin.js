@@ -13,13 +13,29 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+// open property list for admins
 exports.getAdminProperties = (req, res, next) => {
-  res.render('properties', {
-      pageTitle: 'Property List',
-      path: '/',        
-      currentUser: req.session.user._id,
-      isAdmin: true
-  });
+  Cabin
+      .find({ 
+        admins: req.session.user._id
+      })
+      .then(properties => {
+        // if 0 or more than 1 property, route to properties page for selection
+        if(properties.length !== 1) {
+          res.render('properties', {
+            pageTitle: 'Property List',
+            path: '/properties',        
+            currentUser: req.session.user._id,
+            isAdmin: true,
+            properties: properties
+          });
+        } else {
+          // if only one property, automatically route to add reservation page
+          // will need to be updated with correct route after routes set up
+          res.redirect('../main/calendar/' + properties[0]._id);
+        }
+        
+      })
 }
 
 //get properties managed by this user

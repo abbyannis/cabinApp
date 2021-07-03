@@ -28,7 +28,11 @@
                 </ul>    
             </div>
         <% } else { %> 
-            <h2>You are not currently a member of any properties.</h2>
+            <% if (isAdmin) { %>
+                <h2>You are not an admin for any properties.</h2>
+            <% } else { %>
+                <h2>You are not currently a member of any properties. Please contact your property admin to be invited to a property.</h2>
+            <% } %>
         <% } %> 
         <input type="hidden" id="isAdmin" value="<%= isAdmin %>">
     </main>
