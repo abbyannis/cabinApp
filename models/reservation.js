@@ -62,11 +62,11 @@ reservationSchema.statics.CheckDateAvailability = function(inDate, outDate, prop
         { startDate: { $gt: inDate }, endDate: { $lt: outDate } }
       ] 
     })
-    .then(results => {
-      let available = true;
-      results.forEach(x => {
-        available &= (x.user.toString() === userId);            
-      });
+    .then(results => {      
+      let available = true;      
+      results.forEach(x => {        
+        available = available && (x.user.toString() === userId.toString());                  
+      });      
       return available;
     });
 };

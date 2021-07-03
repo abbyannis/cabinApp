@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/properties/:propertyId', adminController.getProperty);
 
 //get all admin properties
-router.get('/properties', adminController.getProperties);
+router.get('/properties', adminController.getAdminProperties);
 
 //post a new property
 router.post('/properties', 
