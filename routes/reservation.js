@@ -24,17 +24,21 @@ router.post('/:propertyId', propUser,
     body('startDate')
       .custom((value, {req}) => {
         if(!utils.isValidDate(new Date(req.body.startDate))) {
-          throw new Error('Specified start date is an invalid format');
+          throw new Error('Check-in is an invalid format');
         }
         return true;
       }),
     body('endDate')
-      .custom((value, {req}) => {
-        if(!utils.isValidDate(new Date(req.body.endDate))) {
-          throw new Error('Specified end date is an invalid format');
+      .custom((value, {req}) => {        
+        let endDate = new Date(req.body.endDate);
+        if(!utils.isValidDate(endDate)) {
+          throw new Error('Check-out is an invalid format');
+        }
+        if(endDate <= new Date(req.body.startDate)) {
+          throw new Error('Check-out must be after check-in');
         }
         return true;
-      })
+      })      
   ], 
   reservationController.postReservation);
 
@@ -42,19 +46,23 @@ router.post('/:propertyId', propUser,
 router.patch('/:propertyId/:reservationId', propUser,
   [
     body('startDate')
-      .custom((value, {req}) => {
+      .custom((value, {req}) => {        
         if(!utils.isValidDate(new Date(req.body.startDate))) {
-          throw new Error('Specified start date is an invalid format');
+          throw new Error('Check-in is an invalid format');
         }
         return true;
       }),
     body('endDate')
-      .custom((value, {req}) => {
-        if(!utils.isValidDate(new Date(req.body.endDate))) {
-          throw new Error('Specified end date is an invalid format');
+      .custom((value, {req}) => {        
+        let endDate = new Date(req.body.endDate);
+        if(!utils.isValidDate(endDate)) {
+          throw new Error('Check-out is an invalid format');
+        }
+        if(endDate <= new Date(req.body.startDate)) {
+          throw new Error('Check-out must be after check-in');
         }
         return true;
-      })
+      })       
   ], 
   reservationController.modifyReservation);
 
@@ -62,6 +70,6 @@ router.patch('/:propertyId/:reservationId', propUser,
 router.patch('/:propertyId/approval/:reservationId', propUser, reservationController.approveReservation);
 
 //remove a reservation from the system
-router.delete('/:propertyId/:reservationId', propUser, reservationController.deleteReservation);
+router.delete('/:reservationId', propUser, reservationController.deleteReservation);
 
 module.exports = router;

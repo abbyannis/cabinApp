@@ -21,3 +21,4 @@ exports.getProperties = (req, res, next) => {
     throw(error);
   }  
 };
+

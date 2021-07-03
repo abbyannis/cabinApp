@@ -11,6 +11,8 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+
+
 //find all reservations for the specified property (id in params)
 //with a start date <= qeury.endDate 
 exports.getReservations = (req, res, next) => {
@@ -29,20 +31,17 @@ exports.getReservations = (req, res, next) => {
         .then(reservations => {                               
           res.status(200).json({ reservations });          
         })    
-        .catch(err => {
-          console.log(err);
+        .catch(err => {          
           const error = new Error(err);
           error.statusCode = 500;
           next(error);
         });   
-    } else {      
-        console.log("here");
+    } else {              
         const error = new Error("Invalid Date Format");
         error.statusCode = 400;
         throw(error);
     }
-  } catch(err) {
-    console.log(err);
+  } catch(err) {    
     const error = new Error(err);
     error.statusCode = 500;
     throw(error);
@@ -60,8 +59,7 @@ exports.getPendingReservations = (req, res, next) => {
     .then(reservations => {                               
       res.status(200).json({ reservations });          
     })    
-    .catch(err => {
-      console.log(err);
+    .catch(err => {      
       const error = new Error(err);
       error.statusCode = 500;
       next(error);
@@ -69,10 +67,20 @@ exports.getPendingReservations = (req, res, next) => {
 };
 
 //get reservationby a specific reservationId (in params)
+//and load that to the edit reservation page
 exports.getReservation = (req, res, next) => {        
   Reservation.getReservationById(req.params.reservationId)  
-  .then(reservation => {          
-      res.status(200).json({ reservation });          
+  .then(async (reservation) => {   
+    await reservation.populate('property').execPopulate();          
+    res.render('users/property', {            
+      pageTitle: 'Edit Reservation',
+      path: '/reservations',
+      property: reservation.property,
+      currentUser: req.session.user,
+      isAuthenticated: req.session.LoggedIn,
+      edit: true,
+      reservation: reservation
+    });                 
   })    
   .catch(err => {
     const error = new Error(err);
@@ -83,10 +91,21 @@ exports.getReservation = (req, res, next) => {
 
 //get all reservations for a user 
 exports.getUserReservations = (req, res, next) => {      
+  const today = new Date();
   Reservation
-    .find({ user: req.userId })   
+    .find({
+       user: req.session.user,
+       endDate: { $gte: today }
+     })
+    .populate('property')
     .then(reservations => {          
-        res.status(200).json({ reservations });          
+      res.render('users/reservations', {            
+        pageTitle: 'Your Reservations',
+        path: '/reservations',                    
+        currentUser: req.session.user,
+        isAuthenticated: req.session.LoggedIn,        
+        reservations: reservations
+      });   
     })    
     .catch(err => {
       const error = new Error(err);
@@ -96,7 +115,7 @@ exports.getUserReservations = (req, res, next) => {
 };
 
 //Add a new reservation
-exports.postReservation = (req, res, next) => {   
+exports.postReservation = (req, res, next) => {     
   //check validation in middleware for valid fields
   const errors = validationResult(req);
   if(!errors.isEmpty()) {
@@ -105,7 +124,8 @@ exports.postReservation = (req, res, next) => {
   //check if dates are valid (not reserved and shorter max length but longer than min) in validation.
   const startDate = new Date(req.body.startDate);
   const endDate = new Date(req.body.endDate);
-  const user = req.userId;
+  const user = req.session.user;
+  console.log(req.session);
   const property = req.params.propertyId;  
   Reservation.CheckDateAvailability(startDate, endDate, property)
   .then(availability => {    
@@ -134,7 +154,7 @@ exports.postReservation = (req, res, next) => {
 };
 
 //Modifies reservation dates based on request body
-exports.modifyReservation = (req, res, next) => {  
+exports.modifyReservation = (req, res, next) => {    
   //check validation in middleware for valid fields
   const errors = validationResult(req);
   if(!errors.isEmpty()) {
@@ -142,11 +162,13 @@ exports.modifyReservation = (req, res, next) => {
   }   
   const startDate = new Date(req.body.startDate);
   const endDate = new Date(req.body.endDate);
-  const user = req.userId;
+  const user = req.session.user;
   const property = req.params.propertyId;     
   Reservation.getReservationById(req.params.reservationId) 
   .then(reservation => {    
-    if(reservation.user.toString() !== user) {             
+    console.log(reservation.user._id.toString());
+    console.log(user);
+    if(reservation.user._id.toString() !== user.toString()) {             
       const error = new Error("Unauthorized attempt to modify a reservation.");
       error.statusCode = 401;
       throw error;
@@ -229,8 +251,7 @@ exports.approveReservation = (req, res, next) => {
 exports.deleteReservation = (req, res, next) => {   
   Reservation.getReservationById(req.params.reservationId) 
   .then(reservation => {     
-    if(reservation.user.toString() !== req.userId.toString()) {     
-      console.log("h1");   
+    if(reservation.user._id.toString() !== req.session.user.toString()) {           
       const err = new Error("Unauthorized attempt to modify a reservation.");
       err.statusCode = 401;
       throw err;

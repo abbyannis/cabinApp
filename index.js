@@ -22,7 +22,9 @@ const app = express();
 
 const corsOptions = {
     origin: process.env.HEROKU_ORIGIN,
-    optionSuccessStatus: 200
+    optionSuccessStatus: 200,
+    allowedHeaders: 'Content-Type,Authorization',
+    methods: 'GET,PUT,POST,PATCH,DELETE'
  };
  app.use(cors(corsOptions));
  
@@ -52,13 +54,13 @@ app.use(
    .set('views', path.join(__dirname, 'views'))
    .set('view engine', 'ejs')
    .use(bodyParser.urlencoded({extended: false})) 
-   // .use(bodyParser.json())
-   // .use((req, res, next) => {
-   //    res.setHeader('Access-Control-Allow-Origin', '*');
-   //    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, PATCH, DELETE');
-   //    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-   //    next();
-   // })
+   .use(bodyParser.json())
+   .use((req, res, next) => {
+       res.setHeader('Access-Control-Allow-Origin', process.env.HEROKU_ORIGIN);
+       res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, PATCH, DELETE');
+       res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');       
+       next();
+   })
    .use(csrfProtection)   
    .use(flash())
    .use((req, res, next) => {

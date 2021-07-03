@@ -1,0 +1,36 @@
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/reservations.css">
+</head>
+
+<body>
+    <%- include('../includes/nav.ejs') %>
+    <main>
+        <h1>Reservation Status</h1>
+        <ul id="reservation-list" class="">
+            <% reservations.forEach(x => { %>
+                <li class='list-item spaced-container'>
+                    <div class="titles">
+                        <h2><%= x.property.name %></h2>
+                        <div><%= x.property.location %></div>
+                    </div>
+                    <div class="stack-box">
+                        <div>Check-in: <%= new Date(x.startDate).toLocaleDateString('en-US') %></div>                        
+                        <div>Check-out: <%= new Date(x.endDate).toLocaleDateString('en-US') %></div>                        
+                    </div>
+                    <div class="stack-box adjustable-box">
+                        <div>Status: </div>
+                        <div><%= x.status %></div>
+                    </div>
+                    <div class="stack-box adjustable-box">
+                        <div>
+                            <a class="btn" href="/reservation/<%= x.property._id %>/<%= x._id %>">Edit</a>
+                        </div>
+                        <button id="<%= x._id %>">Delete</button>
+                    </div>                    
+                </li>                
+           <% }) %>          
+        </ul>
+    </main>
+    <script src="/scripts/fetch.js"></script>
+    <script src="/scripts/reservations.js"></script>
+<%- include('../includes/end.ejs') %>

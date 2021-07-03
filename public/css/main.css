@@ -76,23 +76,3 @@
     display: none;
 }
 
-.selectable-list-item {
-    list-style: none;    
-    max-width: 90%;
-    padding: 20px 20px;
-    margin: 10px 10px;
-    box-shadow: 7px 7px 16px -9px #000000;
-    border: 1px solid var(--main-color);
-    background-color: var(--border-color);
-    color: white;
-    font-size: 2rem;
-    font-weight: bold;    
-}
-
-.selectable-list-item:hover {
-    cursor: pointer;
-}
-
-.alt-text {
-    font-size: 1.25rem;
-}
