@@ -13,12 +13,11 @@ routes
     .use('/admin/', admin)
     .use('/auth', auth)
     .use('/user', user)
-    // commented out to make it easy to track down errors
-    // .use((error, req, res, next) => {
-    //     res.status(500).render('errors/500', { 
-    //         pageTitle: 'Error!', 
-    //         path: '/500'
-    //     });
-    // });
+    .use((error, req, res, next) => {
+        res.status(500).render('errors/500', { 
+            pageTitle: 'Error!', 
+            path: '/500'
+        });
+    });
 
 module.exports = routes;

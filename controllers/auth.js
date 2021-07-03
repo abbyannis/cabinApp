@@ -253,7 +253,7 @@ exports.postSignup = (req, res, next) => {
     const display = req.body.display;
     const email = req.body.email;
     const phone = req.body.phone;
-    const imageUrl = req.body.imageUrl;
+    let imageUrl = req.body.imageUrl;
     const password = req.body.password;
     const confirmPassword = req.body.confirmPassword;
 
