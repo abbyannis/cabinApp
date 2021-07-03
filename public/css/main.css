@@ -76,6 +76,28 @@
     display: none;
 }
 
+.selectable-list-item {
+    list-style: none;    
+    max-width: 90%;
+    padding: 20px 20px;
+    margin: 10px 10px;
+    /* box-shadow: 7px 7px 16px -9px #000000; */
+    border: 0px solid var(--alt-color);
+    border-radius: 5px;
+    background-color: var(--alt-color);
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;    
+}
+
+.selectable-list-item:hover {
+    cursor: pointer;
+}
+
+.alt-text {
+    font-size: 1.25rem;
+}
+
 .slider-container {
     position: relative;
     width: 100%;
@@ -98,33 +120,25 @@
     border-radius: 5px;
 }
 
-.faux-button a {
+.faux-button {
+    width: 95%;
+    margin: 1rem;
+    background-color: var(--alt-color);
+    color: white;
+    text-align: center;
+    padding: 0.75rem;
+    border-radius: 5px;
     font-size: 1.5rem;
     color: white;
     text-decoration: none;
     border: 0 solid var(--alt-color);
 }
 
-button:hover,
-.faux-button:hover {
-    cursor: pointer;
-    background-color: var(--alt-color);
-    color: white;
-}
-
-button,
-.faux-button {
-    width: 100px;
-    height: 50px;
-    margin: 0.5rem;
-    background-color: white;
-    color: var(--alt-color);
-    text-align: center;    
-    border-radius: 5px;
+.faux-button a {
     font-size: 1.5rem;
-    color: var(--alt-color);
+    color: white;
     text-decoration: none;
-    border: 1px solid var(--alt-color);
+    border: 0 solid var(--alt-color);
 }
 
 .no-underline {
@@ -153,4 +167,3 @@ button,
         visibility: hidden; 
     }
 }
-
