@@ -30,9 +30,13 @@ function loadProperties() {
 }
 
 function selectProperty(event) {
+  const isAdmin = document.getElementById('isAdmin').value;
+  console.log(isAdmin);
   const box = event.target.closest('li');
-  if (box.dataset.property) {   
-   alert(box.dataset.property);   
+  if (box.dataset.property && isAdmin === 'true') {   
+    alert(box.dataset.property + " An admin!");   
+  } else {
+    alert(box.dataset.property + " Not an admin!");
  }
  event.stopPropagation();
 }

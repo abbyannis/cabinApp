@@ -13,6 +13,14 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+exports.getAdminProperties = (req, res, next) => {
+  res.render('properties', {
+      pageTitle: 'Property List',
+      path: '/',        
+      currentUser: req.session.user._id,
+      isAdmin: true
+  });
+}
 
 //get properties managed by this user
 exports.getProperties = (req, res, next) => {        
