@@ -1,9 +1,10 @@
 const resList = document.getElementById('reservation-list');
+const csrf = document.getElementById('_csrf');
 
 function deleteReservation(item) {
-  deleteData(`/reservation/${item.id}`)
-  .then(res => {
-    if(res >= 200 && res < 300) {
+  deleteData(`/reservation/${item.id}`, csrf.value)
+  .then(res => {    
+    if(res.status >= 200 && res.status < 300) {      
       let li = item.closest("li");
       li.parentNode.removeChild(li);
     } else {

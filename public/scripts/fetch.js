@@ -21,11 +21,12 @@ const postData = async (url = '', data = {}, csrf='', method='POST') => {
   return response;
 }
 
-const deleteData = async (url = '') => {  
+const deleteData = async (url = '', csrf='') => {  
   const response = await fetch(url, {
       method: 'DELETE',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': csrf
       }       
   })  
   return response;

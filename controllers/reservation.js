@@ -165,16 +165,14 @@ exports.modifyReservation = (req, res, next) => {
   const user = req.session.user;
   const property = req.params.propertyId;     
   Reservation.getReservationById(req.params.reservationId) 
-  .then(reservation => {    
-    console.log(reservation.user._id.toString());
-    console.log(user);
-    if(reservation.user._id.toString() !== user.toString()) {             
+  .then(reservation => {        
+    if(reservation.user._id.toString() !== user._id.toString()) {             
       const error = new Error("Unauthorized attempt to modify a reservation.");
       error.statusCode = 401;
       throw error;
     }     
     //check if dates are valid (not reserved and shorter max length but longer than min) in validation.
-    Reservation.CheckDateAvailability(startDate, endDate, property, user)
+    Reservation.CheckDateAvailability(startDate, endDate, property, user._id)
     .then(availability => {    
       //if valid, create:
       console.log(availability);    
@@ -251,14 +249,14 @@ exports.approveReservation = (req, res, next) => {
 exports.deleteReservation = (req, res, next) => {   
   Reservation.getReservationById(req.params.reservationId) 
   .then(reservation => {     
-    if(reservation.user._id.toString() !== req.session.user.toString()) {           
+    if(reservation.user._id.toString() !== req.session.user._id.toString()) {           
       const err = new Error("Unauthorized attempt to modify a reservation.");
-      err.statusCode = 401;
+      err.statusCode = 401;      
       throw err;
     }     
     return Reservation.findByIdAndRemove(req.params.reservationId);
   })
-  .then(result => {    
+  .then(result => {        
     res.status(200).json({ message: 'Reservation has been canceled.'});
   })
   .catch(err => {

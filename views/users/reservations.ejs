@@ -6,6 +6,7 @@
     <%- include('../includes/nav.ejs') %>
     <main>
         <h1>Reservation Status</h1>
+        <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>">
         <ul id="reservation-list" class="">
             <% reservations.forEach(x => { %>
                 <li class='list-item spaced-container'>
@@ -14,8 +15,8 @@
                         <div><%= x.property.location %></div>
                     </div>
                     <div class="stack-box">
-                        <div>Check-in: <%= new Date(x.startDate).toLocaleDateString('en-US') %></div>                        
-                        <div>Check-out: <%= new Date(x.endDate).toLocaleDateString('en-US') %></div>                        
+                        <div>Check-in: <%= new Date(x.startDate).toISOString().split('T')[0] %></div>                        
+                        <div>Check-out: <%= new Date(x.endDate).toISOString().split('T')[0] %></div>                        
                     </div>
                     <div class="stack-box adjustable-box">
                         <div>Status: </div>

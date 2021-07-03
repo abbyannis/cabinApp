@@ -5,6 +5,6 @@ const isAuth = require('../middleware/is-auth');
 
 router.get('/', mainController.getIndex);
 
-router.get('/calendar/:propertyId', mainController.getCalendar);
+//router.get('/calendar/:propertyId', mainController.getCalendar);
 
 module.exports = router;
