@@ -175,3 +175,20 @@ button,
     }
 }
 
+.logout-button {
+    background-color: none;
+    padding: 0;
+    margin: 0;
+    font-size: inherit;
+    width: inherit;
+    height: inherit;
+    text-align: center;    
+    border: none;
+    text-decoration: none;
+}
+
+.logout-button:hover {
+    background-color: white;
+    border-radius: 0;
+    border: 0;
+}
