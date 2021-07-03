@@ -25,7 +25,7 @@ body {
     font-size: 2vw;
     text-align: center;
     font-family: verdana;
-    margin: 1vw;
+    margin: 1vw;    
 }
 
 .month-indicator {
@@ -36,8 +36,7 @@ body {
 }
 .month-indicator,
 .month-indicator button {
-    font-size: 3vw;
-    padding: 0.25vw;
+    font-size: 3vw;    
 }
 
 .month-indicator button {
@@ -53,7 +52,7 @@ body {
 .day-of-week,
 .date-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, 1fr);    
 }
 
 .day-of-week div {
@@ -64,25 +63,9 @@ body {
 .date-grid button {
     width: 8vw;
     height: 8vw;
-    font-size: 2vw;    
-    border: 0;
-    border-radius: 10px;
-    background-color: white;
-}
-
-.date-grid button:hover {
-    background-color: var(--border-color);
-}
-
-.weather-info {
-    float: left;
-    margin: 1vw 4vw;
-    width: 50vw;
-    height: 10vw;
-    background-color: var(--border-color);
-    border-radius: 10px;
-    padding: 1vw;
-    font-size: 1vw;
+    padding-top: calc(width);
+    font-size: 2vw;        
+    border-radius: 10px;            
 }
 
 .image-grid {
@@ -152,7 +135,7 @@ body {
 }
 
 .date-grid button.lower-right {    
-    background: linear-gradient(to bottom right, white 0%, white 50%, var(--main-color) 50%, var(--main-color) 100%)
+    background: linear-gradient(to bottom right, white 0%, white 50%, var(--main-color) 50%, var(--main-color) 100%)    
 }
 
 .date-grid button.lower-right:hover {
@@ -169,16 +152,11 @@ body {
     background: linear-gradient(to bottom right, var(--main-color) 0%, var(--main-color) 50%, var(--border-color) 50%, var(--border-color) 100%)
 }
 
-form button {
-    background-color: white;
+form button {    
     margin: 5px auto 20px 1vw;
     width: 66%;
     font-family: verdana;   
     font-size: 1.25rem;        
-}
-
-form button:hover {
-    background-color: var(--border-color);
 }
 
 #errorBox {
@@ -195,7 +173,7 @@ form button:hover {
     display: none;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 800px) {
     .main-grid {        
         grid-template-columns: 1fr;        
     }
@@ -211,13 +189,13 @@ form button:hover {
     }
 
     .day-of-week div {
-        width: 12vw;
+        width: 10vw;
         font-size: 4vw;
     }
 
     .date-grid button {
-        width: 12vw;
-        height: 12vw;
+        width: 10vw;
+        height: 10vw;
         font-size: 4vw;
     }
 
