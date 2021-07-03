@@ -133,8 +133,21 @@ button:hover,
     color: white;
 }
 
-button,
 .faux-button {
+    width: 95%;
+    margin: 0.5rem;
+    padding: 0.75rem;
+    background-color: var(--alt-color);
+    color: var(--alt-color);
+    text-align: center;    
+    border-radius: 5px;
+    font-size: 1.5rem;
+    color: var(--alt-color);
+    text-decoration: none;
+    border: 0 solid var(--alt-color);
+}
+
+button {
     width: 100px;
     height: 50px;
     margin: 0.5rem;
@@ -147,7 +160,6 @@ button,
     text-decoration: none;
     border: 1px solid var(--alt-color);
 }
-
 .no-underline {
     text-decoration: none;
 }
@@ -183,7 +195,7 @@ button,
     width: inherit;
     height: inherit;
     text-align: center;    
-    border: none;
+    border: 0;
     text-decoration: none;
 }
 
@@ -191,4 +203,14 @@ button,
     background-color: white;
     border-radius: 0;
     border: 0;
+    outline: none;
+}
+
+.logout-button:focus {
+    outline: none;
+}
+
+.directions {
+    margin: 1rem 0;
+    color: var(--main-color);
 }

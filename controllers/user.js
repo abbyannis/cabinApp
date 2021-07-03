@@ -19,7 +19,7 @@ exports.getUserProperties = (req, res, next) => {
         } else {
           // if only one property, automatically route to add reservation page
           // will need to be updated with correct route after routes set up
-          res.redirect('../main/calendar/' + properties[0]._id);
+          res.redirect('../main/dashboard/' + properties[0]._id);
         }
         
       })

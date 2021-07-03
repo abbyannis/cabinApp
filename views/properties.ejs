@@ -7,14 +7,18 @@
     <main>        
         <div class="user-message user-message--error invisible" id="errorBox">          
         </div>
+        
         <% if(properties.length > 0) { %>
             <div class="container">
+                <div>
+                    <h1 class="directions">Select a property to make a reservation</h1>
+                </div>
                 <ul id="property-list" class=""> 
                     <% for (let property of properties) { %>
                         <!-- href will need to be set to 
                         <%= isAdmin ? '/admin/properties/' + property._id : '/reservation/' + property._id %>
                         after routes are set up -->
-                        <a class="no-underline" href="/main/calendar/<%= property._id %>">
+                        <a class="no-underline" href="/main/dashboard/<%= property._id %>">
                             <li class="selectable-list-item">
                                 <div>
                                     <%= property.name %>
