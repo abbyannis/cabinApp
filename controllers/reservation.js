@@ -98,6 +98,7 @@ exports.getUserReservations = (req, res, next) => {
        endDate: { $gte: today }
      })
     .populate('property')
+    .exec()
     .then(reservations => {          
       res.render('users/reservations', {            
         pageTitle: 'Your Reservations',
@@ -206,6 +207,7 @@ exports.approveReservation = (req, res, next) => {
   Reservation.findById(req.params.reservationId)
     .populate('user')
     .populate('property')
+    .exec()
     .then(reservation => {
       if(!reservation) {
         const err = new Error('Reservation not found');
