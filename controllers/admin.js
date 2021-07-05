@@ -21,7 +21,9 @@ exports.getAdminProperties = (req, res, next) => {
       })
       .then(properties => {
         // if 0 or more than 1 property, route to properties page for selection
+        // this will need to route to a page for the admin to edit the property
         if(properties.length !== 1) {
+          console.log('isAdmin = true')
           res.render('properties', {
             pageTitle: 'Property List',
             path: '/properties',        
@@ -32,7 +34,7 @@ exports.getAdminProperties = (req, res, next) => {
         } else {
           // if only one property, automatically route to add reservation page
           // will need to be updated with correct route after routes set up
-          res.redirect('../main/calendar/' + properties[0]._id);
+          res.redirect('../main/dashboard/' + properties[0]._id);
         }
         
       })

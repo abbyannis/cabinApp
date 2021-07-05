@@ -1,11 +1,12 @@
 <div class="backdrop">
-    <h1>Cabin App</h1>
+    <img class="header_image" src="/images/@theCabinLogo.bmp">
 </div>
 <header class="main-header">
     <nav class="main-header-nav">
         <ul class="main-header-item-list">
-            <li class="main-header-item"><a class="<%= path === '/' ? 'active' : '' %>" href="/">Dashboard</a></li>
+            <li class="main-header-item"><a class="<%= path === '/' ? 'active' : '' %>" href="/">Home</a></li>
             <% if (isAuthenticated) { %>
+                <li class="main-header-item"><a class="<%= path === '/dashboard' ? 'active' : '' %>" href="/user/list">Dashboard</a></li>
                 <li class="main-header-item"><a class="<%= path === '/reservation' ? 'active' : '' %>" href="/">Reservation</a></li>
                 <li class="main-header-item"><a class="<%= path === '/inventory' ? 'active' : '' %>" href="/inventory/inventory">Inventory</a></li>
                 <li class="main-header-item"><a class="<%= path === '/maintenance' ? 'active' : '' %>" href="/">Maintenance</a></li>
