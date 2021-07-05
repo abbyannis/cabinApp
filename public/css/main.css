@@ -76,6 +76,27 @@
     display: none;
 }
 
+.selectable-list-item {
+    list-style: none;    
+    max-width: 90%;
+    padding: 20px 20px;
+    margin: 10px 10px;
+    /* box-shadow: 7px 7px 16px -9px #000000; */
+    border: 0px solid var(--alt-color);
+    border-radius: 5px;
+    background-color: var(--alt-color);
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;    
+}
+
+.selectable-list-item:hover {
+    cursor: pointer;
+}
+
+.alt-text {
+    font-size: 1.25rem;
+}
 .slider-container {
     position: relative;
     width: 100%;
@@ -153,3 +174,20 @@ button,
     }
 }
 
+.logout-button {
+    background-color: none;
+    padding: 0;
+    margin: 0;
+    font-size: inherit;
+    width: inherit;
+    height: inherit;
+    text-align: center;    
+    border: none;
+    text-decoration: none;
+}
+
+.logout-button:hover {
+    background-color: white;
+    border-radius: 0;
+    border: 0;
+}

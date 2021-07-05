@@ -30,7 +30,7 @@ exports.getIndex = (req, res, next) => {
                 path: '/',
                 property: property,            
                 currentUser: req.session.user,
-                isAuthenticated: req.session.LoggedIn,
+                isAuthenticated: req.session.isLoggedIn,
                 edit: false,
                 reservation: null
             });        

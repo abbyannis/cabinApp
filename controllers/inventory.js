@@ -1,18 +1,12 @@
 const Inventory = require('../models/inventory');
 
 exports.getInventory = (req, res, next) => {
-    Inventory.find({ propertyId: req.property._id})
-    .then(item => {
-      if (!item) {
-        const error = new Error('Item not found.');
-        error.statusCode = 404;
-        throw error;
-      }
-        console.log(tasks);
-        res.render('items/inventory', {
-            tasks: tasks,
+    Inventory.fetchAll()
+    .then(inventory => {
+        res.render('inventory/inventory', {
+            inven: Inventory,
             pageTitle: 'Inventory',
-            path: '/items/inventory'
+            path: '/'
         })
     })
     .catch(err => {
