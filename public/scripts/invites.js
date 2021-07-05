@@ -14,7 +14,7 @@ function respondToInvite(item) {
 }
 
 
-resList.addEventListener('click', (event) => {
+propList.addEventListener('click', (event) => {
   if (event.target.nodeName !== 'BUTTON') {
     return;
   }
