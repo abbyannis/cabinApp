@@ -121,7 +121,7 @@
 
 .faux-button a {
     font-size: 1.5rem;
-    color: inherit;
+    color: white;
     text-decoration: none;
     border: 0 solid var(--alt-color);
 }
