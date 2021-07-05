@@ -107,7 +107,7 @@
     position: absolute;
     top: 10vw;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -15%);
     background: transparent;
     border: 0;
 }
@@ -213,4 +213,16 @@ button {
 .directions {
     margin: 1rem 0;
     color: var(--main-color);
+}
+
+.header_image {
+    height: 8vw;
+}
+
+@media screen and (max-width: 800px) {
+    .header_image {
+        width: 95%;
+        height: 100%;
+        margin: auto;
+    }
 }
