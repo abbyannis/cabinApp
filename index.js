@@ -21,7 +21,7 @@ const app = express();
 // app.use(cookie());
 
 const corsOptions = {
-    origin: process.env.HEROKU_ORIGIN,
+    //origin: process.env.HEROKU_ORIGIN,
     optionSuccessStatus: 200,
     allowedHeaders: 'Content-Type,Authorization',
     methods: 'GET,PUT,POST,PATCH,DELETE'
@@ -56,7 +56,7 @@ app.use(
    .use(bodyParser.urlencoded({extended: false})) 
    .use(bodyParser.json())
    .use((req, res, next) => {
-       res.setHeader('Access-Control-Allow-Origin', process.env.HEROKU_ORIGIN);
+       //res.setHeader('Access-Control-Allow-Origin', process.env.HEROKU_ORIGIN);
        res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, PATCH, DELETE');
        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');       
        next();

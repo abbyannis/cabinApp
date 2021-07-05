@@ -30,11 +30,7 @@ const propertySchema = new Schema({
   }],
   invites: [{ 
       type: String     
-  }],
-  //Adding this for testing
-  checklist: {
-    type: Schema.Types.ObjectId
-  }  
+  }] 
 });
 
 //finds a property that matches the property id 

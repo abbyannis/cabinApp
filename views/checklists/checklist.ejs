@@ -7,7 +7,8 @@
         <%- include('../includes/nav.ejs') %>
         
             <% if (tasks.length > 0) { %>
-                <div class="grid">
+                <h2>Cabin Checklist</h2>
+                <div>
                     <% for (let task of tasks) { %>
                         <input type="checkbox" id="task">
                         <label for="task"><%= task.title %></label>

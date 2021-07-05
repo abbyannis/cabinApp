@@ -4,16 +4,78 @@
 <body>
     <main>
         <%- include('../includes/nav.ejs') %>
-        <form id="checklist-Form"class="checklist-form" action="/admin/<% if (editing) { %>edit-checklist<% } else { %>add-checklist<% } %>" method="POST">
-            <div class="form-control">
-                <label for="title">Title</label>
-                <input type="text" name="title" id="title" value="<% if (editing) { %><%= task.title %><% } %>">
-            </div>
-            <div class="form-control">
-                <label for="description">Description</label>
-                <textarea name="description" id="description" rows="5"><% if (editing) { %><%= task.description %><% } %></textarea>
-            </div>
-            <button class="btn" type="submit"><% if (editing) { %>Update Checklist<% } else { %>Create Task<% } %></button>
-        </form>
+        <h1>Cabin Checklist</h1>
+        <ul id="checklist">
+        </ul>
+        <h2>Add Tasks</h2>
+        Task Title: <input type="text" id="title" ><br> 
+        Task Description: <input type="textarea" id="description"  rows="5"><br>  
+        <button id="submitTask" onclick="submitTask()">Submit</button>
+        <script>
+            const populateList = () => {
+                const checklist = document.getElementById('checklist');
+                fetch('/fetchAll')
+                .then(res => res.json())
+                .then(data => {
+                    // Clear the list first
+                    while (checklist.firstChild) checklist.firstChild.remove()
+
+                    // Repopulate the list
+                    for (const task of data.checklist) {
+                        const li = document.createElement('li')
+                        li.appendChild(document.createTextNode(task.title))
+                        checklist.appendChild(li)
+                    }
+
+                })
+                .catch(err => {
+                    console.error(err)
+                })
+        }
+        const submitTask = () => {
+            const newTask = document.getElementById('title').value // Grab the value of our new name
+            fetch('/insert', {
+                method: 'POST', // Send a POST request
+                headers: {
+                 // Set the Content-Type, since our server expects JSON
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ newTask })
+            })
+            .then(res => {
+                 // Clear the input
+                document.getElementById('title').value = ''
+                document.getElementById('description').value = ''
+
+                // Repopulate the list with our new name added
+                populateList()
+            })
+            .catch(err => {
+                // Clear the input
+                document.getElementById('title').value = ''
+
+                console.error(err)
+            })
+        }
+
+        // Initialize the list
+        populateList()
+        </script>
+
     </main>
 <%- include('../includes/end.ejs') %>
+
+<!-- <main>
+    <%- include('../includes/nav.ejs') %>
+    <form id="checklist-Form"class="checklist-form" action="/admin/<% if (editing) { %>edit-checklist<% } else { %>add-checklist<% } %>" method="POST">
+        <div class="form-control">
+            <label for="title">Title</label>
+            <input type="text" name="title" id="title" value="<% if (editing) { %><%= task.title %><% } %>">
+        </div>
+        <div class="form-control">
+            <label for="description">Description</label>
+            <textarea name="description" id="description" rows="5"><% if (editing) { %><%= task.description %><% } %></textarea>
+        </div>
+        <button class="btn" type="submit"><% if (editing) { %>Update Checklist<% } else { %>Create Task<% } %></button>
+    </form>
+</main> -->

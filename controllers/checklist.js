@@ -4,8 +4,8 @@ const ChecklistMaster = require('../models/checklist-master');
 const Property = require('../models/property');
 
 exports.getChecklist = (req, res, next) => {
-    const propId = req.params.propertyId;
-    Property.findById(propId)
+    //const propId = req.params.propertyId;
+    Checklist.find({property: req.params.propertyId})
     .then(tasks => {
         console.log(tasks);
         res.render('checklists/checklist', {
@@ -21,7 +21,8 @@ exports.postChecklist = (req, res, next) => {
     const updatedTaskLog = req.params.userTaskLog;
     const checklist = new Checklist({
         userTaskLog = updatedTaskLog,
-        userId = req.user
+        user = req.session.user,
+        property = req.params.propertyId
     });
     checklist
         .save()

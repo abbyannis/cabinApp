@@ -266,7 +266,7 @@ exports.getAddChecklist = (req, res, next) => {
       pageTitle: "Add Checklist",
       path: '/admin/edit-checklist',
       editing: false,
-      currentUser: req.userId
+      currentUser: req.session.user
   });
 }
 exports.postAddChecklist = (req, res, next) => {
@@ -276,11 +276,7 @@ exports.postAddChecklist = (req, res, next) => {
       pageTitle: 'Add New Task',
       path: '/admin/edit-checklist',
       editing: false,
-      currentUser: req.userId,
-      checklist: {
-          title: title,
-          description: description
-      }
+      currentUser: req.session.user
   });
   const checklist = new ChecklistMaster({
       title: title, 
@@ -313,7 +309,7 @@ exports.getEditChecklist = (req, res, next) => {
       res.render('admin/edit-checklist', {
         pageTitle: 'Edit Checklist',
         path: '/admin/edit-checklist',
-        currentUser: req.userId,
+        currentUser: req.session.user,
         editing: editMode
       });
     })
@@ -330,15 +326,13 @@ exports.postEditChecklist = (req, res, next) => {
       pageTitle: 'Edit Checklist',
       path: '/admin/edit-checklist',
       editing: true,
-      currentUser: req.userId,
+      currentUser: req.session.user,
       checklist: {
         title: updatedTitle,
         description: updatedDesc,
         _id: propId
       }
     });
-  
-
   Cabin.findById(propId)
     .then(checklist => {
       checklist.title = updatedTitle;

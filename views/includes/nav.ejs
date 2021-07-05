@@ -10,7 +10,9 @@
                 <li class="main-header-item"><a class="<%= path === '/inventory' ? 'active' : '' %>" href="/">Inventory</a></li>
                 <li class="main-header-item"><a class="<%= path === '/maintenance' ? 'active' : '' %>" href="/">Maintenance</a></li>
                 <li class="main-header-item"><a class="<%= path === '/account' ? 'active' : '' %>" href="/">Account</a></li>
-                <li class="main-header-item"><a class="<%= path === '/admin/edit-checklist' ? 'active' : '' %>" href="/admin/edit-checklist">Admin</a></li>
+                <li class="main-header-item"><a class="<%= path === '/admin' ? 'active' : '' %>" href="/">Admin</a></li>
+                <li class="main-header-item"><a class="<%= path === '/admin/edit-checklist' ? 'active' : '' %>" href="/admin/edit-checklist">Checklist</a></li>
+
             <% } else { %>
                 <li class="main-header-item"><a class="<%= path === '/login' ? 'active' : '' %>" href="/auth/Login">Login</a></li>
                 <li class="main-header-item"><a class="<%= path === '/register' ? 'active' : '' %>" href="/auth/signup">Register</a></li>
