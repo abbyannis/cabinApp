@@ -95,8 +95,7 @@ exports.removeInvite = (req, res, next) => {
       err.statusCode = 404;
       throw error;
     }  
-    const idx = cabin.invites.indexOf(req.session.user.email);
-    console.log(idx);
+    const idx = cabin.invites.indexOf(req.session.user.email);    
     if (idx > -1) {    
       cabin.invites.splice(idx, 1);
     }          

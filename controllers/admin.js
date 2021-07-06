@@ -196,7 +196,7 @@ exports.inviteUser = (req, res, next) => {
         subject: `${userName} invites you to their cabin.'`,
         html: `<p>${userName} has invited you to join their group on 
         <a href='${ROOTURL}'>@theCabin</a> for their property entitled
-        ${propertyName}. <br><a href='${ROOTURL}auth/invite/${token}'>Click here to accept their invitation</a>.</p>`
+        ${propertyName}. <br><a href='${ROOTURL}user/invites'>Click here to accept their invitation</a>.</p>`
       });      
     })
     .catch(err => {
