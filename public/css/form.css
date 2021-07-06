@@ -76,3 +76,11 @@ btn {
   .centered {
     text-align: center;
   }
+
+  @media screen and (max-width: 800px) {
+    .centered,
+    .btn {
+      width: 95%;
+      margin: 0.5rem auto;
+    }
+  }

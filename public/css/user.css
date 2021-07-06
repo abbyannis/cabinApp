@@ -29,6 +29,7 @@
 
 @media screen and (max-width: 900px) {
     .avatar {
+        margin-top: 1rem;
         width: 95%;
         height: 95%;
     }
@@ -39,11 +40,16 @@
     }
     .container {
         width: 80vw;
-        margin: auto;
+        margin: 1rem auto;
+        padding: 0;
     }
     .content {
         text-align: center;
         float: left;
         width: 80vw;
+        margin: 0;
+    }
+    .content h2 {
+        font-size: 1.5rem;
     }
 }

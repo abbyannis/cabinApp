@@ -217,11 +217,94 @@ button {
 .header_image {
     height: 8vw;
 }
+.main-header-list-mobile {
+    visibility: hidden;
+}
 
 @media screen and (max-width: 800px) {
     .header_image {
         width: 95%;
         height: 100%;
         margin: auto;
+    }
+
+    .main-header {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+    .main-header-nav {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+    .main-header-item-list {
+        display: none;
+    }
+
+    .main-header-list-mobile {
+        visibility: visible;
+        width: 100%;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+    }
+
+    .main-header-item a {
+        width: 100%;
+        color: var(--main-color);
+    }
+
+    li.main-header-item {
+        width: 100%;
+    }
+
+    a.active {
+        width: 100%;
+        color: white;
+    }
+
+    .dropdown {
+        margin: 0;
+        padding: 0;
+        background-color: var(--alt-color);
+        width: 100%;
+        color: white;
+        padding: 1rem 1rem 1rem 0;
+        font-weight: normal;
+    }
+
+    .top-menu {
+        margin: 0 1rem;
+        padding: 0;
+        background-color: var(--alt-color);
+        width: 100%;
+        color: white;
+        padding: 1rem 1rem 1rem 0;
+        font-weight: normal;
+    }
+
+    .top-menu:hover {
+        text-decoration: none;
+        color: white;
+    }
+
+    .dropdown-menu {
+        width: 95%;
+        margin-left: -1rem;
+        border: 0;
+    }
+
+    .dropdown-menu li {
+        width: 100%;
+        text-decoration: none;
+    }
+
+    .faux-button {
+        width: 80vw;
+        margin: 0.5rem auto;
+        font-size: 5vw;
     }
 }
