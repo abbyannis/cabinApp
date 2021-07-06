@@ -307,4 +307,13 @@ button {
         margin: 0.5rem auto;
         font-size: 5vw;
     }
+    .selectable-list-item {
+        width: 95%;
+        margin: 1rem auto;
+        font-size: 1.5rem;
+    }
+
+    .directions {
+        font-size: 1.5rem;
+    }
 }
