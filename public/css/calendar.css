@@ -36,17 +36,25 @@
 }
 .month-indicator,
 .month-indicator button {
-    font-size: 3vw;    
+    font-size: 3vw;
+    height: 5vw;    
 }
 
 .month-indicator button {
     background-color: transparent;
     border: 0;
     border-radius: 10px;
+    width: 5vw;
 }
 
 .month-indicator button:hover {
     background-color: var(--border-color);
+    padding: 0;
+    height: 5vw;
+}
+
+.month-indicator button:focus {
+    outline: none;
 }
 
 .day-of-week,
@@ -186,6 +194,16 @@ form button {
     .month-indicator button {
         font-size: 6vw;
         padding: 0.5vw;
+        height: 10vw;
+    }
+
+    .month-indicator button {
+        width: 10vw;
+    }
+
+    .month-indicator button:hover {
+        height: 10vw;
+        width: 10vw;
     }
 
     .day-of-week div {
