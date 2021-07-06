@@ -5,8 +5,8 @@
 </head>
 
 <body id="body">
-    <main>
-        <%- include('../includes/nav.ejs') %>
+    <%- include('../includes/nav.ejs') %>
+    <main class="calendar-body">
         <h1><%= property.name %></h2>
         <h3><%= property.location %></h3>        
         <div class="main-grid">
@@ -28,7 +28,7 @@
                 <div class="date-grid">                    
                 </div>
             </div>
-            <form id="res-form" class="reservation"">
+            <form id="res-form" class="reservation">
                 <input type="hidden" id="propertyId" value="<%= property._id %>">
                 <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>">
                 <input type="hidden" id="reservationId" value="<%= edit ? reservation._id : '' %>">

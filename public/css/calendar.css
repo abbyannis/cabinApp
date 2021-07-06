@@ -5,7 +5,7 @@
     --border-color: #8cb1a8;
 }
 
-body {
+.calendar-body {
     margin: 10px;
 }
 
@@ -197,6 +197,7 @@ form button {
         width: 10vw;
         height: 10vw;
         font-size: 4vw;
+        margin: 1vw 0.25vw;
     }
 
     .weather-info {
@@ -208,6 +209,7 @@ form button {
 
     .reservation {
         grid-template-columns: 2/-1;
+        width: 95%;
     }
 
     .reservation label, 
@@ -215,7 +217,26 @@ form button {
     .reservation textarea,
     .reservation h1 {
         font-size: 4vw;
+        width: 95%;
     }
+
+    #reserve {
+        width: 95%;
+        height: 10vw;
+        font-size: 5vw;
+        padding: 0.5vw;
+    }
+
+    .image-grid {
+        width: 80vw;
+        margin: auto;
+    }
+    .image-container {
+        width: 80vw;
+        height: 80vw;
+        margin: 0.25rem auto;
+    }
+    
   }
 
   
