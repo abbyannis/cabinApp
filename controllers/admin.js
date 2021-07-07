@@ -21,7 +21,9 @@ exports.getAdminProperties = (req, res, next) => {
       })
       .then(properties => {
         // if 0 or more than 1 property, route to properties page for selection
+        // this will need to route to a page for the admin to edit the property
         if(properties.length !== 1) {
+          console.log('isAdmin = true')
           res.render('properties', {
             pageTitle: 'Property List',
             path: '/properties',        
@@ -32,7 +34,7 @@ exports.getAdminProperties = (req, res, next) => {
         } else {
           // if only one property, automatically route to add reservation page
           // will need to be updated with correct route after routes set up
-          res.redirect('../main/calendar/' + properties[0]._id);
+          res.redirect('../main/dashboard/' + properties[0]._id);
         }
         
       })
@@ -157,7 +159,7 @@ exports.deleteProperty = (req, res, next) => {
 exports.inviteUser = (req, res, next) => {
   //ensure valid inputs through validation  
   const pId = req.params.propertyId;
-  const userId = req.userId;
+  const userId = req.session.user._id;
   const email = req.body.email;
   const errors = validationResult(req);
   if(!errors.isEmpty()) {
@@ -194,7 +196,7 @@ exports.inviteUser = (req, res, next) => {
         subject: `${userName} invites you to their cabin.'`,
         html: `<p>${userName} has invited you to join their group on 
         <a href='${ROOTURL}'>@theCabin</a> for their property entitled
-        ${propertyName}. <br><a href='${ROOTURL}auth/invite/${token}'>Click here to accept their invitation</a>.</p>`
+        ${propertyName}. <br><a href='${ROOTURL}user/invites'>Click here to accept their invitation</a>.</p>`
       });      
     })
     .catch(err => {
@@ -206,7 +208,7 @@ exports.inviteUser = (req, res, next) => {
 
 //remove a user from the property
 exports.removeUser = (req, res, next) => {
-  Cabin.getPropertyById(req.params.propertyId, req.userId)
+  Cabin.getPropertyById(req.params.propertyId, req.session.user._id)
   .then(cabin => {
     const idx = cabin.members.indexOf(req.params.userId);
     if(idx > -1) {
@@ -226,35 +228,4 @@ exports.removeUser = (req, res, next) => {
   });
 }
 
-//add an invited user to the property
-exports.addUser = (req, res, next) => {
-  const token = req.params.inviteToken;  
-  Cabin 
-  .findOne({ 
-    invites: token      
-  })
-  .then(cabin => {
-    if (!cabin) {    
-      const err = new Error('Property not found');
-      err.statusCode = 404;
-      throw error;
-    }              
-    cabin.members.push(req.params.newUserId);  
-    const idx = cabin.invites.indexOf(token); //remove token
-    console.log(idx);          
-    if(idx > -1) {
-      cabin.invites.splice(idx, 1);      
-    }  
-    return cabin.save();
-  })
-  .then(result => {
-    res.status(200).json({
-      message: 'User added to property.',
-      cabin: result
-    });
-  })
-  .catch(err => {
-    if (!err.statusCode) err.statusCode = 500;
-    next(err);   
-  });
-}
+

@@ -98,6 +98,7 @@ exports.getUserReservations = (req, res, next) => {
        endDate: { $gte: today }
      })
     .populate('property')
+    .exec()
     .then(reservations => {          
       res.render('users/reservations', {            
         pageTitle: 'Your Reservations',
@@ -124,8 +125,7 @@ exports.postReservation = (req, res, next) => {
   //check if dates are valid (not reserved and shorter max length but longer than min) in validation.
   const startDate = new Date(req.body.startDate);
   const endDate = new Date(req.body.endDate);
-  const user = req.session.user;
-  console.log(req.session);
+  const user = req.session.user;  
   const property = req.params.propertyId;  
   Reservation.CheckDateAvailability(startDate, endDate, property)
   .then(availability => {    
@@ -174,8 +174,7 @@ exports.modifyReservation = (req, res, next) => {
     //check if dates are valid (not reserved and shorter max length but longer than min) in validation.
     Reservation.CheckDateAvailability(startDate, endDate, property, user._id)
     .then(availability => {    
-      //if valid, create:
-      console.log(availability);    
+      //if valid, create:       
       if (!availability) {
         return res.status(409).json({ reservation: null, message: "No availability during selected time." });
       }       
@@ -206,6 +205,7 @@ exports.approveReservation = (req, res, next) => {
   Reservation.findById(req.params.reservationId)
     .populate('user')
     .populate('property')
+    .exec()
     .then(reservation => {
       if(!reservation) {
         const err = new Error('Reservation not found');

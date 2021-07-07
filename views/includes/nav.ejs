@@ -1,15 +1,16 @@
 <div class="backdrop">
-    <h1>Cabin App</h1>
+    <a href="/"><img class="header_image" src="/images/@theCabinLogo.bmp" alt="at the cabin logo"></a>
 </div>
 <header class="main-header">
     <nav class="main-header-nav">
         <ul class="main-header-item-list">
-            <li class="main-header-item"><a class="<%= path === '/' ? 'active' : '' %>" href="/">Dashboard</a></li>
+            <li class="main-header-item"><a class="<%= path === '/' ? 'active' : '' %>" href="/">Home</a></li>
             <% if (isAuthenticated) { %>
+                <li class="main-header-item"><a class="<%= path === '/dashboard' ? 'active' : '' %>" href="/user/list">Dashboard</a></li>
                 <li class="main-header-item"><a class="<%= path === '/reservation' ? 'active' : '' %>" href="/">Reservation</a></li>
                 <li class="main-header-item"><a class="<%= path === '/inventory' ? 'active' : '' %>" href="/inventory/inventory">Inventory</a></li>
                 <li class="main-header-item"><a class="<%= path === '/maintenance' ? 'active' : '' %>" href="/">Maintenance</a></li>
-                <li class="main-header-item"><a class="<%= path === '/account' ? 'active' : '' %>" href="/auth/profile">Account</a></li>
+                <li class="main-header-item"><a class="<%= path === '/profile' ? 'active' : '' %>" href="/auth/profile">Account</a></li>
                 <li class="main-header-item"><a class="<%= path === '/admin' ? 'active' : '' %>" href="/">Admin</a></li>
             <% } else { %>
                 <li class="main-header-item"><a class="<%= path === '/login' ? 'active' : '' %>" href="/auth/Login">Login</a></li>
@@ -23,6 +24,36 @@
                     </form>
                 </li>
             <% } %>
-        </ul>   
+        </ul>  
+        <ul class="main-header-list-mobile">
+            <li class="dropdown">
+                <a class="dropdown-toggle top-menu" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Menu
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <li class="main-header-item mobile"><a class="<%= path === '/' ? 'active' : '' %>" href="/">Home</a></li>
+                    <% if (isAuthenticated) { %>
+                        <li class="main-header-item mobile"><a class="<%= path === '/dashboard' ? 'active' : '' %>" href="/user/list">Dashboard</a></li>
+                        <li class="main-header-item mobile"><a class="<%= path === '/reservation' ? 'active' : '' %>" href="/">Reservation</a></li>
+                        <li class="main-header-item mobile"><a class="<%= path === '/inventory' ? 'active' : '' %>" href="/inventory/inventory">Inventory</a></li>
+                        <li class="main-header-item mobile"><a class="<%= path === '/maintenance' ? 'active' : '' %>" href="/">Maintenance</a></li>
+                        <li class="main-header-item mobile"><a class="<%= path === '/profile' ? 'active' : '' %>" href="/auth/profile">Account</a></li>
+                        <li class="main-header-item mobile"><a class="<%= path === '/admin' ? 'active' : '' %>" href="/">Admin</a></li>
+                    <% } else { %>
+                        <li class="main-header-item mobile"><a class="<%= path === '/login' ? 'active' : '' %>" href="/auth/Login">Login</a></li>
+                        <li class="main-header-item mobile"><a class="<%= path === '/register' ? 'active' : '' %>" href="/auth/signup">Register</a></li>
+                    <% } %>
+                    <% if (isAuthenticated) { %>
+                        <li class="main-header-item">
+                            <form action="../../../auth/logout" method="POST">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <button class="logout-button" type="submit">Logout</button>
+                            </form>
+                        </li>
+                    <% } %>
+                </ul>
+            </li>
+        </ul> 
     </nav>
 </header>

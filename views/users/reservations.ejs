@@ -6,8 +6,8 @@
     <%- include('../includes/nav.ejs') %>
     <main>
         <h1>Reservation Status</h1>
-        <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>">
-        <ul id="reservation-list" class="">
+        <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>">        
+        <ul id="reservation-list" class="">            
             <% reservations.forEach(x => { %>
                 <li class='list-item spaced-container'>
                     <div class="titles">
@@ -31,6 +31,9 @@
                 </li>                
            <% }) %>          
         </ul>
+        <% if(reservations.length === 0) { %>
+            <p>You have no upcoming reservations</p>
+       <% } %>
     </main>
     <script src="/scripts/fetch.js"></script>
     <script src="/scripts/reservations.js"></script>

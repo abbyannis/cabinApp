@@ -19,8 +19,6 @@ const multer = require('multer');
 
 const app = express();
 
-// app.use(cookie());
-
 const corsOptions = {
     origin: process.env.HEROKU_ORIGIN,
     optionSuccessStatus: 200,
