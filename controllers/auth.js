@@ -101,7 +101,30 @@ exports.getEditProfile = (req, res, next) => {
                 isAuthenticated: req.session.isLoggedIn
             });
         })
-    
+};
+
+exports.getEditPicture = (req, res, next) => {
+    let message = req.flash('notification');
+    if (message.length > 0) {
+        message = message[0];
+    } else {
+        message = null;
+    }
+    User.findById(req.session.user)
+        .then(user => {
+            res.render('auth/edit-picture', {
+                path: '/edit-picture',
+                pageTitle: 'Edit Profile Picture',
+                user: req.session.user,
+                errorMessage: "",
+                message: message,
+                userType: req.session.userType,
+                currentUser: user,
+                currentImage: user.photo,
+                validationErrors: [],
+                isAuthenticated: req.session.isLoggedIn
+            });
+        })
 };
 
 exports.getUpdatePassword = (req, res, next) => {
