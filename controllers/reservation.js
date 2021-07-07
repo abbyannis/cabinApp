@@ -48,24 +48,6 @@ exports.getReservations = (req, res, next) => {
   }
 };
 
-//find all reservations for the specified property (id in params)
-//with status set to pending
-exports.getPendingReservations = (req, res, next) => {            
-  Reservation
-    .find({ 
-      property: req.params.propertyId,
-      status: "pending"            
-    })  
-    .then(reservations => {                               
-      res.status(200).json({ reservations });          
-    })    
-    .catch(err => {      
-      const error = new Error(err);
-      error.statusCode = 500;
-      next(error);
-    });   
-};
-
 //get reservationby a specific reservationId (in params)
 //and load that to the edit reservation page
 exports.getReservation = (req, res, next) => {         
@@ -98,6 +80,7 @@ exports.getUserReservations = (req, res, next) => {
        endDate: { $gte: today }
      })
     .populate('property')
+    .sort('startDate')
     .exec()
     .then(reservations => {              
       res.render('users/reservations', {            

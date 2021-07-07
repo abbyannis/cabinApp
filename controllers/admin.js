@@ -1,5 +1,6 @@
 const Cabin = require('../models/property');
 const User = require('../models/user');
+const Reservation = require('../models/reservation');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const ROOTURL = process.env.HEROKU_ORIGIN || "http://localhost:5000";
@@ -39,7 +40,41 @@ exports.getAdminProperties = (req, res, next) => {
         }
         
       })
-}
+};
+
+//open a list of pending reservations to approve/reject
+exports.manageReservations = (req, res, next) => {            
+  Cabin.find({ 
+    admins: req.session.user._id      
+  })    
+  .then(properties => {
+    return ids = properties.map(x => x._id);
+  })
+  .then(pIds => {
+    return Reservation.find({
+      status: "pending",
+      property: { $in: pIds }
+    })    
+    .populate('property')
+    .populate('user')
+    .sort('startDate')
+    .exec()   
+  })       
+  .then(reservations => {    
+    res.render('admin/reservations', {            
+      pageTitle: 'Manage Reservations',
+      path: '/admin',
+      reservations: reservations,        
+      isAuthenticated: req.session.isLoggedIn,      
+      isAdmin: true        
+    });  
+  })
+  .catch(err => {      
+    const error = new Error(err);
+    error.statusCode = 500;
+    next(error);
+  });   
+};
 
 //get properties managed by this user
 exports.getProperties = (req, res, next) => {        
