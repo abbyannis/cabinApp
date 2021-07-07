@@ -68,7 +68,7 @@ exports.getPendingReservations = (req, res, next) => {
 
 //get reservationby a specific reservationId (in params)
 //and load that to the edit reservation page
-exports.getReservation = (req, res, next) => {        
+exports.getReservation = (req, res, next) => {         
   Reservation.getReservationById(req.params.reservationId)  
   .then(async (reservation) => {   
     await reservation.populate('property').execPopulate();          
@@ -77,10 +77,10 @@ exports.getReservation = (req, res, next) => {
       path: '/reservations',
       property: reservation.property,
       currentUser: req.session.user,
-      isAuthenticated: req.session.LoggedIn,
+      isAuthenticated: req.session.isLoggedIn,      
       edit: true,
       reservation: reservation
-    });                 
+    });                
   })    
   .catch(err => {
     const error = new Error(err);
@@ -91,7 +91,7 @@ exports.getReservation = (req, res, next) => {
 
 //get all reservations for a user 
 exports.getUserReservations = (req, res, next) => {      
-  const today = new Date();
+  const today = new Date();     
   Reservation
     .find({
        user: req.session.user,
@@ -99,12 +99,12 @@ exports.getUserReservations = (req, res, next) => {
      })
     .populate('property')
     .exec()
-    .then(reservations => {          
+    .then(reservations => {              
       res.render('users/reservations', {            
         pageTitle: 'Your Reservations',
         path: '/reservations',                    
         currentUser: req.session.user,
-        isAuthenticated: req.session.LoggedIn,        
+        isAuthenticated: req.session.isLoggedIn,          
         reservations: reservations
       });   
     })    
@@ -129,7 +129,7 @@ exports.postReservation = (req, res, next) => {
   const property = req.params.propertyId;  
   Reservation.CheckDateAvailability(startDate, endDate, property)
   .then(availability => {    
-    //if valid, create:
+    //if valid, create:    
     if (!availability) {
       return res.status(409).json({ reservation: null, message: "No availability during selected time." });
     }     

@@ -14,6 +14,7 @@ exports.getUserProperties = (req, res, next) => {
             path: '/',        
             currentUser: req.session.user._id,
             isAdmin: false,
+            isAuthenticated: req.session.isLoggedIn,
             properties: properties
           });
         } else {
@@ -44,7 +45,8 @@ exports.getInvites = (req, res, next) => {
       }
       res.render('users/invites', {
         pageTitle: 'Property Invitations',
-        path: '/invites',                        
+        path: '/invites', 
+        isAuthenticated: req.session.isLoggedIn,                       
         invites: invites
        });
     })

@@ -29,6 +29,7 @@ exports.getAdminProperties = (req, res, next) => {
             path: '/properties',        
             currentUser: req.session.user._id,
             isAdmin: true,
+            isAuthenticated: req.session.isLoggedIn,
             properties: properties
           });
         } else {

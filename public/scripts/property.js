@@ -195,7 +195,11 @@ next.addEventListener('click', () => {
   loadCalendar();
 });
 
+if(checkin.value) {
+  date = new Date(checkin.value);  
+}
 date = new Date(date.getFullYear(), date.getMonth(), 1);
+
 loadCalendar();
 reserve.addEventListener('click', () => postReservation());
 checkin.addEventListener('change', () => {
