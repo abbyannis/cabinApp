@@ -56,4 +56,8 @@ router.post('/properties/:propertyId/invite',
 //remove a user from a property
 router.delete('/properties/:propertyId/remove/:userId', isAdmin, adminController.removeUser);
 
+//update the approval status of a reservation request
+router.patch('/manage-reservation/:propertyId/:reservationId', isAdmin, adminController.manageReservation);
+
+
 module.exports = router;

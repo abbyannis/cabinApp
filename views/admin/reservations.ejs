@@ -23,8 +23,8 @@
                         <div><%= `${x.user.firstName} ${x.user.lastName}` %></div>
                     </div>
                     <div class="stack-box adjustable-box">
-                        <button id="app_<%= x._id %>">Approve</button>
-                        <button id="dec_<%= x._id %>">Decline</button>
+                        <button id="app_<%= x.property._id %>/<%= x._id %>">Approve</button>
+                        <button id="dec_<%= x.property._id %>/<%= x._id %>">Decline</button>
                     </div>                    
                 </li>                
            <% }) %>   
@@ -34,5 +34,5 @@
        <% } %>
     </main>
     <script src="/scripts/fetch.js"></script>
-    <script src=""></script>
+    <script src="/scripts/manage-reservations.js"></script>
 <%- include('../includes/end.ejs') %>

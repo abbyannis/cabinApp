@@ -63,9 +63,6 @@ router.patch('/:propertyId/:reservationId', propUser,
   ], 
   reservationController.modifyReservation);
 
-//update the approval status of a reservation request
-router.patch('/:propertyId/approval/:reservationId', propUser, reservationController.approveReservation);
-
 //remove a reservation from the system
 router.delete('/:reservationId', propUser, reservationController.deleteReservation);
 

@@ -181,53 +181,6 @@ exports.modifyReservation = (req, res, next) => {
   });
 };
 
-//Approves or rejects(and deletes) a reservation based on the reservationId in the params
-exports.approveReservation = (req, res, next) => {    
-  const status = req.body.status;
-  let myReservation;
-  Reservation.findById(req.params.reservationId)
-    .populate('user')
-    .populate('property')
-    .exec()
-    .then(reservation => {
-      if(!reservation) {
-        const err = new Error('Reservation not found');
-        err.statusCode = 404;
-        throw error;
-      }
-      myReservation = reservation;         
-      if (status === 'confirmed') {
-        reservation.status = status;        
-        return reservation.save();
-      } else if (req.body.status === 'declined') {
-        return Reservation.findByIdAndRemove(req.params.reservationId);
-      } else {
-        const error = new Error("Invalid reservation status received.");
-        error.statusCode = 422;
-        throw error;
-      } 
-    })    
-    .then(result => {
-      //send result      
-      res.status(200).json({ 
-        message: `Your reservation has been ${status}.`, 
-        reservation: result
-      });
-      //notify user of status
-      transporter.sendMail({
-        to: myReservation.user.email,
-        from: 'reservations@atTheCabin.com',
-        subject: `Your reservation request has been ${status}`,
-        html: `<p>Your reservation request for property ${myReservation.property.name}, ${myReservation.property.location} has been ${status} for the following dates:
-        ${myReservation.startDate.toLocaleDateString()} to ${myReservation.endDate.toLocaleDateString()}.`        
-      });
-    })    
-    .catch(err => {
-      if (!err.statusCode) err.statusCode = 500;
-      next(err);
-    });
-};
-
 //Removes a reservation from the table based on the reservationId in the params
 exports.deleteReservation = (req, res, next) => {   
   Reservation.getReservationById(req.params.reservationId) 
