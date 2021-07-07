@@ -1,14 +1,18 @@
 const socialController = require('../controllers/social');
 const express = require('express');
 const router = express.Router();
+const isAuth = require('../middleware/is-auth');
 
-//post a new photo
-router.post('/:photoId', socialController.postAddPhoto);
+//get photo upload page
+router.get('/add-post', isAuth, socialController.getAddPhoto);
 
-//get all photos
-router.get('/photos', socialController.getPhotos);
+// post new photo
+router.post('/postPhoto', isAuth, socialController.postPhoto)
 
-//get single photo
-router.get('/:photoId', socialController.getPhoto);
+// //get all photos
+// router.get('/photos', socialController.getPhotos);
+
+// //get single photo
+// router.get('/:photoId', socialController.getPhoto);
 
 module.exports = router;

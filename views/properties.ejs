@@ -1,0 +1,40 @@
+<%- include('./includes/head.ejs') %>
+<link rel="stylesheet" href="/css/form.css">
+</head>
+
+<body>
+    <%- include('./includes/nav.ejs') %>
+    <main>        
+        <div class="user-message user-message--error invisible" id="errorBox">          
+        </div>
+        <% if(properties.length > 0) { %>
+            <div class="container">
+                <ul id="property-list" class=""> 
+                    <% for (let property of properties) { %>
+                        <!-- href will need to be set to 
+                        <%= isAdmin ? '/admin/properties/' + property._id : '/reservation/' + property._id %>
+                        after routes are set up -->
+                        <a class="no-underline" href="/main/calendar/<%= property._id %>">
+                            <li class="selectable-list-item">
+                                <div>
+                                    <%= property.name %>
+                                </div>
+                                <div class="alt-text">
+                                    <%= property.location %>
+                                </div>
+                            </li>
+                        </a>
+                    <% } %>
+                </ul>    
+            </div>
+        <% } else { %> 
+            <% if (isAdmin) { %>
+                <h2>You are not an admin for any properties.</h2>
+            <% } else { %>
+                <h2>You are not currently a member of any properties. Please contact your property admin to be invited to a property.</h2>
+            <% } %>
+        <% } %> 
+        <input type="hidden" id="isAdmin" value="<%= isAdmin %>">
+    </main>
+    <!-- <script src="/scripts/properties.js"></script> -->
+<%- include('./includes/end.ejs') %>
