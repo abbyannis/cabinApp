@@ -2,14 +2,24 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const inventorySchema = new Schema({
-  inventory: {
-    type: String,
-    required: true,
+  list: {
+    item: {
+      description: {
+        type: String,
+        required: true,
+      },
+      amount: {
+        type: Number,
+        required: true
+      }
+    }
   },
-  amount: {
-    type: Number,
-    required: true
+  propertyId: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'Property'
   }
 });
+
 
 module.exports = mongoose.model('Inventory', inventorySchema);
