@@ -1,12 +1,13 @@
 const Inventory = require('../models/inventory');
 
 exports.getInventory = (req, res, next) => {
-    Inventory.fetchAll()
+  console.log("in get inventory");
+    Inventory.find()
     .then(inventory => {
         res.render('inventory/inventory', {
-            inven: Inventory,
+            inventory: inventory,
             pageTitle: 'Inventory',
-            path: '/'
+            path: '/inventory/inventory'
         })
     })
     .catch(err => {
@@ -17,17 +18,39 @@ exports.getInventory = (req, res, next) => {
     });
 };
 
-exports.updateInventory = (req, res, next) => {
-    const updateinventoryList = req.params.inventory;
-    const inventoryList = new inventoryList({
-        userInventory = updateinventoryList,
-        itemId = req.item
+exports.addInventory = (req, res, next) => {
+    const updateinventoryList = req.body.inventory;
+    const updateAmount = req.body.amount;
+    const inventoryList = new Inventory({
+        inventory: updateinventoryList,
+        amount: updateAmount
     });
     inventoryList
         .save()
         .then(result => {
             console.log('Inventory Updated');
-            res.redirect('/main') 
+            res.redirect('/inventory/inventory') 
         })
         .catch(err => {console.log(err);});
+};
+
+exports.updateInventory = (req, res, next) => {
+  const count = req.body.count;
+  const list = req.body.list;
+  console.log("in update inventory list = " + list);
+  for(let i = 0; i < count; i++) {
+    const updateAmount = req.body.i;
+    console.log(updateAmount);
+  }
+  // const inventoryList = new Inventory({
+  //     inventory: updateinventoryList,
+  //     amount: updateAmount
+  // });
+  // inventoryList
+  //     .save()
+  //     .then(result => {
+  //         console.log('Inventory Updated');
+  //         res.redirect('/inventory/inventory') 
+  //     })
+  //     .catch(err => {console.log(err);});
 };

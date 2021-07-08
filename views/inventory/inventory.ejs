@@ -6,6 +6,28 @@
 <body>
     <%- include('../includes/nav.ejs') %>
     <main>
-      <p>vsfvd</p>
+      <form class="cabin-inventory"action="/inventory/update" method="POST">
+        <% var i; %>
+        <% for (i = 0; i < inventory.length; i++) { %>
+          <ul id="list">
+          <li>
+        <input type="text" class="" name=i value="<%= inventory[i].inventory %>">
+        <input type="number" class="" name=i value="<%= inventory[i].amount %>">
+        <input type="hidden" name="inventoryId" value="<%= inventory[i]._id %>">
+        </li>
+        </ul>
+        <!-- <br> -->
+        <% } %>
+        <input type="hidden" name="count" value="<% i %>" >
+        <button type="submit" name="update">Update</button>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      </form>
+    <form class="cabin-inventory"action="/inventory/inventory" method="POST">
+      <input type="text" class="" name="inventory" placeholder="Enter Item">
+      <input type="number" class="" name="amount" placeholder="Enter Amount">
+      <button type="submit" name="button">Add</button>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  </form>
+  
     </main>
 <%- include('../includes/end.ejs') %>
