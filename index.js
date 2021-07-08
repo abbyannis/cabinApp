@@ -14,6 +14,8 @@ const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI_CABIN;
 const csrfProtection = csrf();
 const errorController = require('./controllers/error');
+const multer = require('multer');
+// const cookie = require('cookie-parser');
 
 const app = express();
 
@@ -38,6 +40,27 @@ const store = new MongoDBStore({
     collection: 'sessions'
 });
 
+const fileStorage = multer.diskStorage({
+   destination: (req, file, cb) => {
+      cb(null, 'images');
+   },
+   filename: (req, file, cb) => {
+      cb(null, new Date().toISOString() + '-' + file.originalname);
+   }
+});
+
+const fileFilter = (req, file, cb) => {
+   if (
+      file.mimetype === 'image/png' ||
+      file.mimetype === 'image/jpg' ||
+      file.mimetype === 'image/jpeg'
+   ) {
+      cb(null, true);
+   } else {
+      cb(null, false);
+   }
+};
+
 app.use(
    session({ 
        secret: 'my secret', 
@@ -52,13 +75,15 @@ app.use(
    .set('view engine', 'ejs')
    .use(bodyParser.urlencoded({extended: false})) 
    .use(bodyParser.json())
+   .use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'))
+   .use('/images', express.static(path.join(__dirname, 'images')))
    .use((req, res, next) => {
        res.setHeader('Access-Control-Allow-Origin', process.env.HEROKU_ORIGIN);
        res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, PATCH, DELETE');
        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');       
        next();
    })
-   .use(csrfProtection)   
+   .use(csrfProtection)
    .use(flash())
    .use((req, res, next) => {
       res.locals.isAuthenticated = req.session.isLoggedIn;
