@@ -3,8 +3,10 @@ const isAuth = require('../middleware/is-auth');
 const express = require('express');
 const router = express.Router();
 
-router.get('/inventory/:propertyId', inventoryController.getInventory);
 router.get('/inventory', inventoryController.getAdminProperties);
+router.get('/inventory/:propertyId', inventoryController.getInventory);
+router.get('/new-inventory/:propertyId', inventoryController.getNewInventory);
+
 router.post('/inventory', inventoryController.addInventory);
 router.post('/update', inventoryController.updateInventory);
 
