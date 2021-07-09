@@ -56,10 +56,16 @@ exports.getSignup = (req, res, next) => {
 };
 
 exports.getReset = (req, res, next) => {
+    let message = req.flash('error');
+    if (message.length > 0) {
+        message = message[0];
+    } else {
+        message = null;
+    }
     res.render('auth/reset', {
         path: '/reset',
         pageTitle: 'Reset Password',
-        errorMessage: "",
+        errorMessage: message,
         userType: req.session.userType,
         currentUser: req.session.user,
         isAuthenticated: req.session.isLoggedIn
@@ -355,22 +361,21 @@ exports.postReset = (req, res, next) => {
                 if (!user) {
                     req.flash('error', 'No account found.');
                     return res.redirect('/auth/reset');
-                }
-                user.resetToken = token;
-                user.resetTokenExpiration = Date.now() + 3600000; // expires in 1 hour
-                return user.save();
-            })
-            .then(result => {
-                res.redirect('/');
-                transporter.sendMail({
-                    to: req.body.email,
-                    from: 'atTheCabin341@gmail.com',
-                    subject: 'Password Reset',
-                    html: `
-                        <p>You requested a password reset</p>
-                        <p>Click this <a href="http://localhost:5000/auth/reset/${token}">link</a> to set a new password.</p>
-                    `
-                });
+                } else {
+                    user.resetToken = token;
+                    user.resetTokenExpiration = Date.now() + 3600000; // expires in 1 hour
+                    user.save();
+                    res.redirect('/auth/login');
+                    return transporter.sendMail({
+                        to: req.body.email,
+                        from: 'atTheCabin341@gmail.com',
+                        subject: 'Password Reset',
+                        html: `
+                            <p>You requested a password reset</p>
+                            <p>Click this <a href="http://localhost:5000/auth/reset/${token}">link</a> to set a new password.</p>
+                        `
+                    });
+                }  
             })
             .catch(err => {
                 if(!err.statusCode) {
