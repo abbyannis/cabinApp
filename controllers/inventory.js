@@ -3,19 +3,18 @@ const Cabin = require('../models/property');
 
 exports.getInventory = (req, res, next) => {
   const propertyId = req.params.propertyId
-  console.log(propertyId);
   Inventory.findOne({
       propertyId: propertyId
     })
     .then(inventory => {
-      // if (!inventory) {
-      //   res.render('')
-      // }
-      console.log(inventory)
+      if (!inventory) {
+        return res.redirect('/inventory/new-inventory/' + propertyId)
+      }
       res.render('inventory/inventory', {
         inventory: inventory,
         pageTitle: 'Inventory',
-        path: '/inventory/inventory'
+        path: '/inventory/inventory',
+        propertyId: propertyId
       })
     })
     .catch(err => {
@@ -26,64 +25,81 @@ exports.getInventory = (req, res, next) => {
     });
 };
 
-exports.addInventory = (req, res, next) => {
+exports.getNewInventory = (req, res, next) => {
+  const propertyId = req.params.propertyId
+  res.render('inventory/new-inventory', {
+    inventory: [],
+    pageTitle: 'Inventory',
+    path: '/inventory/inventory',
+    propertyId: propertyId
+  })
+}
 
-  const propertyId = "60d407a452435a4be8d17391" // req.params.propertyId;
+exports.addInventory = (req, res, next) => {
+  const propertyId = req.body.propertyId; 
   const updateinventoryList = req.body.inventory;
-  const updateAmount = req.body.amount;
-  const newInventory = {
-    item: {
-      description: updateinventoryList,
-      amount: updateAmount
-    }
+  let updateAmount = req.body.amount;
+
+  if (!updateinventoryList) {
+    return res.redirect('/inventory/inventory/' + propertyId)
+  }
+  if (!updateAmount) {
+    updateAmount = 0;
   }
   Inventory.findOne({
       propertyId: propertyId
     })
     .then(inventory => {
-      console.log("in add!! " + inventory)
       if (!inventory) {
-        res.redirect('/')
+        const inv = new Inventory({
+          list: [{description: updateinventoryList, amount: updateAmount }],
+          propertyId: propertyId
+        })
+        inv.save();
+        return res.redirect('/inventory/inventory/' + propertyId);
       } else {
-        const inventoryList = new Array(inventory.list)
-        inventoryList.push(newInventory)
-        inventory.list = inventoryList
-        console.log("inventoryList: " + inventoryList)
-        // const inv = new Inventory({
-        //   list: newInventory,
-        //   propertyId: "60d407a452435a4be8d17391"
-        // });
-        inventory.save()
-          .then(result => {
-            console.log('Inventory Updated');
-            res.redirect('/inventory/inventory')
-          })
+        inventory.list.push({description: updateinventoryList, amount: updateAmount });
+        return inventory.save()
+        .then(result => {
+          return res.redirect('/inventory/inventory/' + propertyId);
+        })
       }
     })
     .catch(err => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
 };
 
 exports.updateInventory = (req, res, next) => {
-  const count = req.body.updatedInventory;
-  const list = req.body.list;
-  console.log(count);
-  // for(let i = 0; i < count; i++) {
-  //   const updateAmount = req.body.i;
-  //   console.log(updateAmount);
-  // }
-  // const inventoryList = new Inventory({
-  //     inventory: updateinventoryList,
-  //     amount: updateAmount
-  // });
-  // inventoryList
-  //     .save()
-  //     .then(result => {
-  //         console.log('Inventory Updated');
-  //         res.redirect('/inventory/inventory') 
-  //     })
-  //     .catch(err => {console.log(err);});
+  const item = req.body.item;
+  const amount = req.body.amount;
+  const itemId = req.body.itemId;
+  const propertyId = req.body.propertyId;
+  const list = [];
+  for(let i = 0; i < item.length; i++) {
+    list.push({ 
+      description: item[i],
+      amount: amount[i],
+      _id: itemId[i]
+    })
+  }
+  Inventory.findOne({ propertyId: propertyId })
+    .then(inventory => {
+      inventory.list = list;
+      return inventory.save()
+      .then(results => {
+        return res.redirect('/inventory/inventory/' + propertyId);
+      })
+  })
+  .catch(err => {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  });
 };
 
 exports.getAdminProperties = (req, res, next) => {

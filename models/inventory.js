@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const inventorySchema = new Schema({
-  list: {
-    item: {
+  list: [{
       description: {
         type: String,
         required: true,
@@ -12,8 +11,7 @@ const inventorySchema = new Schema({
         type: Number,
         required: true
       }
-    }
-  },
+  }],
   propertyId: {
     type: Schema.Types.ObjectId,
     required: true,
