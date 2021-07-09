@@ -7,11 +7,13 @@ const { validationResult } = require('express-validator');
 const User = require('../models/user');
 const { restart } = require('nodemon');
 
-const transporter = nodemailer.createTransport(sendgridTransport({
-    auth: {
-        api_key: process.env.API_KEY 
-    } 
-}));
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_ACCOUNT, 
+    pass: process.env.EMAIL_PWD
+  }
+});
  
 exports.getLogin = (req, res, next) => {
     let message = req.flash('error');
