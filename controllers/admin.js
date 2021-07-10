@@ -22,7 +22,9 @@ exports.getAdminProperties = (req, res, next) => {
       })
       .then(properties => {
         // if 0 or more than 1 property, route to properties page for selection
+        // this will need to route to a page for the admin to edit the property
         if(properties.length !== 1) {
+          console.log('isAdmin = true')
           res.render('properties', {
             pageTitle: 'Property List',
             path: '/properties',        
@@ -33,7 +35,7 @@ exports.getAdminProperties = (req, res, next) => {
         } else {
           // if only one property, automatically route to add reservation page
           // will need to be updated with correct route after routes set up
-          res.redirect('../main/calendar/' + properties[0]._id);
+          res.redirect('../main/dashboard/' + properties[0]._id);
         }
         
       })
@@ -158,7 +160,7 @@ exports.deleteProperty = (req, res, next) => {
 exports.inviteUser = (req, res, next) => {
   //ensure valid inputs through validation  
   const pId = req.params.propertyId;
-  const userId = req.userId;
+  const userId = req.session.user._id;
   const email = req.body.email;
   const errors = validationResult(req);
   if(!errors.isEmpty()) {
@@ -207,7 +209,7 @@ exports.inviteUser = (req, res, next) => {
 
 //remove a user from the property
 exports.removeUser = (req, res, next) => {
-  Cabin.getPropertyById(req.params.propertyId, req.userId)
+  Cabin.getPropertyById(req.params.propertyId, req.session.user._id)
   .then(cabin => {
     const idx = cabin.members.indexOf(req.params.userId);
     if(idx > -1) {

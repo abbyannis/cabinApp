@@ -107,7 +107,7 @@
     position: absolute;
     top: 10vw;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -15%);
     background: transparent;
     border: 0;
 }
@@ -133,13 +133,25 @@ button:hover,
     color: white;
 }
 
-button,
 .faux-button {
+    width: 95%;
+    margin: 0.5rem;
+    padding: 0.75rem;
+    background-color: var(--alt-color);
+    color: var(--alt-color);
+    text-align: center;    
+    border-radius: 5px;
+    font-size: 1.5rem;
+    color: var(--alt-color);
+    text-decoration: none;
+    border: 0 solid var(--alt-color);
+}
+
+button {
     width: 100px;
     height: 50px;
     margin: 0.5rem;
-    background-color: white;
-    color: var(--alt-color);
+    background-color: white;    
     text-align: center;    
     border-radius: 5px;
     font-size: 1.5rem;
@@ -147,7 +159,6 @@ button,
     text-decoration: none;
     border: 1px solid var(--alt-color);
 }
-
 .no-underline {
     text-decoration: none;
 }
@@ -183,7 +194,7 @@ button,
     width: inherit;
     height: inherit;
     text-align: center;    
-    border: none;
+    border: 0;
     text-decoration: none;
 }
 
@@ -191,4 +202,26 @@ button,
     background-color: white;
     border-radius: 0;
     border: 0;
+    outline: none;
+}
+
+.logout-button:focus {
+    outline: none;
+}
+
+.directions {
+    margin: 1rem 0;
+    color: var(--main-color);
+}
+
+.header_image {
+    height: 8vw;
+}
+
+@media screen and (max-width: 800px) {
+    .header_image {
+        width: 95%;
+        height: 100%;
+        margin: auto;
+    }
 }

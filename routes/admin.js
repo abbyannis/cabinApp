@@ -50,9 +50,6 @@ router.post('/properties/:propertyId/invite',
       .normalizeEmail()      
   ], adminController.inviteUser);
 
-//add a user to a property
-router.post('/properties/:propertyId/add/:inviteToken', adminController.addUser);
-
 //remove a user from a property
 router.delete('/properties/:propertyId/remove/:userId', adminController.removeUser);
 

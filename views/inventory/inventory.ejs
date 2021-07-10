@@ -1,23 +1,11 @@
-<%- include('includes/head.ejs') %>
-<link rel="stylesheet" href="/css/form.css">
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/user.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
+    <%- include('../includes/nav.ejs') %>
     <main>
-        <%- include('includes/nav.ejs') %>
-        <h2>Inventory</h2>
-        <div class="inventory">
-            <ul>
-                <% for (var i = 0; i < userInventory; i++) { %>
-                    <li> <%= userInventory[i] %> </li>
-                <% } %>
-            </ul>
-            
-            <form class="cabin-inventory"action="/items/inventory" method="POST">
-                <input type="text" class="" name="Add Item" placeholder="Add to list">
-                <button type="submit" name="button">Add</button>
-            </form>
-            <% } %>
-        </div>
+      <p>vsfvd</p>
     </main>
-<%- include('includes/end.ejs') %>
+<%- include('../includes/end.ejs') %>

@@ -19,30 +19,98 @@ exports.getUserProperties = (req, res, next) => {
         } else {
           // if only one property, automatically route to add reservation page
           // will need to be updated with correct route after routes set up
-          res.redirect('../main/calendar/' + properties[0]._id);
+          res.redirect('../main/dashboard/' + properties[0]._id);
         }
         
       })
+    .catch(err => {
+        const error = new Error(err);
+        error.statusCode = 500;
+        next(error);
+    }); 
 }
 
-//gets all properties for the current user
-// exports.getProperties = (req, res, next) => {  
-//   try {    
-//     Cabin
-//       .find({ 
-//         members: req.session.user._id //"60d5468cfd36781a9cb65077"
-//       })  
-//       .then(properties => {           
-//         res.status(200).json({ properties });          
-//       })      
-//       .catch(err => {
-//         const error = new Error(err);
-//         error.statusCode = 500;
-//         next(error);
-//       });   
-//   } catch(err) {    
-//     const error = new Error(err);
-//     error.statusCode = 500;
-//     throw(error);
-//   }  
-// };
+//gets all invites for the current user
+exports.getInvites = (req, res, next) => {  
+  Cabin
+    .find({ 
+      invites: req.session.user.email
+    })
+    .populate('admins', "displayName")
+    .exec()
+    .then(invites => {
+      if (!invites) {
+        invites = [];
+      }
+      res.render('users/invites', {
+        pageTitle: 'Property Invitations',
+        path: '/invites',                        
+        invites: invites
+       });
+    })
+    .catch(err => {
+      const error = new Error(err);
+      error.statusCode = 500;
+      next(error);
+    });  
+}
+
+//add an invited user to the property
+exports.acceptInvite = (req, res, next) => {  
+  Cabin.findById(req.params.propertyId)  
+  .then(cabin => {
+    if (!cabin) {    
+      const err = new Error('Property not found');
+      err.statusCode = 404;
+      throw error;
+    }  
+    const idx = cabin.invites.indexOf(req.session.user.email);
+    if (idx < 0 ) {
+      const err = new Error('Valid invite not found');
+      err.statusCode = 401;
+      throw error;
+    }                
+    cabin.members.push(req.session.user._id);          
+    cabin.invites.splice(idx, 1);          
+    return cabin.save();
+  })
+  .then(result => {
+    res.status(200).json({
+      message: 'User added to property.',
+      cabin: result
+    });
+  })
+  .catch(err => {
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);   
+  });
+}
+
+//removes an invite to a property for the current user
+exports.removeInvite = (req, res, next) => {  
+  Cabin.findById(req.params.propertyId)  
+  .then(cabin => {
+    if (!cabin) {    
+      const err = new Error('Property not found');
+      err.statusCode = 404;
+      throw error;
+    }  
+    const idx = cabin.invites.indexOf(req.session.user.email);
+    console.log(idx);
+    if (idx > -1) {    
+      cabin.invites.splice(idx, 1);
+    }          
+    return cabin.save();    
+  })
+  .then(result => {
+    res.status(200).json({
+      message: 'Invite removed.',
+      cabin: null
+    });
+  })
+  .catch(err => {
+    console.log(err);
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);   
+  });
+}
