@@ -1,5 +1,6 @@
 const Cabin = require('../models/property');
 const User = require('../models/user');
+const Reservation = require('../models/reservation');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const ROOTURL = process.env.HEROKU_ORIGIN || "http://localhost:5000";
@@ -29,6 +30,7 @@ exports.getAdminProperties = (req, res, next) => {
             path: '/properties',        
             currentUser: req.session.user._id,
             isAdmin: true,
+            isAuthenticated: req.session.isLoggedIn,
             properties: properties
           });
         } else {
@@ -38,7 +40,41 @@ exports.getAdminProperties = (req, res, next) => {
         }
         
       })
-}
+};
+
+//open a list of pending reservations to approve/reject
+exports.manageReservations = (req, res, next) => {            
+  Cabin.find({ 
+    admins: req.session.user._id      
+  })    
+  .then(properties => {
+    return ids = properties.map(x => x._id);
+  })
+  .then(pIds => {
+    return Reservation.find({
+      status: "pending",
+      property: { $in: pIds }
+    })    
+    .populate('property')
+    .populate('user')
+    .sort('startDate')
+    .exec()   
+  })       
+  .then(reservations => {    
+    res.render('admin/reservations', {            
+      pageTitle: 'Manage Reservations',
+      path: '/admin',
+      reservations: reservations,        
+      isAuthenticated: req.session.isLoggedIn,      
+      isAdmin: true        
+    });  
+  })
+  .catch(err => {      
+    const error = new Error(err);
+    error.statusCode = 500;
+    next(error);
+  });   
+};
 
 //get properties managed by this user
 exports.getProperties = (req, res, next) => {        
@@ -228,4 +264,53 @@ exports.removeUser = (req, res, next) => {
   });
 }
 
-
+//Approves or rejects(and deletes) a reservation based on the reservationId in the params
+exports.manageReservation = (req, res, next) => {  
+  const errors = validationResult(req);
+  if(!errors.isEmpty()) {
+    return res.status(422).json( { errors });
+  }    
+  const status = req.body.status;
+  let myReservation;
+  Reservation.findById(req.params.reservationId)
+    .populate('user')
+    .populate('property')
+    .exec()
+    .then(reservation => {
+      if(!reservation) {
+        const err = new Error('Reservation not found');
+        err.statusCode = 404;
+        throw error;
+      }
+      myReservation = reservation;         
+      if (status === 'confirmed') {
+        reservation.status = status;        
+        return reservation.save();
+      } else if (req.body.status === 'declined') {
+        return Reservation.findByIdAndRemove(req.params.reservationId);
+      } else {
+        const error = new Error("Invalid reservation status received.");
+        error.statusCode = 422;
+        throw error;
+      } 
+    })    
+    .then(result => {
+      //send result      
+      res.status(200).json({ 
+        message: `Your reservation has been ${status}.`, 
+        reservation: result
+      });
+      //notify user of status
+      transporter.sendMail({
+        to: myReservation.user.email,
+        from: 'reservations@atTheCabin.com',
+        subject: `Your reservation request has been ${status}`,
+        html: `<p>Your reservation request for property ${myReservation.property.name}, ${myReservation.property.location} has been ${status} for the following dates:
+        ${myReservation.startDate.toLocaleDateString()} to ${myReservation.endDate.toLocaleDateString()}.`        
+      });
+    })    
+    .catch(err => {
+      if (!err.statusCode) err.statusCode = 500;
+      next(err);
+    });
+};

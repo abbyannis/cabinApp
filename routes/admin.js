@@ -7,6 +7,9 @@ const router = express.Router();
 //get a single admin property
 router.get('/properties/:propertyId', adminController.getProperty);
 
+//manage reservations
+router.get('/reservations', adminController.manageReservations);
+
 //get all admin properties
 router.get('/properties', adminController.getAdminProperties);
 
@@ -36,10 +39,10 @@ router.patch('/properties/:propertyId',
       .trim()
       .isLength( { min: 3, max: 20 })
   ],
-  adminController.updateProperty);
+  isAdmin, adminController.updateProperty);
 
 //remove a property
-router.delete('/properties/:propertyId', adminController.deleteProperty);
+router.delete('/properties/:propertyId', isAdmin, adminController.deleteProperty);
 
 //invite a new user to a property
 router.post('/properties/:propertyId/invite', 
@@ -48,9 +51,13 @@ router.post('/properties/:propertyId/invite',
       .isEmail()
       .withMessage('Please enter a valid email address.')
       .normalizeEmail()      
-  ], adminController.inviteUser);
+  ], isAdmin, adminController.inviteUser);
 
 //remove a user from a property
-router.delete('/properties/:propertyId/remove/:userId', adminController.removeUser);
+router.delete('/properties/:propertyId/remove/:userId', isAdmin, adminController.removeUser);
+
+//update the approval status of a reservation request
+router.patch('/manage-reservation/:propertyId/:reservationId', isAdmin, adminController.manageReservation);
+
 
 module.exports = router;

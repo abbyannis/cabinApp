@@ -5,11 +5,11 @@
 <body>
     <%- include('../includes/nav.ejs') %>
     <main>
-        <h1>Reservation Status</h1>
+        <h1>Pending Reservations</h1>
         <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>">        
         <ul id="reservation-list" class="">            
             <% reservations.forEach(x => { %>
-                <li class='selectable-list-item spaced-container'>
+                <li class='list-item spaced-container'>
                     <div class="titles">
                         <h2><%= x.property.name %></h2>
                         <div><%= x.property.location %></div>
@@ -19,22 +19,20 @@
                         <div>Check-out: <%= new Date(x.endDate).toISOString().split('T')[0] %></div>                        
                     </div>
                     <div class="stack-box adjustable-box">
-                        <div>Status: </div>
-                        <div><%= x.status %></div>
+                        <div>Requested By: </div>
+                        <div><%= `${x.user.firstName} ${x.user.lastName}` %></div>
                     </div>
                     <div class="stack-box adjustable-box">
-                        <div class="buttons">
-                            <a class="buttons" href="/reservation/<%= x.property._id %>/<%= x._id %>">Edit</a>
-                        </div>
-                        <button class="buttons" id="<%= x._id %>">Delete</button>
+                        <button id="app_<%= x.property._id %>/<%= x._id %>">Approve</button>
+                        <button id="dec_<%= x.property._id %>/<%= x._id %>">Decline</button>
                     </div>                    
                 </li>                
-           <% }) %>          
+           <% }) %>   
         </ul>
         <% if(reservations.length === 0) { %>
-            <p>You have no upcoming reservations</p>
+            <p>You have no pending reservations</p>
        <% } %>
     </main>
     <script src="/scripts/fetch.js"></script>
-    <script src="/scripts/reservations.js"></script>
+    <script src="/scripts/manage-reservations.js"></script>
 <%- include('../includes/end.ejs') %>

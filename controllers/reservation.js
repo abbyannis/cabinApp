@@ -48,27 +48,9 @@ exports.getReservations = (req, res, next) => {
   }
 };
 
-//find all reservations for the specified property (id in params)
-//with status set to pending
-exports.getPendingReservations = (req, res, next) => {            
-  Reservation
-    .find({ 
-      property: req.params.propertyId,
-      status: "pending"            
-    })  
-    .then(reservations => {                               
-      res.status(200).json({ reservations });          
-    })    
-    .catch(err => {      
-      const error = new Error(err);
-      error.statusCode = 500;
-      next(error);
-    });   
-};
-
 //get reservationby a specific reservationId (in params)
 //and load that to the edit reservation page
-exports.getReservation = (req, res, next) => {        
+exports.getReservation = (req, res, next) => {         
   Reservation.getReservationById(req.params.reservationId)  
   .then(async (reservation) => {   
     await reservation.populate('property').execPopulate();          
@@ -77,10 +59,10 @@ exports.getReservation = (req, res, next) => {
       path: '/reservations',
       property: reservation.property,
       currentUser: req.session.user,
-      isAuthenticated: req.session.LoggedIn,
+      isAuthenticated: req.session.isLoggedIn,      
       edit: true,
       reservation: reservation
-    });                 
+    });                
   })    
   .catch(err => {
     const error = new Error(err);
@@ -91,20 +73,21 @@ exports.getReservation = (req, res, next) => {
 
 //get all reservations for a user 
 exports.getUserReservations = (req, res, next) => {      
-  const today = new Date();
+  const today = new Date();     
   Reservation
     .find({
        user: req.session.user,
        endDate: { $gte: today }
      })
     .populate('property')
+    .sort('startDate')
     .exec()
-    .then(reservations => {          
+    .then(reservations => {              
       res.render('users/reservations', {            
         pageTitle: 'Your Reservations',
         path: '/reservations',                    
         currentUser: req.session.user,
-        isAuthenticated: req.session.LoggedIn,        
+        isAuthenticated: req.session.isLoggedIn,          
         reservations: reservations
       });   
     })    
@@ -129,7 +112,7 @@ exports.postReservation = (req, res, next) => {
   const property = req.params.propertyId;  
   Reservation.CheckDateAvailability(startDate, endDate, property)
   .then(availability => {    
-    //if valid, create:
+    //if valid, create:    
     if (!availability) {
       return res.status(409).json({ reservation: null, message: "No availability during selected time." });
     }     
@@ -196,53 +179,6 @@ exports.modifyReservation = (req, res, next) => {
     if (!err.statusCode) err.statusCode = 500;
     next(err);
   });
-};
-
-//Approves or rejects(and deletes) a reservation based on the reservationId in the params
-exports.approveReservation = (req, res, next) => {    
-  const status = req.body.status;
-  let myReservation;
-  Reservation.findById(req.params.reservationId)
-    .populate('user')
-    .populate('property')
-    .exec()
-    .then(reservation => {
-      if(!reservation) {
-        const err = new Error('Reservation not found');
-        err.statusCode = 404;
-        throw error;
-      }
-      myReservation = reservation;         
-      if (status === 'confirmed') {
-        reservation.status = status;        
-        return reservation.save();
-      } else if (req.body.status === 'declined') {
-        return Reservation.findByIdAndRemove(req.params.reservationId);
-      } else {
-        const error = new Error("Invalid reservation status received.");
-        error.statusCode = 422;
-        throw error;
-      } 
-    })    
-    .then(result => {
-      //send result      
-      res.status(200).json({ 
-        message: `Your reservation has been ${status}.`, 
-        reservation: result
-      });
-      //notify user of status
-      transporter.sendMail({
-        to: myReservation.user.email,
-        from: 'reservations@atTheCabin.com',
-        subject: `Your reservation request has been ${status}`,
-        html: `<p>Your reservation request for property ${myReservation.property.name}, ${myReservation.property.location} has been ${status} for the following dates:
-        ${myReservation.startDate.toLocaleDateString()} to ${myReservation.endDate.toLocaleDateString()}.`        
-      });
-    })    
-    .catch(err => {
-      if (!err.statusCode) err.statusCode = 500;
-      next(err);
-    });
 };
 
 //Removes a reservation from the table based on the reservationId in the params

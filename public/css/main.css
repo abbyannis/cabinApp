@@ -310,7 +310,12 @@ button {
     .selectable-list-item {
         width: 95%;
         margin: 1rem auto;
-        font-size: 1.5rem;
+        font-size: 1.25rem;
+        font-weight: normal;
+    }
+
+    .selectable-list-item h2 {
+        font-size: 1.75rem;
     }
 
     .directions {

@@ -5,6 +5,7 @@ const admin = require('./admin');
 const auth = require('./auth');
 const user = require('./user');
 const social = require('./social');
+const inventory = require('./inventory');
 const mainController = require('../controllers/main');
 
 routes
@@ -14,7 +15,9 @@ routes
     .use('/admin/', admin)
     .use('/auth', auth)
     .use('/user', user)
+    .use('/inventory', inventory)
     .use('/social', social)
+    .use('/inventory', inventory)
     // .use((error, req, res, next) => {
     //     res.status(500).render('errors/500', { 
     //         pageTitle: 'Error!', 

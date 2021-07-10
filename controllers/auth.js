@@ -7,11 +7,15 @@ const { validationResult } = require('express-validator');
 const User = require('../models/user');
 const { restart } = require('nodemon');
 
-const transporter = nodemailer.createTransport(sendgridTransport({
-    auth: {
-        api_key: process.env.API_KEY 
-    } 
-}));
+const updateProfile = require('../models/user');
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_ACCOUNT, 
+    pass: process.env.EMAIL_PWD
+  }
+});
  
 exports.getLogin = (req, res, next) => {
     let message = req.flash('error');
@@ -56,10 +60,16 @@ exports.getSignup = (req, res, next) => {
 };
 
 exports.getReset = (req, res, next) => {
+    let message = req.flash('error');
+    if (message.length > 0) {
+        message = message[0];
+    } else {
+        message = null;
+    }
     res.render('auth/reset', {
         path: '/reset',
         pageTitle: 'Reset Password',
-        errorMessage: "",
+        errorMessage: message,
         userType: req.session.userType,
         currentUser: req.session.user,
         isAuthenticated: req.session.isLoggedIn
@@ -95,7 +105,8 @@ exports.getEditProfile = (req, res, next) => {
                     last: user.lastName, 
                     email: user.email, 
                     password: "", 
-                    confirmPassword: "" 
+                    confirmPassword: "" ,
+                    image: user.image
                 },
                 validationErrors: [],
                 isAuthenticated: req.session.isLoggedIn
@@ -355,22 +366,21 @@ exports.postReset = (req, res, next) => {
                 if (!user) {
                     req.flash('error', 'No account found.');
                     return res.redirect('/auth/reset');
-                }
-                user.resetToken = token;
-                user.resetTokenExpiration = Date.now() + 3600000; // expires in 1 hour
-                return user.save();
-            })
-            .then(result => {
-                res.redirect('/');
-                transporter.sendMail({
-                    to: req.body.email,
-                    from: 'atTheCabin341@gmail.com',
-                    subject: 'Password Reset',
-                    html: `
-                        <p>You requested a password reset</p>
-                        <p>Click this <a href="http://localhost:5000/auth/reset/${token}">link</a> to set a new password.</p>
-                    `
-                });
+                } else {
+                    user.resetToken = token;
+                    user.resetTokenExpiration = Date.now() + 3600000; // expires in 1 hour
+                    user.save();
+                    res.redirect('/auth/login');
+                    return transporter.sendMail({
+                        to: req.body.email,
+                        from: 'atTheCabin341@gmail.com',
+                        subject: 'Password Reset',
+                        html: `
+                            <p>You requested a password reset</p>
+                            <p>Click this <a href="http://localhost:5000/auth/reset/${token}">link</a> to set a new password.</p>
+                        `
+                    });
+                }  
             })
             .catch(err => {
                 if(!err.statusCode) {
@@ -387,7 +397,7 @@ exports.postUpdateProfile = (req, res, next) => {
     const display = req.body.display;
     const email = req.body.email;
     const phone = req.body.phone;
-    const imageUrl = req.body.image;
+    const image = req.file;
     const userId = req.body.userId;
     const errors = validationResult(req);
     
@@ -407,13 +417,40 @@ exports.postUpdateProfile = (req, res, next) => {
                 display: display,
                 phone: phone,
                 password: "", 
-                confirmPassword: "" 
+                confirmPassword: "" ,
+                image: imageUrl
             },
             validationErrors: errors.array(),
             isAuthenticated: req.session.isLoggedIn
         });
     }
-    User.findById(userId).then(user => {
+
+    const imageUrl = image.path;
+
+    // const updateProfile = new updateProfile({
+    //     firstName: first,
+    //     lastName: last,
+    //     displayName: display,
+    //     email: email,
+    //     phone: phone,
+    //     photo: imageUrl,
+    //     password: ""
+    // });
+
+
+    // updateProfile
+    // .save()
+    // .then(() => {
+
+    // })
+    // .catch(err => {
+    //     const error = new Error(err);
+    //     error.httpStatusCode = 500;
+    //     return next(error);
+    // });
+
+    User.findById(userId)
+        .then(user => {
         user.firstName = first;
         user.lastName = last;
         user.displayName = display;

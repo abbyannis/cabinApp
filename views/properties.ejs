@@ -15,10 +15,10 @@
                 </div>
                 <ul id="property-list" class=""> 
                     <% for (let property of properties) { %>
-                        <!-- href will need to be set to 
-                        <%= isAdmin ? '/admin/properties/' + property._id : '/reservation/' + property._id %>
-                        after routes are set up -->
-                        <a class="no-underline" href="/main/dashboard/<%= property._id %>">
+                        <!-- href will need to be set to  -->
+                        
+                        <!-- after routes are set up -->
+                        <a class="no-underline" href="<%= isAdmin ? '/inventory/inventory/' + property._id : '/reservation/' + property._id %>">
                             <li class="selectable-list-item">
                                 <div>
                                     <%= property.name %>

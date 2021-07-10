@@ -1,13 +1,111 @@
 const Inventory = require('../models/inventory');
+const Cabin = require('../models/property');
 
 exports.getInventory = (req, res, next) => {
-    Inventory.fetchAll()
+  const propertyId = req.params.propertyId
+  Inventory.findOne({
+      propertyId: propertyId
+    })
     .then(inventory => {
-        res.render('inventory/inventory', {
-            inven: Inventory,
-            pageTitle: 'Inventory',
-            path: '/'
+      if (!inventory) {
+        return res.redirect('/inventory/new-inventory/' + propertyId)
+      }
+      res.render('inventory/inventory', {
+        inventory: inventory,
+        pageTitle: 'Inventory',
+        path: '/inventory/inventory',
+        propertyId: propertyId
+      })
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
+exports.getNewInventory = (req, res, next) => {
+  const propertyId = req.params.propertyId
+  res.render('inventory/new-inventory', {
+    inventory: [],
+    pageTitle: 'Inventory',
+    path: '/inventory/inventory',
+    propertyId: propertyId
+  })
+}
+
+exports.addInventory = (req, res, next) => {
+  const propertyId = req.body.propertyId; 
+  const updateinventoryList = req.body.inventory;
+  let updateAmount = req.body.amount;
+
+  if (!updateinventoryList) {
+    return res.redirect('/inventory/inventory/' + propertyId)
+  }
+  if (!updateAmount) {
+    updateAmount = 0;
+  }
+  Inventory.findOne({
+      propertyId: propertyId
+    })
+    .then(inventory => {
+      if (!inventory) {
+        const inv = new Inventory({
+          list: [{description: updateinventoryList, amount: updateAmount }],
+          propertyId: propertyId
         })
+        inv.save();
+        return res.redirect('/inventory/inventory/' + propertyId);
+      } else {
+        inventory.list.push({description: updateinventoryList, amount: updateAmount });
+        return inventory.save()
+        .then(result => {
+          return res.redirect('/inventory/inventory/' + propertyId);
+        })
+      }
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
+exports.deleteInventory = (req, res, next) => {
+  const propertyId = req.body.propertyId; 
+  const itemmToDelete = req.body.itemId;
+  updateinventoryList = req.body.inventory;
+  let updateAmount = req.body.amount;
+  console.log(itemmToDelete)
+  Inventory.findOne({
+      propertyId: propertyId
+    })
+    .then(inventory => {
+      if (!inventory) {
+        const inv = new Inventory({
+          list: [{description: updateinventoryList, amount: updateAmount }],
+          propertyId: propertyId
+        })
+        inv.save();
+        return res.redirect('/inventory/inventory/' + propertyId);
+      } else {
+        var index
+        for (i = 0; i < inventory.list.length; i++) {
+          if (inventory.list[i]._id == itemmToDelete) {
+              index = i
+          }
+        }
+        if (index > -1) {
+          inventory.list.splice(index, 1);
+        }
+        console.log("right after " + index)
+        return inventory.save()
+        .then(result => {
+          return res.redirect('/inventory/inventory/' + propertyId);
+        })
+      }
     })
     .catch(err => {
       if (!err.statusCode) {
@@ -18,16 +116,58 @@ exports.getInventory = (req, res, next) => {
 };
 
 exports.updateInventory = (req, res, next) => {
-    const updateinventoryList = req.params.inventory;
-    const inventoryList = new inventoryList({
-        userInventory = updateinventoryList,
-        itemId = req.item
-    });
-    inventoryList
-        .save()
-        .then(result => {
-            console.log('Inventory Updated');
-            res.redirect('/main') 
-        })
-        .catch(err => {console.log(err);});
+  const item = req.body.item;
+  const amount = req.body.amount;
+  const itemId = req.body.itemId;
+  const propertyId = req.body.propertyId;
+  const list = [];
+  for(let i = 0; i < item.length; i++) {
+    list.push({ 
+      description: item[i],
+      amount: amount[i],
+      _id: itemId[i]
+    })
+  }
+  Inventory.findOne({ propertyId: propertyId })
+    .then(inventory => {
+      inventory.list = list;
+      return inventory.save()
+      .then(results => {
+        return res.redirect('/inventory/inventory/' + propertyId);
+      })
+  })
+  .catch(err => {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  });
+};
+
+exports.getAdminProperties = (req, res, next) => {
+  Cabin
+    .find({
+      admins: req.session.user._id
+    })
+    .then(properties => {
+      // if 0 or more than 1 property, route to properties page for selection
+      // this will need to route to a page for the admin to edit the property
+      if (properties.length !== 1) {
+        console.log('isAdmin = true')
+        res.render('properties', {
+          pageTitle: 'Property List',
+          path: '/properties',
+          currentUser: req.session.user._id,
+          isAdmin: true,
+          isAuthenticated: req.session.isLoggedIn,
+          properties: properties,
+          inventory: true
+        });
+      } else {
+        // if only one property, automatically route to add reservation page
+        // will need to be updated with correct route after routes set up
+        res.redirect('/');
+      }
+
+    })
 };
