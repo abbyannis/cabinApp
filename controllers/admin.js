@@ -1,6 +1,6 @@
 const Cabin = require('../models/property');
 const User = require('../models/user');
-const Reservation = require('../models/reservation');
+const ChecklistMaster = require('../models/checklist-master');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const ROOTURL = process.env.HEROKU_ORIGIN || "http://localhost:5000";
@@ -40,6 +40,7 @@ exports.getCreateProperty = (req, res, next) => {
 
 // open property list for admins
 exports.getAdminProperties = (req, res, next) => {
+  const address = '/reservation/'
   Cabin
       .find({ 
         admins: req.session.user._id
@@ -55,7 +56,8 @@ exports.getAdminProperties = (req, res, next) => {
             currentUser: req.session.user._id,
             isAdmin: true,
             isAuthenticated: req.session.isLoggedIn,
-            properties: properties
+            properties: properties,
+            address: address
           });
         } else {
           // if only one property, automatically route to add reservation page
@@ -338,4 +340,117 @@ exports.manageReservation = (req, res, next) => {
       if (!err.statusCode) err.statusCode = 500;
       next(err);
     });
+};
+//add an invited user to the property
+exports.addUser = (req, res, next) => {
+  const token = req.params.inviteToken;  
+  Cabin 
+  .findOne({ 
+    invites: token      
+  })
+  .then(cabin => {
+    if (!cabin) {    
+      const err = new Error('Property not found');
+      err.statusCode = 404;
+      throw error;
+    }              
+    cabin.members.push(req.params.newUserId);  
+    const idx = cabin.invites.indexOf(token); //remove token
+    console.log(idx);          
+    if(idx > -1) {
+      cabin.invites.splice(idx, 1);      
+    }  
+    return cabin.save();
+  })
+  .then(result => {
+    res.status(200).json({
+      message: 'User added to property.',
+      cabin: result
+    });
+  })
+  .catch(err => {
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);   
+  });
+}
+
+//checklist auth
+
+exports.postAddChecklist = (req, res, next) => {
+  const title = req.body.title;
+  const description = req.body.description;
+  res.render('admin/edit-checklist', {
+      pageTitle: 'Add New Task',
+      path: '/admin/edit-checklist',
+      editing: false,
+      isAuthenticated: req.session.LoggedIn,
+      currentUser: req.session.user
+  });
+  const checklist = new ChecklistMaster({
+      title: title, 
+      description: description 
+  });
+  Cabin.getPropertyById(req.params.propertyId, req.userId)
+    .save()
+    .then(cabin => {
+          cabin.checklist.push(checklist);
+          console.log('New Task Created');
+          res.redirect('/checklists/checklist')
+      })
+      .catch(err => {
+          console.log(err);
+      });
+
+};
+
+exports.getChecklist = (req, res, next) => {
+  const editMode = req.query.edit;
+  // if (!editMode) {
+  //   return res.redirect('/');
+  // }
+  const propId = req.params.propertyId;
+  Cabin.findById(propId)
+    .then(checklist => {
+      // if (!checklist) {
+      //   return res.redirect('/');
+      // }
+      res.render('admin/edit-checklist', {
+        pageTitle: 'Edit Checklist',
+        path: '/admin/edit-checklist',
+        currentUser: req.session.user,
+        isAuthenticated: req.session.LoggedIn,
+        editing: editMode
+      });
+    })
+    .catch(err => console.log(err));
+};
+
+// save editied checklist
+exports.postEditChecklist = (req, res, next) => {
+  const propId = req.body.propertyId;
+  const updatedTitle = req.body.title;
+  const updatedDesc = req.body.description;
+  
+    res.status(422).render('admin/edit-checklist', {
+      pageTitle: 'Edit Checklist',
+      path: '/admin/edit-checklist',
+      editing: true,
+      currentUser: req.session.user,
+      isAuthenticated: req.session.LoggedIn,
+      checklist: {
+        title: updatedTitle,
+        description: updatedDesc,
+        _id: propId
+      }
+    });
+  Cabin.findById(propId)
+    .then(checklist => {
+      checklist.title = updatedTitle;
+      checklist.description = updatedDesc;
+      return checklist.save().then(result => {
+        console.log('Checklist has been updated!');
+        res.redirect('/admin/edit-chechlist');
+      });
+    })
+    .catch(err => console.log(err));
 };
