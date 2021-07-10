@@ -39,6 +39,7 @@ exports.postPhoto = (req, res, next) => {
     imageUrl: imageUrl,
     userId: req.user
   });
+  
   newImage
     .save()
     .then(result => {
