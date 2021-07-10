@@ -7,6 +7,8 @@ const { validationResult } = require('express-validator');
 const User = require('../models/user');
 const { restart } = require('nodemon');
 
+const updateProfile = require('../models/user');
+
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -103,7 +105,8 @@ exports.getEditProfile = (req, res, next) => {
                     last: user.lastName, 
                     email: user.email, 
                     password: "", 
-                    confirmPassword: "" 
+                    confirmPassword: "" ,
+                    image: user.image
                 },
                 validationErrors: [],
                 isAuthenticated: req.session.isLoggedIn
@@ -394,7 +397,7 @@ exports.postUpdateProfile = (req, res, next) => {
     const display = req.body.display;
     const email = req.body.email;
     const phone = req.body.phone;
-    const imageUrl = req.body.image;
+    const image = req.file;
     const userId = req.body.userId;
     const errors = validationResult(req);
     
@@ -414,13 +417,40 @@ exports.postUpdateProfile = (req, res, next) => {
                 display: display,
                 phone: phone,
                 password: "", 
-                confirmPassword: "" 
+                confirmPassword: "" ,
+                image: imageUrl
             },
             validationErrors: errors.array(),
             isAuthenticated: req.session.isLoggedIn
         });
     }
-    User.findById(userId).then(user => {
+
+    const imageUrl = image.path;
+
+    // const updateProfile = new updateProfile({
+    //     firstName: first,
+    //     lastName: last,
+    //     displayName: display,
+    //     email: email,
+    //     phone: phone,
+    //     photo: imageUrl,
+    //     password: ""
+    // });
+
+
+    // updateProfile
+    // .save()
+    // .then(() => {
+
+    // })
+    // .catch(err => {
+    //     const error = new Error(err);
+    //     error.httpStatusCode = 500;
+    //     return next(error);
+    // });
+
+    User.findById(userId)
+        .then(user => {
         user.firstName = first;
         user.lastName = last;
         user.displayName = display;

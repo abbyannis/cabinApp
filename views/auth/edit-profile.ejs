@@ -11,7 +11,11 @@
         <% if (message) { %>
             <div class="user-message"><%= message %></div>
         <% } %>
-        <form class="login-form" action="../../auth/edit-profile" method="POST">
+        <form 
+            class="login-form" 
+            action="../../auth/edit-profile" method="POST"
+            enctype="multipart/form-data"
+        >
             <div class="form-control">
                 <label for="first">First Name</label>
                 <input 

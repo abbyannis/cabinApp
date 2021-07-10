@@ -60,4 +60,29 @@ router.delete('/properties/:propertyId/remove/:userId', isAdmin, adminController
 router.patch('/manage-reservation/:propertyId/:reservationId', isAdmin, adminController.manageReservation);
 
 
+//Checklist ADMIN routes
+router.get('/checklist', adminController.getChecklist);
+
+router.post('/edit-checklist', adminController.postEditChecklist);
+
+router.post('/add-checklist', adminController.postAddChecklist);
+
+const checklistData = {};
+router.get('/fetchAll', (req, res, next) => {
+  res.json(checklistData);
+})
+router.post('/insert', (req, res, next) => {
+  const newTask = req.body.newTask;
+        
+  JSON.stringify(checklistData);
+  if (!checklistData.task.some(a => a.title === newTask)) {
+      checklistData.task.push({ task: newTask }) 
+      res.sendStatus(200)
+  }
+  else { 
+      console.log(err);
+  }
+}
+)
+
 module.exports = router;

@@ -30,7 +30,7 @@ const propertySchema = new Schema({
   }],
   invites: [{ 
       type: String     
-  }]  
+  }] 
 });
 
 //finds a property that matches the property id 
