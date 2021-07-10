@@ -9,5 +9,6 @@ router.get('/new-inventory/:propertyId', inventoryController.getNewInventory);
 
 router.post('/inventory', inventoryController.addInventory);
 router.post('/update', inventoryController.updateInventory);
+router.post('/delete', inventoryController.deleteInventory);
 
 module.exports = router;

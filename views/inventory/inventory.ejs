@@ -8,9 +8,14 @@
     <main>
       <form class="cabin-inventory"action="/inventory/update" method="POST">
         <% for (let inv of inventory.list) { %>
+        <form class="cabin-inventory"action="/inventory/delete" method="POST">
         <input type="text" class="" name="item" value="<%= inv.description %>">
-        <input type="number" class="" name="amount" value="<%= inv.amount %>">
+        <input type="number" class="" name="amount" value="<%= inv.amount %>"> 
         <input type="hidden" name="itemId" value="<%= inv._id %>">
+          <button type="submit" name="delete">Delete</button>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <input type="hidden" name="propertyId" value="<%= propertyId %>">
+        </form>
         <br>
         <% } %>
         <button type="submit" name="update">Update</button>

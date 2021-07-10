@@ -73,6 +73,48 @@ exports.addInventory = (req, res, next) => {
     });
 };
 
+exports.deleteInventory = (req, res, next) => {
+  const propertyId = req.body.propertyId; 
+  const itemmToDelete = req.body.itemId;
+  updateinventoryList = req.body.inventory;
+  let updateAmount = req.body.amount;
+  console.log(itemmToDelete)
+  Inventory.findOne({
+      propertyId: propertyId
+    })
+    .then(inventory => {
+      if (!inventory) {
+        const inv = new Inventory({
+          list: [{description: updateinventoryList, amount: updateAmount }],
+          propertyId: propertyId
+        })
+        inv.save();
+        return res.redirect('/inventory/inventory/' + propertyId);
+      } else {
+        var index
+        for (i = 0; i < inventory.list.length; i++) {
+          if (inventory.list[i]._id == itemmToDelete) {
+              index = i
+          }
+        }
+        if (index > -1) {
+          inventory.list.splice(index, 1);
+        }
+        console.log("right after " + index)
+        return inventory.save()
+        .then(result => {
+          return res.redirect('/inventory/inventory/' + propertyId);
+        })
+      }
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
 exports.updateInventory = (req, res, next) => {
   const item = req.body.item;
   const amount = req.body.amount;
