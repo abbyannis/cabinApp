@@ -2,6 +2,7 @@ const Cabin = require('../models/property');
 
 //gets all properties for the current user
 exports.getUserProperties = (req, res, next) => {
+  const address = '/main/dashboard/'
   Cabin
       .find({ 
         members: req.session.user._id
@@ -15,7 +16,8 @@ exports.getUserProperties = (req, res, next) => {
             currentUser: req.session.user._id,
             isAdmin: false,
             isAuthenticated: req.session.isLoggedIn,
-            properties: properties
+            properties: properties,
+            address: address
           });
         } else {
           // if only one property, automatically route to add reservation page
