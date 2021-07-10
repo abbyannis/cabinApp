@@ -4,6 +4,12 @@ const { body } = require('express-validator');
 const isAdmin = require('../middleware/is-admin');
 const router = express.Router();
 
+//get admin dashboard
+router.get('/admin-index', isAdmin, adminController.getAdminDash)
+
+//get create new property page
+router.get('/property', adminController.getCreateProperty)
+
 //get a single admin property
 router.get('/properties/:propertyId', adminController.getProperty);
 

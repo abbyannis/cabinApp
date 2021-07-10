@@ -14,6 +14,30 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+// open admin dashboard
+exports.getAdminDash = (req, res, next) => {
+  const images = [{"imageUrl": '/images/lake.jpg'}, {"imageUrl": '/images/log.jpg'}, {"imageUrl": '/images/log-cabin.jpg'}, {"imageUrl": '/images/cabin.jpg'}, {"imageUrl": '/images/dawn.jpg'}];
+  res.render('admin/admin-index', {
+    pageTitle: 'Admin Dashboard',
+    path: '/admin/admin-dash',
+    currentUser: req.session.user_id,
+    isAdmin: true,
+    isAuthenticated: req.session.isLoggedIn,
+    images: images
+  })
+}
+
+// open create new property
+exports.getCreateProperty = (req, res, next) => {
+  res.render('admin/add-property', {
+    pageTitle: 'Create New Property',
+    path: '/admin/add-property',
+    errorMessage: '',
+    validationErrors: [],
+    currentUser: req.session.user._id,
+  })
+}
+
 // open property list for admins
 exports.getAdminProperties = (req, res, next) => {
   Cabin
@@ -104,19 +128,20 @@ exports.postProperty = (req, res, next) => {
   //check validation in middleware for valid fields
   const errors = validationResult(req);
   if(!errors.isEmpty()) {
-    return res.status(422).json( { errors });
+    return res.status(422).json( { errors }); //FIXME: look at Abby's login error stuff
   }
   let cabin = new Cabin({
     name: req.body.name,
     location: req.body.location,
-    admins: [req.userId],
+    admins: [req.session.user._id],
     members: [],
     imageUrls: req.body.imageUrls || []
   });  
   cabin
     .save()
     .then(result => {
-      return res.status(201).json({cabin: result});
+      // return res.status(201).json({cabin: result});
+      res.redirect('/admin/properties');
     })
     .catch(err => {  
       console.log(err);         

@@ -38,6 +38,11 @@
                 <h2>You are not currently a member of any properties. Please contact your property admin to be invited to a property.</h2>
             <% } %>
         <% } %> 
+        <% if (isAdmin) { %>
+            <div class="faux-button">
+                <a href="/admin/property">Create New Property</a>
+            </div>
+        <% } %>
         <input type="hidden" id="isAdmin" value="<%= isAdmin %>">
     </main>
     <!-- <script src="/scripts/properties.js"></script> -->

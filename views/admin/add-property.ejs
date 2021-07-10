@@ -1,13 +1,13 @@
-<%- include('includes/head.ejs') %>
+<%- include('../includes/head.ejs') %>
 </head>
 
 <body>
-    <%- include('includes/nav.ejs') %>
+    <%- include('../includes/nav.ejs') %>
     <main>        
         <% if (errorMessage) { %>
             <div class="user-message user-message--error"><%= errorMessage %></div>
         <% } %>
-        <div class="login-form" action="../../admin/properties" method="POST">
+        <form class="login-form" action="../../admin/properties" method="POST">
             <div class="form-control">
                 <label for="name">Property Name</label>
                 <input 
@@ -15,7 +15,6 @@
                     type="text" 
                     name="name" 
                     id="name" 
-                    value="<%= property.name %>"
                 >
             </div>
             <div class="form-control">
@@ -25,7 +24,6 @@
                     type="text" 
                     name="location" 
                     id="location" 
-                    value="<%= property.location %>"
                 >
             </div>
             <div class="form-control">
@@ -35,7 +33,6 @@
                     type="hidden" 
                     name="imageUrls" 
                     id="imageUrls" 
-                    value="<%= currentUser.email %>"
                 >
             </div>
             <div class="centered">
@@ -45,4 +42,4 @@
             </div>
         </form>
     </main>
-<%- include('includes/end.ejs') %>
+<%- include('../includes/end.ejs') %>

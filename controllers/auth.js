@@ -114,30 +114,6 @@ exports.getEditProfile = (req, res, next) => {
         })
 };
 
-exports.getEditPicture = (req, res, next) => {
-    let message = req.flash('notification');
-    if (message.length > 0) {
-        message = message[0];
-    } else {
-        message = null;
-    }
-    User.findById(req.session.user)
-        .then(user => {
-            res.render('auth/edit-picture', {
-                path: '/edit-picture',
-                pageTitle: 'Edit Profile Picture',
-                user: req.session.user,
-                errorMessage: "",
-                message: message,
-                userType: req.session.userType,
-                currentUser: user,
-                currentImage: user.photo,
-                validationErrors: [],
-                isAuthenticated: req.session.isLoggedIn
-            });
-        })
-};
-
 exports.getUpdatePassword = (req, res, next) => {
     const userId = req.session.userId;
     User.findById(userId)
@@ -427,28 +403,6 @@ exports.postUpdateProfile = (req, res, next) => {
 
     const imageUrl = image.path;
 
-    // const updateProfile = new updateProfile({
-    //     firstName: first,
-    //     lastName: last,
-    //     displayName: display,
-    //     email: email,
-    //     phone: phone,
-    //     photo: imageUrl,
-    //     password: ""
-    // });
-
-
-    // updateProfile
-    // .save()
-    // .then(() => {
-
-    // })
-    // .catch(err => {
-    //     const error = new Error(err);
-    //     error.httpStatusCode = 500;
-    //     return next(error);
-    // });
-
     User.findById(userId)
         .then(user => {
         user.firstName = first;
@@ -456,7 +410,9 @@ exports.postUpdateProfile = (req, res, next) => {
         user.displayName = display;
         user.email = email;
         user.phone = phone;
-        if(imageUrl) user.photo = imageUrl;
+        if(imageUrl) user.photo = imageUrl.substring(6);
+        console.log(user.photo);
+        req.session.user = user;
         return user.save()
     })  
     .then(result => {

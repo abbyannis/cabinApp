@@ -10,7 +10,7 @@
                 <li class="main-header-item"><a class="<%= path === '/reservation' ? 'active' : '' %>" href="/reservation">Reservation</a></li>
                 <li class="main-header-item"><a class="<%= path === '/inventory' ? 'active' : '' %>" href="/inventory/inventory">Inventory</a></li>
                 <li class="main-header-item"><a class="<%= path === '/profile' ? 'active' : '' %>" href="/auth/profile">Account</a></li>
-                <li class="main-header-item"><a class="<%= path === '/admin' ? 'active' : '' %>" href="/">Admin</a></li>
+                <li class="main-header-item"><a class="<%= path === '/admin/properties' ? 'active' : '' %>" href="/admin/properties">Admin</a></li>
             <% } else { %>
                 <li class="main-header-item"><a class="<%= path === '/login' ? 'active' : '' %>" href="/auth/Login">Login</a></li>
                 <li class="main-header-item"><a class="<%= path === '/register' ? 'active' : '' %>" href="/auth/signup">Register</a></li>
@@ -24,6 +24,8 @@
                 </li>
             <% } %>
         </ul>  
+
+        <!-- MOBILE NAV -->
         <ul class="main-header-list-mobile">
             <li class="dropdown">
                 <a class="dropdown-toggle top-menu" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

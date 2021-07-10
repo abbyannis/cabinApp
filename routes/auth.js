@@ -13,8 +13,6 @@ router.get('/signup', authController.getSignup);
 
 router.get('/edit-profile', isAuth, authController.getEditProfile);
 
-router.get('/edit-picture', isAuth, authController.getEditPicture);
-
 router.get('/profile', isAuth, authController.getProfile);
 
 router.get('/update-password', authController.getUpdatePassword);
