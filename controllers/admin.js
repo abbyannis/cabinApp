@@ -263,14 +263,7 @@ exports.addUser = (req, res, next) => {
 }
 
 //checklist auth
-exports.getAddChecklist = (req, res, next) => {
-  res.render('admin/edit-checklist', {
-      pageTitle: "Add Checklist",
-      path: '/admin/edit-checklist',
-      editing: false,
-      currentUser: req.session.user
-  });
-}
+
 exports.postAddChecklist = (req, res, next) => {
   const title = req.body.title;
   const description = req.body.description;
@@ -278,6 +271,7 @@ exports.postAddChecklist = (req, res, next) => {
       pageTitle: 'Add New Task',
       path: '/admin/edit-checklist',
       editing: false,
+      isAuthenticated: req.session.LoggedIn,
       currentUser: req.session.user
   });
   const checklist = new ChecklistMaster({
@@ -297,7 +291,7 @@ exports.postAddChecklist = (req, res, next) => {
 
 };
 
-exports.getEditChecklist = (req, res, next) => {
+exports.getChecklist = (req, res, next) => {
   const editMode = req.query.edit;
   // if (!editMode) {
   //   return res.redirect('/');
@@ -312,6 +306,7 @@ exports.getEditChecklist = (req, res, next) => {
         pageTitle: 'Edit Checklist',
         path: '/admin/edit-checklist',
         currentUser: req.session.user,
+        isAuthenticated: req.session.LoggedIn,
         editing: editMode
       });
     })
@@ -329,6 +324,7 @@ exports.postEditChecklist = (req, res, next) => {
       path: '/admin/edit-checklist',
       editing: true,
       currentUser: req.session.user,
+      isAuthenticated: req.session.LoggedIn,
       checklist: {
         title: updatedTitle,
         description: updatedDesc,

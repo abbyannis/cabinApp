@@ -54,15 +54,13 @@ router.post('/properties/:propertyId/invite',
 router.delete('/properties/:propertyId/remove/:userId', adminController.removeUser);
 
 //Checklist ADMIN routes
-router.get('/edit-checklist', adminController.getEditChecklist);
-
-router.get('/add-checklist',  adminController.getAddChecklist);
+router.get('/checklist', adminController.getChecklist);
 
 router.post('/edit-checklist', adminController.postEditChecklist);
 
 router.post('/add-checklist', adminController.postAddChecklist);
 
-const checklistData = {"title":'Clean', "description":'Sweep Floors'};
+const checklistData = {};
 router.get('/fetchAll', (req, res, next) => {
   res.json(checklistData);
 })

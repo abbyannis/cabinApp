@@ -7,15 +7,20 @@
         <h1>Cabin Checklist</h1>
         <ul id="checklist">
         </ul>
-        <h2>Add Tasks</h2>
-        Task Title: <input type="text" id="title" ><br> 
-        Task Description: <input type="textarea" id="description"  rows="5"><br>  
-        <button id="submitTask" onclick="submitTask()">Submit</button>
+       
+        <form class="form-control" action="POST">
+            <h2>Add Tasks</h2>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            Task Title: <input type="text" id="title" ><br> 
+            Task Description: <input type="textarea" id="description"  rows="5"><br> 
+            <button id="submitTask" onclick="submitTask()">Submit</button>
+        </form>
+        <script src="/scripts/fetch.js"></script>
         <script>
             const populateList = () => {
                 const checklist = document.getElementById('checklist');
-                fetch('/fetchAll')
-                .then(res => res.json())
+                const url
+                getData(url, body, csrf.value, method)
                 .then(data => {
                     // Clear the list first
                     while (checklist.firstChild) checklist.firstChild.remove()
