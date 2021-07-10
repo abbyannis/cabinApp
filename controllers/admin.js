@@ -16,6 +16,7 @@ const transporter = nodemailer.createTransport({
 
 // open property list for admins
 exports.getAdminProperties = (req, res, next) => {
+  const address = '/reservation/'
   Cabin
       .find({ 
         admins: req.session.user._id
@@ -31,7 +32,8 @@ exports.getAdminProperties = (req, res, next) => {
             currentUser: req.session.user._id,
             isAdmin: true,
             isAuthenticated: req.session.isLoggedIn,
-            properties: properties
+            properties: properties,
+            address: address
           });
         } else {
           // if only one property, automatically route to add reservation page

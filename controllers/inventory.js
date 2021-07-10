@@ -25,6 +25,27 @@ exports.getInventory = (req, res, next) => {
     });
 };
 
+exports.getUserInventory = (req, res, next) => {
+  const propertyId = req.params.propertyId
+  Inventory.findOne({
+      propertyId: propertyId
+    })
+    .then(inventory => {
+      res.render('inventory/inventory-user', {
+        inventory: inventory,
+        pageTitle: 'Inventory',
+        path: '/inventory/inventory',
+        propertyId: propertyId
+      })
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+}
+
 exports.getNewInventory = (req, res, next) => {
   const propertyId = req.params.propertyId
   res.render('inventory/new-inventory', {
@@ -145,6 +166,7 @@ exports.updateInventory = (req, res, next) => {
 };
 
 exports.getAdminProperties = (req, res, next) => {
+  const address = '/inventory/inventory/'
   Cabin
     .find({
       admins: req.session.user._id
@@ -161,7 +183,7 @@ exports.getAdminProperties = (req, res, next) => {
           isAdmin: true,
           isAuthenticated: req.session.isLoggedIn,
           properties: properties,
-          inventory: true
+          address: address
         });
       } else {
         // if only one property, automatically route to add reservation page
@@ -171,3 +193,36 @@ exports.getAdminProperties = (req, res, next) => {
 
     })
 };
+
+exports.getUserProperties = (req, res, next) => {
+  const address = '/inventory/user-update/' 
+  Cabin
+      .find({ 
+        members: req.session.user._id
+      })
+      .then(properties => {
+        // if 0 or more than 1 property, route to properties page for selection
+        console.log('made it here')
+        if(properties.length !== 1) {
+          res.render('properties', {
+            pageTitle: 'Property List',
+            path: '/',        
+            currentUser: req.session.user._id,
+            isAdmin: false,
+            isAuthenticated: req.session.isLoggedIn,
+            properties: properties,
+            address: address
+          });
+        } else {
+          // if only one property, automatically route to add reservation page
+          // will need to be updated with correct route after routes set up
+          res.redirect('../inventory/user-update/' + properties[0]._id);
+        }
+        
+      })
+    .catch(err => {
+        const error = new Error(err);
+        error.statusCode = 500;
+        next(error);
+    }); 
+}
