@@ -95,38 +95,28 @@ exports.addInventory = (req, res, next) => {
 };
 
 exports.deleteInventory = (req, res, next) => {
-  const propertyId = req.body.propertyId; 
-  const itemmToDelete = req.body.itemId;
-  updateinventoryList = req.body.inventory;
-  let updateAmount = req.body.amount;
-  console.log(itemmToDelete)
+  console.log("we made it to delete!")
+  const propertyId = req.query.propertyId; 
+  const itemToDelete = req.query.itemId;
+  console.log(itemToDelete)
   Inventory.findOne({
       propertyId: propertyId
     })
     .then(inventory => {
-      if (!inventory) {
-        const inv = new Inventory({
-          list: [{description: updateinventoryList, amount: updateAmount }],
-          propertyId: propertyId
-        })
-        inv.save();
-        return res.redirect('/inventory/inventory/' + propertyId);
-      } else {
-        var index
-        for (i = 0; i < inventory.list.length; i++) {
-          if (inventory.list[i]._id == itemmToDelete) {
-              index = i
-          }
+      var index
+      for (i = 0; i < inventory.list.length; i++) {
+        if (inventory.list[i]._id == itemToDelete) {
+            index = i
         }
-        if (index > -1) {
-          inventory.list.splice(index, 1);
-        }
-        console.log("right after " + index)
-        return inventory.save()
+      }
+      if (index > -1) {
+        inventory.list.splice(index, 1);
+      }
+      console.log("right after " + index)
+      return inventory.save()
         .then(result => {
           return res.redirect('/inventory/inventory/' + propertyId);
         })
-      }
     })
     .catch(err => {
       if (!err.statusCode) {

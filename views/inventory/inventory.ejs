@@ -16,13 +16,15 @@
           <% for (let inv of inventory.list) { %>
             <div class="center-inventory">
               <form class="cabin-inventory"action="/inventory/delete" method="POST">
+                <input type="hidden" class="dummy" name="item" value="<%= inv.description %>">
                 <input type="text" class="inventory-input" name="item" value="<%= inv.description %>">
                 <input type="number" class="inventory-amt" name="amount" value="<%= inv.amount %>"> 
                 <input type="hidden" name="itemId" value="<%= inv._id %>">
-                  <button type="submit" class="delete-button" name="delete">x</button>
+                  <a class="delete-button" href="/inventory/delete/?propertyId=<%= propertyId %>&itemId=<%= inv._id %>">x</a>
+                  <!-- <button type="submit" class="delete-button" name="delete">x</button> -->
                   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                   <input type="hidden" name="propertyId" value="<%= propertyId %>">
-                </form>
+              </form>
             </div>
             <% } %>
             <button class="update-button" type="submit" name="update">Update All</button>
