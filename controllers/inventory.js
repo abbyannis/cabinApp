@@ -131,17 +131,25 @@ exports.updateInventory = (req, res, next) => {
   const amount = req.body.amount;
   const itemId = req.body.itemId;
   const propertyId = req.body.propertyId;
-  const list = [];
-  for(let i = 0; i < item.length; i++) {
-    list.push({ 
-      description: item[i],
-      amount: amount[i],
-      _id: itemId[i]
+  const newList = [];
+  if (Array.isArray(item)) {
+    for(let i = 0; i < item.length; i++) {
+      newList.push({ 
+        description: item[i],
+        amount: amount[i],
+        _id: itemId[i]
+      })
+    }
+  } else {
+    newList.push({ 
+      description: item,
+      amount: amount,
+      _id: itemId
     })
   }
   Inventory.findOne({ propertyId: propertyId })
     .then(inventory => {
-      inventory.list = list;
+      inventory.list = newList;
       return inventory.save()
       .then(results => {
         return res.redirect('/inventory/inventory/' + propertyId);
