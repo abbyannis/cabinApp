@@ -126,7 +126,7 @@ exports.getProperties = (req, res, next) => {
 };
 
 //create a new property
-exports.postProperty = (req, res, next) => {        
+exports.postProperty = (req, res, next) => {
   //check validation in middleware for valid fields
   const errors = validationResult(req);
   if(!errors.isEmpty()) {
