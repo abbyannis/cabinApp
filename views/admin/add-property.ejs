@@ -37,7 +37,7 @@
             </div>
             <div class="centered">
                 <input type="hidden" name="userId" value="<%= currentUser %>">
-                <input type="hidden" name="_csrf" value="">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <button class="btn btn-default" type="submit">Add Property</button>
             </div>
         </form>
