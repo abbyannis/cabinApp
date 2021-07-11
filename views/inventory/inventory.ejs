@@ -6,6 +6,7 @@
 <body>
     <%- include('../includes/nav.ejs') %>
     <main>
+      <% if (inventory) { %>
       <form class="inventory-form"action="/inventory/update" method="POST">
         <h4 class="centered">Update Inventory List</h4>
         <div class="center-inventory">
@@ -26,7 +27,7 @@
             <button class="update-button" type="submit" name="update">Update All</button>
           </div>
       </form>
-
+      <% } %>
     <form class="inventory-form"action="/inventory/inventory" method="POST">
       <h4 class="centered">Add Item to Inventory List</h4>
       <div class="center-inventory">
