@@ -168,30 +168,26 @@ exports.updateUserInventory = (req, res, next) => {
   const itemId = req.body.itemId;
   const propertyId = req.body.propertyId;
   const list = [];
-  // for(let i = 0; i < amount.length; i++) {
-  //   newAmount = amount[i];
-  //   console.log(newAmount)
-  // }
   Inventory.findOne({ propertyId: propertyId })
     .then(inventory => {
-      console.log("looking for " + itemId[0])
-
-      for (var i = 0; i < inventory.list.length; i++) {
-          console.log("old " + inventory.list[i].amount)
+      if(Array.isArray(newAmount)) {
+        for (var i = 0; i < inventory.list.length; i++) {
           inventory.list[i].amount = newAmount[i];
-          console.log("new " + newAmount)
+        }
+      } else {
+        inventory.list[0].amount = newAmount;
       }
       return inventory.save()
       .then(results => {
         return res.redirect('/inventory/user-update/' + propertyId);
       })
   })
-  // .catch(err => {
-  //   if (!err.statusCode) {
-  //     err.statusCode = 500;
-  //   }
-  //   next(err);
-  // });
+  .catch(err => {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  });
 };
 
 exports.getAdminProperties = (req, res, next) => {
