@@ -188,7 +188,7 @@ exports.getAdminProperties = (req, res, next) => {
       } else {
         // if only one property, automatically route to add reservation page
         // will need to be updated with correct route after routes set up
-        res.redirect('/');
+        res.redirect('../inventory/inventory/' + properties[0]._id);
       }
 
     })
