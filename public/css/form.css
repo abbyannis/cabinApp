@@ -170,11 +170,14 @@ btn {
     vertical-align: middle;
     align-items: center;
     font-size: 1.75rem;
-    font-family: Verdana, Geneva, Tahoma, sans-serif
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    border-radius: 5px;
   }
 
   .delete-button:hover {
     background-color: black;
+    text-decoration: none;
+    color: white;
   }
 
   .update-button {

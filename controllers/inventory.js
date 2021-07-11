@@ -95,38 +95,28 @@ exports.addInventory = (req, res, next) => {
 };
 
 exports.deleteInventory = (req, res, next) => {
-  const propertyId = req.body.propertyId; 
-  const itemmToDelete = req.body.itemId;
-  updateinventoryList = req.body.inventory;
-  let updateAmount = req.body.amount;
-  console.log(itemmToDelete)
+  console.log("we made it to delete!")
+  const propertyId = req.query.propertyId; 
+  const itemToDelete = req.query.itemId;
+  console.log(itemToDelete)
   Inventory.findOne({
       propertyId: propertyId
     })
     .then(inventory => {
-      if (!inventory) {
-        const inv = new Inventory({
-          list: [{description: updateinventoryList, amount: updateAmount }],
-          propertyId: propertyId
-        })
-        inv.save();
-        return res.redirect('/inventory/inventory/' + propertyId);
-      } else {
-        var index
-        for (i = 0; i < inventory.list.length; i++) {
-          if (inventory.list[i]._id == itemmToDelete) {
-              index = i
-          }
+      var index
+      for (i = 0; i < inventory.list.length; i++) {
+        if (inventory.list[i]._id == itemToDelete) {
+            index = i
         }
-        if (index > -1) {
-          inventory.list.splice(index, 1);
-        }
-        console.log("right after " + index)
-        return inventory.save()
+      }
+      if (index > -1) {
+        inventory.list.splice(index, 1);
+      }
+      console.log("right after " + index)
+      return inventory.save()
         .then(result => {
           return res.redirect('/inventory/inventory/' + propertyId);
         })
-      }
     })
     .catch(err => {
       if (!err.statusCode) {
@@ -141,20 +131,55 @@ exports.updateInventory = (req, res, next) => {
   const amount = req.body.amount;
   const itemId = req.body.itemId;
   const propertyId = req.body.propertyId;
-  const list = [];
-  for(let i = 0; i < item.length; i++) {
-    list.push({ 
-      description: item[i],
-      amount: amount[i],
-      _id: itemId[i]
+  const newList = [];
+  if (Array.isArray(item)) {
+    for(let i = 0; i < item.length; i++) {
+      newList.push({ 
+        description: item[i],
+        amount: amount[i],
+        _id: itemId[i]
+      })
+    }
+  } else {
+    newList.push({ 
+      description: item,
+      amount: amount,
+      _id: itemId
     })
   }
   Inventory.findOne({ propertyId: propertyId })
     .then(inventory => {
-      inventory.list = list;
+      inventory.list = newList;
       return inventory.save()
       .then(results => {
         return res.redirect('/inventory/inventory/' + propertyId);
+      })
+  })
+  .catch(err => {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  });
+};
+
+exports.updateUserInventory = (req, res, next) => {
+  const newAmount = req.body.amount;
+  const itemId = req.body.itemId;
+  const propertyId = req.body.propertyId;
+  const list = [];
+  Inventory.findOne({ propertyId: propertyId })
+    .then(inventory => {
+      if(Array.isArray(newAmount)) {
+        for (var i = 0; i < inventory.list.length; i++) {
+          inventory.list[i].amount = newAmount[i];
+        }
+      } else {
+        inventory.list[0].amount = newAmount;
+      }
+      return inventory.save()
+      .then(results => {
+        return res.redirect('/inventory/user-update/' + propertyId);
       })
   })
   .catch(err => {
@@ -175,7 +200,6 @@ exports.getAdminProperties = (req, res, next) => {
       // if 0 or more than 1 property, route to properties page for selection
       // this will need to route to a page for the admin to edit the property
       if (properties.length !== 1) {
-        console.log('isAdmin = true')
         res.render('properties', {
           pageTitle: 'Property List',
           path: '/properties',

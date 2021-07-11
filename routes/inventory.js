@@ -11,6 +11,8 @@ router.get('/user-update/:propertyId', inventoryController.getUserInventory);
 
 router.post('/inventory', inventoryController.addInventory);
 router.post('/update', inventoryController.updateInventory);
+router.get('/delete', inventoryController.deleteInventory);
 router.post('/delete', inventoryController.deleteInventory);
+router.post('/update-user', inventoryController.updateUserInventory);
 
 module.exports = router;
