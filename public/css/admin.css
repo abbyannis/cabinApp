@@ -1,0 +1,19 @@
+.admin-property-dash-ctrls {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 20px 20px 10px;
+}
+
+.admin-property-dash-ctrls a:nth-child(2) {
+    color: red;
+}
+
+.admin-card h2 {
+    font-size: 2rem;
+    margin: 0 10px;
+}
+
+.admin-card h4{
+    font-size: 1.25rem;
+    margin: 0 15px;
+}

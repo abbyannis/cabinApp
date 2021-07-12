@@ -10,14 +10,14 @@ router.get('/admin-index/:propertyId', isAdmin, adminController.getAdminDash)
 //get create new property page
 router.get('/property', adminController.getCreateProperty)
 
+//get all admin properties
+router.get('/properties', adminController.getAdminProperties);
+
 //get a single admin property
 router.get('/properties/:propertyId', adminController.getProperty);
 
 //manage reservations
 router.get('/reservations', adminController.manageReservations);
-
-//get all admin properties
-router.get('/properties', adminController.getAdminProperties);
 
 //post a new property
 router.post('/properties', 

@@ -1,5 +1,6 @@
 <%- include('./includes/head.ejs') %>
 <link rel="stylesheet" href="/css/form.css">
+<link rel="stylesheet" href="/css/admin.css">
 </head>
 
 <body>
@@ -15,16 +16,17 @@
                 </div>
                 <ul id="property-list" class=""> 
                     <% for (let property of properties) { %>
-                        <!-- <a class="no-underline" href="<%= isAdmin ? '/admin/admin-index/' : address + property._id %>"> -->
                         <a class="no-underline" href="<%= address + property._id %>">
-                            <li class="selectable-list-item">
-                                <div>
-                                    <%= property.name %>
-                                </div>
-                                <div class="alt-text">
-                                    <%= property.location %>
-                                </div>
-                            </li>
+                            <div style="position: relative;">
+                                <li class="selectable-list-item">
+                                    <div>
+                                        <%= property.name %>
+                                    </div>
+                                    <div class="alt-text">
+                                        <%= property.location %>
+                                    </div>
+                                </li>
+                            </div>
                         </a>
                     <% } %>
                 </ul>    
@@ -37,9 +39,7 @@
             <% } %>
         <% } %> 
         <% if (isAdmin) { %>
-            <div class="faux-button">
-                <a href="/admin/property">Create New Property</a>
-            </div>
+            <a href="/admin/property" class="faux-button new-property-btn">Create New Property</a>
         <% } %>
         <input type="hidden" id="isAdmin" value="<%= isAdmin %>">
     </main>

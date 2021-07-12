@@ -1,8 +1,9 @@
 <%- include('../includes/head.ejs') %>
     <link rel="stylesheet" href="/css/calendar.css">
+    <link rel="stylesheet" href="/css/admin.css">
 </head>
 
-<body>
+<body class="no-scroll">
     <%- include('../includes/nav.ejs') %>
     <main>
         <div class="slider-container">
@@ -37,39 +38,26 @@
                             <% } %>  
                         </div>
                         <div class="card slider-card card-index mb-3 d-block w-100">
-                            <div clss="row no-gutters">
+                            <div class="row no-gutters">
                                 <div class="slider-text">
                                     <div class="col-md-12">
-                                        <div class="card-body">
+                                        <div class="card-body admin-card">
                                             <% if (!isAuthenticated) { %>
-                                                <div class="faux-button">
-                                                    <a href="auth/login">Login</a>
-                                                </div>
-                                                <div class="faux-button">
-                                                    <a href="auth/signup">Register</a>
-                                                </div>
+                                                <a href="auth/login" class="faux-button">Login</a>
+                                                <a href="auth/signup" class="faux-button">Register</a>
                                             <% } else { %>
-                                                <div class="faux-button">
-                                                    <a href="/user/list">Manage Reservations</a>
+                                                <div class="admin-property-dash-ctrls">
+                                                    <a href="/admin/properties">Back to My Property List</a>
+                                                    <a href="/admin/properties/<%= propertyId %>">Delete this Property</a>
                                                 </div>
-                                                <!-- <div class="faux-button">
-                                                    <a href="/reservation">View Reservations</a>
-                                                </div> -->
-                                                <div class="faux-button">
-                                                    <a href="/reservation">Manage Properties</a>
-                                                </div>
-                                                <!-- <div class="faux-button">
-                                                    <a href="/user/invites">Manage Property Invites</a>
-                                                </div> -->
-                                                <div class="faux-button">
-                                                    <a href="/">Manage Checklists</a>
-                                                </div>
-                                                <div class="faux-button">
-                                                    <a href="/">Manage Inventory</a>
-                                                </div>
-                                                <!-- <div class="faux-button">
-                                                    <a href="/social/add-post">Manage Image Gallery</a>
-                                                </div> -->
+                                                    <h2><%= name %></h2>
+                                                    <h4><%= location %></h4>
+                                                <a href="/user/list" class="faux-button">Manage Reservations</a>
+                                                <a href="/reservation" class="faux-button">Manage Property Settings</a>
+                                                <a href="/user/invites" class="faux-button">Manage Invites</a>
+                                                <a href="/" class="faux-button">Manage Checklists</a>
+                                                <a href="/" class="faux-button">Manage Inventory</a>
+                                                <a href="/social/add-post" class="faux-button">Manage Image Gallery</a>
                                             <% } %>
                                         </div>
                                     </div>

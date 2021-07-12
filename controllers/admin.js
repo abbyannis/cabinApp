@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const ROOTURL = process.env.HEROKU_ORIGIN || "http://localhost:5000";
 const { validationResult } = require("express-validator");
+const { name } = require('ejs');
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -17,14 +18,20 @@ const transporter = nodemailer.createTransport({
 // open admin dashboard
 exports.getAdminDash = (req, res, next) => {
   const images = [{"imageUrl": '/images/lake.jpg'}, {"imageUrl": '/images/log.jpg'}, {"imageUrl": '/images/log-cabin.jpg'}, {"imageUrl": '/images/cabin.jpg'}, {"imageUrl": '/images/dawn.jpg'}];
-  res.render('admin/admin-index', {
-    pageTitle: 'Admin Dashboard',
-    path: '/admin/admin-dash',
-    currentUser: req.session.user_id,
-    isAdmin: true,
-    isAuthenticated: req.session.isLoggedIn,
-    images: images
-  })
+  Cabin.findById(req.params.propertyId)
+    .then(property => {
+      res.render('admin/admin-index', {
+        pageTitle: 'Admin Dashboard',
+        path: '/admin/admin-dash',
+        currentUser: req.session.user_id,
+        isAdmin: true,
+        isAuthenticated: req.session.isLoggedIn,
+        images: images,
+        name: property.name,
+        location: property.location,
+        propertyId: property._id
+      })
+    })
 }
 
 // open create new property
@@ -46,10 +53,6 @@ exports.getAdminProperties = (req, res, next) => {
         admins: req.session.user._id
       })
       .then(properties => {
-        // if 0 or more than 1 property, route to properties page for selection
-        // this will need to route to a page for the admin to edit the property
-        if(properties.length !== 1) {
-          console.log('isAdmin = true')
           res.render('properties', {
             pageTitle: 'Property List',
             path: '/properties',        
@@ -59,12 +62,6 @@ exports.getAdminProperties = (req, res, next) => {
             properties: properties,
             address: address
           });
-        } else {
-          // if only one property, automatically route to add reservation page
-          // will need to be updated with correct route after routes set up
-          res.redirect('../main/dashboard/' + properties[0]._id);
-        }
-        
       })
 };
 
