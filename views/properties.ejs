@@ -15,7 +15,8 @@
                 </div>
                 <ul id="property-list" class=""> 
                     <% for (let property of properties) { %>
-                        <a class="no-underline" href="<%= isAdmin ? '/admin/admin-index/' : address + property._id %>">
+                        <!-- <a class="no-underline" href="<%= isAdmin ? '/admin/admin-index/' : address + property._id %>"> -->
+                        <a class="no-underline" href="<%= address + property._id %>">
                             <li class="selectable-list-item">
                                 <div>
                                     <%= property.name %>

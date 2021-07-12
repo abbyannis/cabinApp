@@ -40,7 +40,7 @@ exports.getCreateProperty = (req, res, next) => {
 
 // open property list for admins
 exports.getAdminProperties = (req, res, next) => {
-  const address = '/reservation/'
+  const address = '/admin/admin-index/'
   Cabin
       .find({ 
         admins: req.session.user._id
