@@ -42,6 +42,7 @@ exports.getCreateProperty = (req, res, next) => {
     errorMessage: '',
     validationErrors: [],
     currentUser: req.session.user._id,
+    property: null
   })
 }
 
@@ -154,7 +155,14 @@ exports.postProperty = (req, res, next) => {
 exports.getProperty = (req, res, next) => {
   Cabin.getPropertyById(req.params.propertyId, req.userId)
   .then(cabin => {
-    res.status(200).json({ cabin });
+    res.render('admin/add-property', {
+      pageTitle: 'Edit Property',
+      path: '/admin/edit-property',
+      errorMessage: '',
+      validationErrors: [],
+      currentUser: req.session.user._id,
+      property: cabin
+    })
   })
   .catch(err => {
     const error = new Error(err);
