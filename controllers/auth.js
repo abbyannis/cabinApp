@@ -267,7 +267,8 @@ exports.postSignup = (req, res, next) => {
     const display = req.body.display;
     const email = req.body.email;
     const phone = req.body.phone;
-    let imageUrl = req.body.imageUrl;
+    const image = req.file;
+    let imageUrl;
     const password = req.body.password;
     const confirmPassword = req.body.confirmPassword;
 
@@ -295,8 +296,10 @@ exports.postSignup = (req, res, next) => {
     bcrypt
         .hash(password, 12)
         .then(hashedPassword => {
-            if(!imageUrl) {
+            if(!image) {
                 imageUrl = '/images/avatar.jpg';
+            } else {
+                imageUrl = image.path.substring(6);
             }
             const user = new User({
                 firstName: first,
@@ -331,6 +334,7 @@ exports.postSignup = (req, res, next) => {
 };
 
 exports.postReset = (req, res, next) => {
+    const ROOTURL = "http://localhost:5000" || process.env.HEROKU_ORIGIN;
     crypto.randomBytes(32, (err, buffer) => {
         if (err) {
             console.log(err);
@@ -353,7 +357,7 @@ exports.postReset = (req, res, next) => {
                         subject: 'Password Reset',
                         html: `
                             <p>You requested a password reset</p>
-                            <p>Click this <a href="http://localhost:5000/auth/reset/${token}">link</a> to set a new password.</p>
+                            <p>Click this <a href="${ROOTURL}/auth/reset/${token}">link</a> to set a new password.</p>
                         `
                     });
                 }  
