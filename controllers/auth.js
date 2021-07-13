@@ -267,7 +267,8 @@ exports.postSignup = (req, res, next) => {
     const display = req.body.display;
     const email = req.body.email;
     const phone = req.body.phone;
-    let imageUrl = req.body.imageUrl;
+    const image = req.file;
+    let imageUrl;
     const password = req.body.password;
     const confirmPassword = req.body.confirmPassword;
 
@@ -295,8 +296,10 @@ exports.postSignup = (req, res, next) => {
     bcrypt
         .hash(password, 12)
         .then(hashedPassword => {
-            if(!imageUrl) {
+            if(!image) {
                 imageUrl = '/images/avatar.jpg';
+            } else {
+                imageUrl = image.path.substring(6);
             }
             const user = new User({
                 firstName: first,
