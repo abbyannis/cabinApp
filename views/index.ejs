@@ -42,28 +42,14 @@
                                     <div class="col-md-12">
                                         <div class="card-body">
                                             <% if (!isAuthenticated) { %>
-                                                <div class="faux-button">
-                                                    <a href="auth/login">Login</a>
-                                                </div>
-                                                <div class="faux-button">
-                                                    <a href="auth/signup">Register</a>
-                                                </div>
+                                                    <a class="faux-button" href="auth/login">Login</a>
+                                                    <a class="faux-button" href="auth/signup">Register</a>
                                             <% } else { %>
-                                                <div class="faux-button">
-                                                    <a href="/user/list">Make a Reservation</a>
-                                                </div>
-                                                <div class="faux-button">
-                                                    <a href="/reservation">View Reservations</a>
-                                                </div>
-                                                <div class="faux-button">
-                                                    <a href="/user/invites">Manage Property Invites</a>
-                                                </div>
-                                                <div class="faux-button">
-                                                    <a href="/admin/edit-checklist">Checklists</a>
-                                                </div>
-                                                <div class="faux-button">
-                                                    <a href="/inventory/update">Inventory</a>
-                                                </div>
+                                                    <a class="faux-button" href="/user/list">Make a Reservation</a>
+                                                    <a class="faux-button" href="/reservation">View Reservations</a>
+                                                    <a class="faux-button" href="/user/invites">Manage Property Invites</a>
+                                                    <a class="faux-button" href="/admin/edit-checklist">Checklists</a>
+                                                    <a class="faux-button" href="/inventory/update">Inventory</a>
                                             <% } %>
                                         </div>
                                     </div>
