@@ -36,11 +36,9 @@
                     <li class="main-header-item mobile"><a class="<%= path === '/' ? 'active' : '' %>" href="/">Home</a></li>
                     <% if (isAuthenticated) { %>
                         <li class="main-header-item mobile"><a class="<%= path === '/dashboard' ? 'active' : '' %>" href="/user/list">Dashboard</a></li>
-                        <li class="main-header-item mobile"><a class="<%= path === '/reservation' ? 'active' : '' %>" href="/">Reservation</a></li>
-                        <li class="main-header-item mobile"><a class="<%= path === '/inventory' ? 'active' : '' %>" href="/inventory/inventory">Inventory</a></li>
-                        <li class="main-header-item mobile"><a class="<%= path === '/maintenance' ? 'active' : '' %>" href="/">Maintenance</a></li>
+                        <li class="main-header-item mobile"><a class="<%= path === '/reservation' ? 'active' : '' %>" href="/reservation">Reservation</a></li>
                         <li class="main-header-item mobile"><a class="<%= path === '/profile' ? 'active' : '' %>" href="/auth/profile">Account</a></li>
-                        <li class="main-header-item mobile"><a class="<%= path === '/admin' ? 'active' : '' %>" href="/">Admin</a></li>
+                        <li class="main-header-item mobile"><a class="<%= path === '/admin/properties' ? 'active' : '' %>" href="/admin/properties">Admin</a></li>
                     <% } else { %>
                         <li class="main-header-item mobile"><a class="<%= path === '/login' ? 'active' : '' %>" href="/auth/Login">Login</a></li>
                         <li class="main-header-item mobile"><a class="<%= path === '/register' ? 'active' : '' %>" href="/auth/signup">Register</a></li>

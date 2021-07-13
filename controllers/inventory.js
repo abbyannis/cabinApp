@@ -224,7 +224,6 @@ exports.getUserProperties = (req, res, next) => {
       })
       .then(properties => {
         // if 0 or more than 1 property, route to properties page for selection
-        console.log('made it here')
         if(properties.length !== 1) {
           res.render('properties', {
             pageTitle: 'Property List',
