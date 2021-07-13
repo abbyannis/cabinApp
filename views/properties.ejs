@@ -39,7 +39,10 @@
             <% } %>
         <% } %> 
         <% if (isAdmin) { %>
-            <a href="/admin/property" class="faux-button new-property-btn">Create New Property</a>
+            <div class="admin-property-btns">
+                <a href="/admin/property" class="faux-button new-property-btn">Create New Property</a>
+                <a href="/admin/reservations" class="faux-button new-property-btn">Manage All Reservations</a>
+            </div>
         <% } %>
         <input type="hidden" id="isAdmin" value="<%= isAdmin %>">
     </main>

@@ -1,12 +1,16 @@
+const Cabin = require('../models/property');
 const Photo = require('../models/social-post');
 const { validationResult } = require('express-validator');
 
 // get page to upload an image
 exports.getAddPhoto = (req, res, next) => {
+  const propertyId = req.params.propertyId;
   res.render('social/add-post', {
     path: '/add-post',
     pageTitle: 'Add Photo',
-    isAuthenticated: req.session.isLoggedIn
+    isAuthenticated: req.session.isLoggedIn,
+    propertyId: propertyId,
+    errorMessage: ''
   });
 };
 
@@ -14,13 +18,32 @@ exports.getAddPhoto = (req, res, next) => {
 exports.postPhoto = (req, res, next) => {
   const image = req.file;
   const description = req.body.description;
-
   const errors = validationResult(req);
+  const propertyId = req.body.propertyId;
+  const imageUrl = image.path;
+
+  Cabin.findById(propertyId)
+  .then(cabin => {
+    const imageArray = cabin.imageUrls;
+    if (!cabin) {
+      const error = new Error('Property not found');
+      error.statusCode = 404;
+      throw error;
+    }
+    imageArray.map(url => {
+      if (url == imageUrl) {
+        const error = new Error('Image already exists for this property')
+        error.statusCode = 500;
+        throw error;
+      }
+    })
+    cabin.imageUrls.push(imageUrl);
+    return cabin.save();
+  })
 
   if (!errors.isEmpty()) {
-    console.log(errors.array());
-    return res.status(422).render('social/add-post', {
-      path: '/add-post',
+    return res.status(422).render('social/add-post/:propertyId', {
+      path: 'add-post/:propertyId',
       pageTitle: 'Add Photo',
       editing: false,
       hasError: true,
@@ -28,26 +51,18 @@ exports.postPhoto = (req, res, next) => {
         description: description
       },
       errorMessage: errors.array()[0].msg,
-      validationErrors: errors.array()
+      validationErrors: errors.array(),
+      propertyId: propertyId
     });
   }
 
-  const imageUrl = image.path;
-
-  const newImage = new Photo({
-    description: description,
-    imageUrl: imageUrl,
-    userId: req.user
-  });
-  
-  newImage
-    .save()
-    .then(result => {
-      res.redirect('add-post');
-    })
-    .catch(err => {
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      return next(error);
-    });
+  if (errors.isEmpty()) {
+        res.render('social/add-post', {
+          path: `/add-post/${propertyId}`,
+          pageTitle: 'Add Photo',
+          isAuthenticated: req.session.isLoggedIn,
+          propertyId: propertyId,
+          errorMessage: ''
+        });
+  }
 }

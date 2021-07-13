@@ -1,5 +1,7 @@
 const Cabin = require('../models/property');
+const Reservation = require('../models/reservation');
 const User = require('../models/user');
+const Reservation = require('../models/reservation')
 const ChecklistMaster = require('../models/checklist-master');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
@@ -42,7 +44,8 @@ exports.getCreateProperty = (req, res, next) => {
     errorMessage: '',
     validationErrors: [],
     currentUser: req.session.user._id,
-    property: null
+    property: null,
+    edit: false
   })
 }
 
@@ -67,14 +70,14 @@ exports.getAdminProperties = (req, res, next) => {
 };
 
 //open a list of pending reservations to approve/reject
-exports.manageReservations = (req, res, next) => {            
+exports.manageReservations = (req, res, next) => {              
   Cabin.find({ 
     admins: req.session.user._id      
   })    
-  .then(properties => {
+  .then(properties => {    
     return ids = properties.map(x => x._id);
   })
-  .then(pIds => {
+  .then(pIds => {    
     return Reservation.find({
       status: "pending",
       property: { $in: pIds }
@@ -84,7 +87,7 @@ exports.manageReservations = (req, res, next) => {
     .sort('startDate')
     .exec()   
   })       
-  .then(reservations => {    
+  .then(reservations => {      
     res.render('admin/reservations', {            
       pageTitle: 'Manage Reservations',
       path: '/admin',
@@ -105,7 +108,7 @@ exports.getProperties = (req, res, next) => {
   try {    
     Cabin
       .find({ 
-        admins: req.userId     
+        admins: req.session.user._id     
       })  
       .then(properties => {                               
         res.status(200).json({ properties });          
@@ -126,11 +129,25 @@ exports.getProperties = (req, res, next) => {
 //create a new property
 exports.postProperty = (req, res, next) => {
   //check validation in middleware for valid fields
-  const errors = validationResult(req);
+  const errors = validationResult(req);   
   if(!errors.isEmpty()) {
-    return res.status(422).json( { errors }); //FIXME: look at Abby's login error stuff
-  }
-  let cabin = new Cabin({
+    return res.status(422).render('admin/add-property', {
+      pageTitle: 'Create New Property',
+      path: '/admin/add-property',
+      errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array(),
+      currentUser: req.session.user._id,        
+      property: {
+        name: req.body.name,
+        location: req.body.location,
+        admins: [req.session.user._id],
+        members: [],
+        imageUrls: req.body.imageUrls || []
+      },
+      edit: false
+    });
+  } 
+  let cabin = new Cabin({    
     name: req.body.name,
     location: req.body.location,
     admins: [req.session.user._id],
@@ -139,9 +156,8 @@ exports.postProperty = (req, res, next) => {
   });  
   cabin
     .save()
-    .then(result => {
-      // return res.status(201).json({cabin: result});
-      res.redirect('/admin/properties');
+    .then(result => {      
+      res.status(200).redirect('/admin/properties');
     })
     .catch(err => {  
       console.log(err);         
@@ -153,7 +169,7 @@ exports.postProperty = (req, res, next) => {
 
 //fetch a property by the property id
 exports.getProperty = (req, res, next) => {
-  Cabin.getPropertyById(req.params.propertyId, req.userId)
+  Cabin.getPropertyById(req.params.propertyId, req.session.user._id)
   .then(cabin => {
     res.render('admin/add-property', {
       pageTitle: 'Edit Property',
@@ -161,7 +177,8 @@ exports.getProperty = (req, res, next) => {
       errorMessage: '',
       validationErrors: [],
       currentUser: req.session.user._id,
-      property: cabin
+      property: cabin,
+      edit: true
     })
   })
   .catch(err => {
@@ -172,25 +189,36 @@ exports.getProperty = (req, res, next) => {
 };
 
 //updates an existing property
-exports.updateProperty = (req, res, next) => {        
-  //check validation in middleware for valid fields    
-  const errors = validationResult(req);     
-  if(!errors.isEmpty()) {
-    return res.status(422).json( { errors });  
-  } 
-  Cabin.getPropertyById(req.params.propertyId, req.userId)
-  .then(cabin => {
+exports.updateProperty = (req, res, next) => {          
+  const errors = validationResult(req);  
+  if(!errors.isEmpty()) {        
+    return res.status(422).render('admin/add-property', {
+      pageTitle: 'Edit Property',
+      path: '/admin/edit-property',
+      errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array(),
+      currentUser: req.session.user._id,        
+      property: {
+        _id: req.params.propertyId,
+        name: req.body.name,
+        location: req.body.location,
+        admins: [req.session.user._id],
+        members: [],
+        imageUrls: req.body.imageUrls || []
+      },
+      edit: true
+    }); 
+  }        
+  Cabin.getPropertyById(req.params.propertyId, req.session.user._id)
+  .then(cabin => {    
     cabin.name = req.body.name;
     cabin.location = req.body.location;  
     //this imageUrls bit probably needs some work
-    cabin.imageUrls = req.body.imageUrls;       
+    cabin.imageUrls = req.body.imageUrls || [];       
     return cabin.save();
   })
   .then(result => {    
-    res.status(200).json({
-      message: 'Property has been updated.',
-      cabin: result
-    });
+    res.status(200).redirect(`/admin/admin-index/${req.params.propertyId}`);
   })
   .catch(err => {
     console.log(err);
@@ -200,10 +228,10 @@ exports.updateProperty = (req, res, next) => {
 };
 
 //remove a property
-exports.deleteProperty = (req, res, next) => {
-  Cabin.getPropertyById(req.params.propertyId, req.userId)
+exports.deleteProperty = (req, res, next) => {  
+  Cabin.getPropertyById(req.params.propertyId, req.session.user._id)
   .then(cabin => {    
-    const idx = cabin.admins.indexOf(req.userId);
+    const idx = cabin.admins.indexOf(req.session.user._id);
     console.log(idx);
     if(idx > -1) {
       cabin.admins.splice(idx, 1);
@@ -215,7 +243,7 @@ exports.deleteProperty = (req, res, next) => {
     }
   })
   .then(result => {
-    res.status(200).json({ message: 'Property removed from your profile.' });
+    res.status(200).redirect('/admin/properties');
   })
   .catch(err => {
     if (!err.statusCode) err.statusCode = 500;
@@ -275,14 +303,13 @@ exports.sendInvite = (req, res, next) => {
   crypto.randomBytes(32, (err, buffer) => {
     if(err) {
       throw err;      
-    }    
-    const token = buffer.toString('hex');
+    }        
     let propertyName;
     let userName;        
     Cabin.getPropertyById(pId, userId)
     .then(cabin => {      
       propertyName = cabin.name;
-      cabin.invites.push(token);      
+      cabin.invites.push(email);      
       return cabin.save();
     })
     .then(result => {      

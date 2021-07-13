@@ -13,6 +13,9 @@
                 enctype="multipart/form-data"
                 class="admin-image-form"
             >
+                <% if (errorMessage != '') { %> 
+                    <p>Test</p>
+                <% } %>
                 <div>
                     <label for="image">Image</label>
                     <input 
@@ -29,6 +32,7 @@
                         id="description" 
                         value=""></textarea>
                 </div>
+                <input type="hidden" name="propertyId" value="<%= propertyId %>">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <button type="submit" class="admin-image-submit">Submit Image</button>
             </form>

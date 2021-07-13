@@ -19,22 +19,8 @@ router.get('/properties/:propertyId', adminController.getProperty);
 //manage reservations
 router.get('/reservations', adminController.manageReservations);
 
-//post a new property
-router.post('/properties', 
-  [
-    body('name', 'Property name must be between 3 and 20 characters')
-      .isString()
-      .trim()
-      .isLength( { min: 3, max: 20 }),
-    body('location', 'Property location must be between 3 and 20 characters')
-      .isString()
-      .trim()
-      .isLength( { min: 3, max: 20 })
-  ],
-  adminController.postProperty);
-
 //update an existing property
-router.patch('/properties/:propertyId', 
+router.post('/properties/update/:propertyId', 
   [
     body('name', 'Property name must be between 3 and 20 characters')
       .isString()
@@ -48,7 +34,7 @@ router.patch('/properties/:propertyId',
   isAdmin, adminController.updateProperty);
 
 //remove a property
-router.delete('/properties/:propertyId', isAdmin, adminController.deleteProperty);
+router.post('/properties/delete/:propertyId', isAdmin, adminController.deleteProperty);
 
 router.get('/properties/:propertyId/invite', isAdmin, adminController.inviteUser);
 
@@ -63,6 +49,20 @@ router.post('/properties/:propertyId/invite',
 
 //remove a user from a property
 router.delete('/properties/:propertyId/remove/:userId', isAdmin, adminController.removeUser);
+
+//post a new property
+router.post('/properties', 
+  [
+    body('name', 'Property name must be between 3 and 20 characters')
+      .isString()
+      .trim()
+      .isLength( { min: 3, max: 20 }),
+    body('location', 'Property location must be between 3 and 20 characters')
+      .isString()
+      .trim()
+      .isLength( { min: 3, max: 20 })
+  ],
+  adminController.postProperty);
 
 //update the approval status of a reservation request
 router.patch('/manage-reservation/:propertyId/:reservationId', isAdmin, adminController.manageReservation);

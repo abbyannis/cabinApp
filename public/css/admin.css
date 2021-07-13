@@ -17,3 +17,14 @@
     font-size: 1.25rem;
     margin: 0 15px;
 }
+
+.admin-property-btns {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.new-property-btn {
+    display: block;
+    width: fit-content;
+}
