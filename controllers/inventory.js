@@ -7,14 +7,16 @@ exports.getInventory = (req, res, next) => {
       propertyId: propertyId
     })
     .then(inventory => {
-      if (!inventory) {
-        return res.redirect('/inventory/new-inventory/' + propertyId)
-      }
-      res.render('inventory/inventory', {
-        inventory: inventory,
-        pageTitle: 'Inventory',
-        path: '/inventory/inventory',
-        propertyId: propertyId
+      Cabin.findById(propertyId)
+      .then(property => {
+        res.render('inventory/inventory', {
+          inventory: inventory,
+          pageTitle: 'Inventory',
+          path: '/inventory/inventory',
+          propertyId: propertyId,
+          name: property.name,
+          location: property.location
+        })
       })
     })
     .catch(err => {
@@ -44,16 +46,6 @@ exports.getUserInventory = (req, res, next) => {
       }
       next(err);
     });
-}
-
-exports.getNewInventory = (req, res, next) => {
-  const propertyId = req.params.propertyId
-  res.render('inventory/new-inventory', {
-    inventory: [],
-    pageTitle: 'Inventory',
-    path: '/inventory/inventory',
-    propertyId: propertyId
-  })
 }
 
 exports.addInventory = (req, res, next) => {
