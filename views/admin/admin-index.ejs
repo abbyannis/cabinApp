@@ -47,12 +47,21 @@
                                                 <a href="auth/signup" class="faux-button">Register</a>
                                             <% } else { %>
                                                 <div class="admin-property-dash-ctrls">
+<<<<<<< HEAD
                                                     <a href="/admin/properties">Back to My Property List</a>
                                                 </div>
                                                     <h2><%= name %></h2>
                                                     <h4><%= location %></h4>
                                                 <!-- <a href="/admin/reservations" class="faux-button">Manage Reservations</a> -->
                                                 <a href="/admin/properties/<%= propertyId %>" class="faux-button">Property Settings</a>
+=======
+                                                    <a href="/admin/properties">Back to My Property List</a>                                                    
+                                                </div>
+                                                    <h2><%= name %></h2>
+                                                    <h4><%= location %></h4>
+                                                <a href="/admin/reservations" class="faux-button">Manage Reservations</a>
+                                                <a href="/admin/properties/<%= propertyId %>" class="faux-button">Edit Property Details</a>
+>>>>>>> 0f8b168229423b0fc75a8d547492f9fa77538847
                                                 <a href="/admin/properties/<%= propertyId %>/invite" class="faux-button">Invite Users</a>
                                                 <a href="/" class="faux-button">Manage Checklists</a>
                                                 <a href="/inventory/inventory/<%= propertyId %>" class="faux-button">Manage Inventory</a>
