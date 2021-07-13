@@ -24,6 +24,7 @@
                 <input type="number" class="inventory-amt" name="amount" value="<%= inv.amount %>"> 
                 <input type="hidden" name="itemId" value="<%= inv._id %>">
                 <a class="delete-button" href="/inventory/delete/?propertyId=<%= propertyId %>&itemId=<%= inv._id %>">x</a>
+                <a class="delete-button-mobile" href="/inventory/delete/?propertyId=<%= propertyId %>&itemId=<%= inv._id %>">Delete <%= inv.description %></a>
             </div>
             <% } %>
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">

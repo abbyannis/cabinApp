@@ -6,6 +6,10 @@
 <body>
     <%- include('../includes/nav.ejs') %>
     <main>
+      <div class="inventory-form centered">
+        <h2><%= name %></h2>
+        <h4><%= location %></h4>
+      </div>
       <% if(inventory) { %>
         <form class="inventory-form"action="/inventory/update-user" method="POST">
           <h4 class="centered">Update Inventory Amounts</h4>
@@ -27,7 +31,9 @@
           <input type="hidden" name="propertyId" value="<%= propertyId %>">
         </form>  
       <% } else { %>
-        <h4>An inventory list has not been set up for this property.</h4>
+        <div class="inventory-form centered">
+          <h4>An inventory list has not been set up for this property.</h4>
+        </div>
       <% } %>
       
     </main>

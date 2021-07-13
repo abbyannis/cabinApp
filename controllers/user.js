@@ -5,7 +5,8 @@ exports.getUserProperties = (req, res, next) => {
   const address = '/main/dashboard/'
   Cabin
       .find({ 
-        members: req.session.user._id
+        $or: [{members: req.session.user._id},
+          { admins: req.session.user._id }]
       })
       .then(properties => {
         // if 0 or more than 1 property, route to properties page for selection
