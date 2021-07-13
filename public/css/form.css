@@ -180,6 +180,31 @@ btn {
     color: white;
   }
 
+  .center-inventory::a {
+    text-align: center;
+  }
+  
+  .delete-button-mobile {
+    display: inline-block;
+    width: 100%;
+    margin: 0.3rem 0 0.25rem 0.25rem;
+    margin-right: 0;
+    padding: 0.25rem;
+    background-color: #AD0000;
+    color: white;
+    border: none;
+    text-align: center;
+    font-size: 0.85rem;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    border-radius: 3px;
+  }
+
+  .delete-button-mobile:hover {
+    background-color: black;
+    text-decoration: none;
+    color: white;
+  }
+
   .update-button {
     width: 94%;
     margin: 1rem 1.1rem;
@@ -202,11 +227,37 @@ btn {
       margin: 0.5rem auto;
     }
 
-    .inventory-amt {
-      width: 25%;
+    .inventory-input-label {
+      width: 100%;
+    }
+
+    .inventory-amt-add {
+      width: 100%;
     }
 
     .update-button {
       margin: 1rem 0.75rem;
+    }
+
+    .inventory-form label {
+      display: none;
+    }
+
+    .inventory-input {
+      width: 100%;
+    }
+
+    .inventory-amt {
+      width: 100%;
+    }
+
+    .delete-button {
+      display: none;
+    }
+  }
+
+  @media screen and (min-width: 800px) {
+    .delete-button-mobile {
+      display: none;
     }
   }
