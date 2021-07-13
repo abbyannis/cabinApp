@@ -223,8 +223,38 @@ exports.deleteProperty = (req, res, next) => {
   });
 }
 
-//invite a new user
+
+//show page to invite a new user
 exports.inviteUser = (req, res, next) => {
+  try {
+    const errors = validationResult(req);     
+    if(!errors.isEmpty()) {
+      throw new Error("Unauthorized access"); 
+    } 
+    Cabin.getPropertyById(req.params.propertyId, req.session.user._id)
+    .then(cabin => {          
+      res.render('admin/invite', {
+        pageTitle: 'Invite User',
+        path: '/admin/invite',
+        errorMessage: '',
+        validationErrors: [],
+        currentUser: req.session.user._id,
+        email: '',
+        property: cabin
+      })
+    })
+    .catch(err => {      
+      if (!err.statusCode) err.statusCode = 500;
+      next(err);
+    });
+  } catch (err) {    
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
+  }
+}
+
+//invite a new user
+exports.sendInvite = (req, res, next) => {
   //ensure valid inputs through validation  
   const pId = req.params.propertyId;
   const userId = req.session.user._id;

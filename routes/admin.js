@@ -50,14 +50,16 @@ router.patch('/properties/:propertyId',
 //remove a property
 router.delete('/properties/:propertyId', isAdmin, adminController.deleteProperty);
 
-//invite a new user to a property
+router.get('/properties/:propertyId/invite', isAdmin, adminController.inviteUser);
+
+//posts an invite to a new user to a property
 router.post('/properties/:propertyId/invite', 
   [
     body('email')
       .isEmail()
       .withMessage('Please enter a valid email address.')
       .normalizeEmail()      
-  ], isAdmin, adminController.inviteUser);
+  ], isAdmin, adminController.sendInvite);
 
 //remove a user from a property
 router.delete('/properties/:propertyId/remove/:userId', isAdmin, adminController.removeUser);
