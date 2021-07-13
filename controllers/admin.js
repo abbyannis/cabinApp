@@ -1,5 +1,6 @@
 const Cabin = require('../models/property');
 const User = require('../models/user');
+const Reservation = require('../models/reservation')
 const ChecklistMaster = require('../models/checklist-master');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
@@ -68,14 +69,14 @@ exports.getAdminProperties = (req, res, next) => {
 };
 
 //open a list of pending reservations to approve/reject
-exports.manageReservations = (req, res, next) => {            
+exports.manageReservations = (req, res, next) => {              
   Cabin.find({ 
     admins: req.session.user._id      
   })    
-  .then(properties => {
+  .then(properties => {    
     return ids = properties.map(x => x._id);
   })
-  .then(pIds => {
+  .then(pIds => {    
     return Reservation.find({
       status: "pending",
       property: { $in: pIds }
@@ -85,7 +86,7 @@ exports.manageReservations = (req, res, next) => {
     .sort('startDate')
     .exec()   
   })       
-  .then(reservations => {    
+  .then(reservations => {      
     res.render('admin/reservations', {            
       pageTitle: 'Manage Reservations',
       path: '/admin',
@@ -301,14 +302,13 @@ exports.sendInvite = (req, res, next) => {
   crypto.randomBytes(32, (err, buffer) => {
     if(err) {
       throw err;      
-    }    
-    const token = buffer.toString('hex');
+    }        
     let propertyName;
     let userName;        
     Cabin.getPropertyById(pId, userId)
     .then(cabin => {      
       propertyName = cabin.name;
-      cabin.invites.push(token);      
+      cabin.invites.push(email);      
       return cabin.save();
     })
     .then(result => {      
