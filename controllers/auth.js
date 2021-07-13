@@ -141,13 +141,6 @@ exports.getUpdatePassword = (req, res, next) => {
 };
 
 exports.getNewPassword = (req, res, next) => {
-    // let message = req.flash('error');
-    // // console.log("message2: " + message)
-    // // if (message.length > 0) {
-    // //     message = message[0];
-    // // } else {
-    // //     message = null;
-    // // }
     const token = req.params.token;
     User.findOne({resetToken: token, resetTokenExpiration: {$gt: Date.now()}})
         .then(user => {
