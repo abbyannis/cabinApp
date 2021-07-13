@@ -1,4 +1,5 @@
 const Cabin = require('../models/property');
+const Reservation = require('../models/reservation');
 const User = require('../models/user');
 const ChecklistMaster = require('../models/checklist-master');
 const crypto = require('crypto');
