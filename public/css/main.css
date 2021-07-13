@@ -177,6 +177,10 @@ button {
 }
 
 @media screen and (max-width: 800px) {
+    .no-scroll {
+        overflow-y: visible;
+    }
+
     .slider-card {
         position: absolute;
         top: 0;
