@@ -33,12 +33,17 @@ exports.getUserInventory = (req, res, next) => {
       propertyId: propertyId
     })
     .then(inventory => {
-      res.render('inventory/inventory-user', {
-        inventory: inventory,
-        pageTitle: 'Inventory',
-        path: '/inventory/inventory',
-        propertyId: propertyId
-      })
+      Cabin.findById(propertyId)
+        .then(property => {
+          res.render('inventory/inventory-user', {
+            inventory: inventory,
+            pageTitle: 'Inventory',
+            path: '/inventory/inventory',
+            propertyId: propertyId,
+            name: property.name,
+            location: property.location
+          })
+        })
     })
     .catch(err => {
       if (!err.statusCode) {
@@ -214,7 +219,8 @@ exports.getUserProperties = (req, res, next) => {
   const address = '/inventory/user-update/' 
   Cabin
       .find({ 
-        members: req.session.user._id
+        $or: [{members: req.session.user._id},
+          { admins: req.session.user._id }]
       })
       .then(properties => {
         // if 0 or more than 1 property, route to properties page for selection
