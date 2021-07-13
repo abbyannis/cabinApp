@@ -1,0 +1,31 @@
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/reservations.css">
+</head>
+
+<body>
+    <%- include('../includes/nav.ejs') %>
+    <main>
+        <h1><%= propertyName %></h1>
+        <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>">
+        <ul id="checklist-list" class="">
+            <% checklist.forEach(x => { %>
+                <li class='list-item spaced-container'>
+                    <div class="titles">
+                        <h2><%= x.listTitle %></h2>
+                    </div>
+                    <div class="stack-box adjustable-box">
+                        <div class="faux-button">
+                            <a class="btn" href="/admin/edit-checklist/<%= x._id %>">Edit</a>
+                        </div>
+                        <button id="<%= x._id %>">Delete</button>
+                    </div>                    
+                </li>                
+           <% }) %>          
+        </ul>
+        <div class="faux-button">
+            <a href="/admin/add-checklist/<%= propertyId %>">Create New Checklist</a>
+        </div>
+    </main>
+    <script src="/scripts/fetch.js"></script>
+    <script src="/scripts/admin-checklists.js"></script>
+<%- include('../includes/end.ejs') %>

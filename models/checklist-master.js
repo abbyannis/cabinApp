@@ -6,12 +6,12 @@ const checkListMasterSchema = new Schema({
         type: String,
         required: true
     },
-    propertyId: {
+    property: {
         type: Schema.Types.ObjectId,
         ref: 'Property',
         required: true
     },
-    task: {
+    task: [{
         title: {
             type: String,
             required: true
@@ -20,7 +20,7 @@ const checkListMasterSchema = new Schema({
             type: String,
             required: true
         }
-    }
+    }]
 })
 
 module.exports = mongoose.model('CheckList-Master', checkListMasterSchema);

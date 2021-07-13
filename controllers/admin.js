@@ -313,6 +313,88 @@ exports.getChecklist = (req, res, next) => {
     .catch(err => console.log(err));
 };
 
+exports.getPropertyChecklist = (req, res, next) => {
+  let propertyName;
+  const propId = req.params.propertyId;
+  Cabin.findById(propId)
+    .then(property => {
+      if (!property) {
+        const error = new Error('Property not found');
+        error.statusCode = 500;
+        throw error;
+      }
+      return property.name;
+    })
+    .then( (propName) => {
+      propertyName = propName;
+      return ChecklistMaster.find({
+        property: propId
+      })
+      .then(checklist => {
+        console.log('1');
+        // if (!checklist) {
+        //   return res.redirect('/');
+        // }
+        res.render('admin/checklist-list', {
+          pageTitle: 'Property Checklist',
+          path: '/admin/edit-checklist',
+          currentUser: req.session.user,
+          isAuthenticated: req.session.LoggedIn,
+          isAdmin: true,
+          checklist: checklist,
+          propertyName: propertyName,
+          propertyId: propId
+        });
+      })
+      .catch(err => {
+        if (!err.statusCode) {
+          err.statusCode = 500;
+        }
+        next(err);
+      })
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    })
+};
+exports.getChecklistJSON = (req, res, next) => {
+  const editMode = req.query.edit;
+  // if (!editMode) {
+  //   return res.redirect('/');
+  // }
+  const propId = req.params.propertyId;
+  Cabin.findById(propId)
+    .then(checklist => {
+      // if (!checklist) {
+      //   return res.redirect('/');
+      // }
+      
+    })
+    .catch(err => console.log(err));
+};
+
+exports.createChecklist = (req, res, next) => {
+  const propId = req.params.propertyId;
+  Cabin.findById(propId)
+    .then(checklist => {
+      res.render('admin/edit-checklist', {
+        pageTitle: 'Add New Checklist',
+        path: '/admin/edit-checklist',
+        isAuthenticated: req.session.LoggedIn,
+        checklist: {
+          listTitle: '',
+          property: propId,
+          task: []
+        }
+      })
+      
+    })
+    .catch(err => console.log(err));
+};
+
 // save editied checklist
 exports.postEditChecklist = (req, res, next) => {
   const propId = req.body.propertyId;

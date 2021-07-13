@@ -53,29 +53,18 @@ router.post('/properties/:propertyId/invite',
 //remove a user from a property
 router.delete('/properties/:propertyId/remove/:userId', adminController.removeUser);
 
-//Checklist ADMIN routes
-router.get('/checklist', adminController.getChecklist);
+//Loads initial checklist page
+router.get('/edit-checklist/:checklistId', adminController.getChecklist);
 
-router.post('/edit-checklist', adminController.postEditChecklist);
+router.get('/add-checklist/:propertyId', adminController.createChecklist);
 
-router.post('/add-checklist', adminController.postAddChecklist);
+//Loads checklists linked to a property
+router.get('/checklist/:propertyId', adminController.getPropertyChecklist);
 
-const checklistData = {};
-router.get('/fetchAll', (req, res, next) => {
-  res.json(checklistData);
-})
-router.post('/insert', (req, res, next) => {
-  const newTask = req.body.newTask;
-        
-  JSON.stringify(checklistData);
-  if (!checklistData.task.some(a => a.title === newTask)) {
-      checklistData.task.push({ task: newTask }) 
-      res.sendStatus(200)
-  }
-  else { 
-      console.log(err);
-  }
-}
-)
+//Endpoint returning checklists as JSON
+router.get('/checklist', adminController.getChecklistJSON);
+
+//Endpoint to edit the checklist
+router.post('/edit-checklist/:checklistId', adminController.postEditChecklist);
 
 module.exports = router;
