@@ -152,6 +152,10 @@ button:hover,
     border: 0 solid var(--alt-color);
 }
 
+.faux-button:hover {
+    text-decoration: none;
+}
+
 .new-property-btn {
     display: block;
     margin: 0 auto;

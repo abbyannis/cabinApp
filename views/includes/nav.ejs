@@ -8,9 +8,7 @@
             <% if (isAuthenticated) { %>
                 <li class="main-header-item"><a class="<%= path === '/dashboard' ? 'active' : '' %>" href="/user/list">Dashboard</a></li>
                 <li class="main-header-item"><a class="<%= path === '/reservation' ? 'active' : '' %>" href="/reservation">Reservation</a></li>
-                <li class="main-header-item"><a class="<%= path === '/inventory' ? 'active' : '' %>" href="/inventory/inventory">Inventory</a></li>
-                <li class="main-header-item"><a class="<%= path === '/maintenance' ? 'active' : '' %>" href="/">Maintenance</a></li>
-                <li class="main-header-item"><a class="<%= path === '/account' ? 'active' : '' %>" href="/">Account</a></li>
+                <li class="main-header-item"><a class="<%= path === '/profile' ? 'active' : '' %>" href="/auth/profile">Account</a></li>
                 <li class="main-header-item"><a class="<%= path === '/admin/properties' ? 'active' : '' %>" href="/admin/properties">Admin</a></li>
                 <li class="main-header-item"><a class="<%= path === '/admin/edit-checklist' ? 'active' : '' %>" href="/admin/edit-checklist">Checklist</a></li>
             <% } else { %>
