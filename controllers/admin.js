@@ -259,9 +259,18 @@ exports.sendInvite = (req, res, next) => {
   const pId = req.params.propertyId;
   const userId = req.session.user._id;
   const email = req.body.email;
-  const errors = validationResult(req);
+  const cabin = req.body.cabin;
+  const errors = validationResult(req);  
   if(!errors.isEmpty()) {
-    return res.status(422).json( { errors });
+    return res.status(422).render('admin/invite', {
+      pageTitle: 'Invite User',
+      path: '/admin/invite',
+      errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array(),
+      currentUser: req.session.user._id,
+      email: '',
+      property: {name: cabin, _id: pId }
+    });
   }
   crypto.randomBytes(32, (err, buffer) => {
     if(err) {
@@ -285,8 +294,7 @@ exports.sendInvite = (req, res, next) => {
         err.statusCode = 404;
         throw error;
       }      
-      userName = `${user.firstName} ${user.lastName}`;            
-      res.status(200).json({ message: "Invitation sent."});
+      userName = `${user.firstName} ${user.lastName}`;                  
       //send email to specified address with a new invite token      
       transporter.sendMail({
         to: email,
@@ -296,6 +304,7 @@ exports.sendInvite = (req, res, next) => {
         <a href='${ROOTURL}'>@theCabin</a> for their property entitled
         ${propertyName}. <br><a href='${ROOTURL}user/invites'>Click here to accept their invitation</a>.</p>`
       });      
+      res.status(200).redirect(`/admin/admin-index/${pId}`);
     })
     .catch(err => {
       if (!err.statusCode) err.statusCode = 500;
