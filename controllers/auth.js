@@ -334,7 +334,8 @@ exports.postSignup = (req, res, next) => {
 };
 
 exports.postReset = (req, res, next) => {
-    const ROOTURL = "http://localhost:5000" || process.env.HEROKU_ORIGIN;
+    // const ROOTURL = process.env.HEROKU_ORIGIN || "http://localhost:5000";
+    const ROOTURL = "http://localhost:5000";
     crypto.randomBytes(32, (err, buffer) => {
         if (err) {
             console.log(err);
