@@ -334,6 +334,7 @@ exports.postSignup = (req, res, next) => {
 };
 
 exports.postReset = (req, res, next) => {
+    const ROOTURL = "http://localhost:5000" || process.env.HEROKU_ORIGIN;
     crypto.randomBytes(32, (err, buffer) => {
         if (err) {
             console.log(err);
@@ -356,7 +357,7 @@ exports.postReset = (req, res, next) => {
                         subject: 'Password Reset',
                         html: `
                             <p>You requested a password reset</p>
-                            <p>Click this <a href="https://team05-cabin-app.herokuapp.com/auth/reset/${token}">link</a> to set a new password.</p>
+                            <p>Click this <a href="${ROOTURL}/auth/reset/${token}">link</a> to set a new password.</p>
                         `
                     });
                 }  
