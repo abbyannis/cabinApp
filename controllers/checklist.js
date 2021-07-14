@@ -180,6 +180,7 @@ exports.getChecklist = (req, res, next) => {
   exports.updateChecklist = (req, res, next) => {
     const description = req.body.description;
     const itemId = req.body.itemId;
+    const listId = req.body.listId;
     const propertyId = req.body.propertyId;
     const newList = [];
     if (Array.isArray(description)) {
@@ -191,8 +192,8 @@ exports.getChecklist = (req, res, next) => {
       }
     } else {
       newList.push({   
-        description: description[i],
-        _id: itemId[i]
+        description: description,
+        _id: itemId
       })
     }
     Checklist.findOne({ propertyId: propertyId })
@@ -200,7 +201,7 @@ exports.getChecklist = (req, res, next) => {
         checklist.list = newList;
         return checklist.save()
         .then(results => {
-          return res.redirect('/checklist/checklist/' + propertyId);
+          return res.redirect('/checklist/checklist/?listId=' + listId + '&propertyId=' + propertyId);
         })
     })
     .catch(err => {

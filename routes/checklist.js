@@ -15,6 +15,7 @@ router.get('/deleteList', checklistController.deleteChecklist);
 router.post('/delete', checklistController.deleteChecklistItem);
 router.post('/checklist', checklistController.addChecklist);
 router.post('/addTask', checklistController.addTask);
+router.post('/update', checklistController.updateChecklist);
 
 //router.post('/checklist', checklistController.postChecklist);
 

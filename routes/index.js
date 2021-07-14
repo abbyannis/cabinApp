@@ -20,11 +20,11 @@ routes
     .use('/social', social)
     .use('/checklist', checklist)
     .use('/inventory', inventory)
-    .use((error, req, res, next) => {
-        res.status(500).render('errors/500', { 
-            pageTitle: 'Error!', 
-            path: '/500'
-        });
-    });
+    // .use((error, req, res, next) => {
+    //     res.status(500).render('errors/500', { 
+    //         pageTitle: 'Error!', 
+    //         path: '/500'
+    //     });
+    // });
 
 module.exports = routes;
