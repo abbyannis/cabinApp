@@ -6,8 +6,9 @@ const router = express.Router();
 
 
 router.get('/new-checklist/:propertyId', checklistController.getLists);
+router.get('/checklist-user/:propertyId', checklistController.getUserChecklist);
 router.get('/checklist', checklistController.getChecklist);
-router.get('/update', checklistController.getUserProperties);
+router.get('/checklist-user', checklistController.getUserProperties);
 router.get('/delete', checklistController.deleteChecklistItem);
 
 router.get('/deleteList', checklistController.deleteChecklist);

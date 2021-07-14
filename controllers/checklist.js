@@ -239,8 +239,33 @@ exports.getChecklist = (req, res, next) => {
       })
   };
 
+  exports.getUserChecklist = (req, res, next) => {
+    const propertyId = req.params.propertyId;
+    Checklist.find({'propertyId': propertyId})
+      .then(checklist => {
+          console.log(checklist)
+        Cabin.findById(propertyId)
+        .then(property => {
+          res.render('checklist/checklist-user', {
+            checklist: checklist,
+            pageTitle: 'Checklist',
+            path: '/checklist/checklist-user',
+            propertyId: propertyId,
+            name: property.name,
+            location: property.location
+          })
+        })
+      })
+      .catch(err => {
+        if (!err.statusCode) {
+          err.statusCode = 500;
+        }
+        next(err);
+      });
+  };
+
   exports.getUserProperties = (req, res, next) => {
-    const address = '/checklist/user-update/' 
+    const address = '/checklist/checklist-user/' 
     Cabin
         .find({ 
           $or: [{members: req.session.user._id},
@@ -261,7 +286,7 @@ exports.getChecklist = (req, res, next) => {
           } else {
             // if only one property, automatically route to add reservation page
             // will need to be updated with correct route after routes set up
-            res.redirect('../checklist/user-update/' + properties[0]._id);
+            res.redirect('../checklist/checklist-user/' + properties[0]._id);
           }
           
         })
@@ -271,3 +296,4 @@ exports.getChecklist = (req, res, next) => {
           next(error);
       }); 
   }
+  

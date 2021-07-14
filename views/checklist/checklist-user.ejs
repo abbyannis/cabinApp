@@ -10,31 +10,31 @@
         <h2><%= name %></h2>
         <h4><%= location %></h4>
       </div>
-      <% if(inventory) { %>
-        <form class="inventory-form"action="/checklist/update-user" method="POST">
-          <h4 class="centered">Update Checklist</h4>
-          <div class="center-inventory">
-            <label class="inventory-input-label">Item</label>
-            <label class="inventory-amt-label">Amount</label>
+      <% if (checklist) { %>
+      <form class="inventory-form" action="/checklist/userUpdate" method="POST">
+        <h4 class="centered"><%= checklist.title %></h4>
+        <div class="center-inventory">
+          <label class="inventory-input-label">Your Properties Checklists</label>
+        </div>
+        <div class="inventory-control">
+          <% for (let item of checklist.list) { %>
+            <div class="center-inventory">
+                <input type="text" class="checklist-description-input" name="description" value="<%= item.description %>"> 
+                <input type="hidden" name="itemId" value="<%= item._id %>">
+                <input type="checkbox" name="" id="<%= item._id%>">
+            </div>
+            <% } %>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <input type="hidden" name="propertyId" value="<%= propertyId %>">
+            <input type="hidden" name="listId" value="<%= listId %>">
+            <button class="update-button" type="submit" name="update">Update All</button>
           </div>
-          <div class="inventory-control">
-            <% for (let inv of inventory.list) { %>
-              <div class="center-inventory">
-                  <h5 class="inventory-input-label"><%= inv.description %></h5>
-                  <input type="number" class="inventory-amt-add" name="amount" value="<%= inv.amount %>"> 
-                  <input type="hidden" name="itemId" value="<%= inv._id %>">
-              </div>
-              <% } %>
-              <button class="update-button" type="submit" name="update">Update All</button>
-          </div>
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <input type="hidden" name="propertyId" value="<%= propertyId %>">
-        </form>  
+      </form>
       <% } else { %>
         <div class="inventory-form centered">
-          <h4>An inventory list has not been set up for this property.</h4>
+          <h4>No checklist is associated with this property.</h4>
         </div>
       <% } %>
-      
+  
     </main>
 <%- include('../includes/end.ejs') %>
