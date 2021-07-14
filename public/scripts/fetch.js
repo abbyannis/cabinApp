@@ -17,7 +17,7 @@ const postData = async (url = '', data = {}, csrf='', method='POST') => {
           'X-CSRF-TOKEN': csrf
       },
       body: JSON.stringify(data)
-  })  
+  });  
   return response;
 }
 

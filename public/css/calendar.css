@@ -5,7 +5,7 @@
     --border-color: #8cb1a8;
 }
 
-body {
+.calendar-body {
     margin: 10px;
 }
 
@@ -36,17 +36,25 @@ body {
 }
 .month-indicator,
 .month-indicator button {
-    font-size: 3vw;    
+    font-size: 3vw;
+    height: 5vw;    
 }
 
 .month-indicator button {
     background-color: transparent;
     border: 0;
     border-radius: 10px;
+    width: 5vw;
 }
 
 .month-indicator button:hover {
     background-color: var(--border-color);
+    padding: 0;
+    height: 5vw;
+}
+
+.month-indicator button:focus {
+    outline: none;
 }
 
 .day-of-week,
@@ -186,6 +194,16 @@ form button {
     .month-indicator button {
         font-size: 6vw;
         padding: 0.5vw;
+        height: 10vw;
+    }
+
+    .month-indicator button {
+        width: 10vw;
+    }
+
+    .month-indicator button:hover {
+        height: 10vw;
+        width: 10vw;
     }
 
     .day-of-week div {
@@ -197,6 +215,7 @@ form button {
         width: 10vw;
         height: 10vw;
         font-size: 4vw;
+        margin: 1vw 0.25vw;
     }
 
     .weather-info {
@@ -208,6 +227,7 @@ form button {
 
     .reservation {
         grid-template-columns: 2/-1;
+        width: 95%;
     }
 
     .reservation label, 
@@ -215,7 +235,26 @@ form button {
     .reservation textarea,
     .reservation h1 {
         font-size: 4vw;
+        width: 95%;
     }
+
+    #reserve {
+        width: 95%;
+        height: 10vw;
+        font-size: 5vw;
+        padding: 0.5vw;
+    }
+
+    .image-grid {
+        width: 80vw;
+        margin: auto;
+    }
+    .image-container {
+        width: 80vw;
+        height: 80vw;
+        margin: 0.25rem auto;
+    }
+    
   }
 
   

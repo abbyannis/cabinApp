@@ -45,7 +45,7 @@ propertySchema.statics.getPropertyById = function(propertyId, userId) {
         if (!result) {
           const err = new Error('Property not found');
           err.statusCode = 404;
-          throw error;
+          throw err;
         }      
         return result;
       });

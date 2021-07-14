@@ -2,9 +2,11 @@ const Cabin = require('../models/property');
 
 //gets all properties for the current user
 exports.getUserProperties = (req, res, next) => {
+  const address = '/main/dashboard/'
   Cabin
       .find({ 
-        members: req.session.user._id
+        $or: [{members: req.session.user._id},
+          { admins: req.session.user._id }]
       })
       .then(properties => {
         // if 0 or more than 1 property, route to properties page for selection
@@ -14,7 +16,9 @@ exports.getUserProperties = (req, res, next) => {
             path: '/',        
             currentUser: req.session.user._id,
             isAdmin: false,
-            properties: properties
+            isAuthenticated: req.session.isLoggedIn,
+            properties: properties,
+            address: address
           });
         } else {
           // if only one property, automatically route to add reservation page
@@ -44,7 +48,8 @@ exports.getInvites = (req, res, next) => {
       }
       res.render('users/invites', {
         pageTitle: 'Property Invitations',
-        path: '/invites',                        
+        path: '/invites', 
+        isAuthenticated: req.session.isLoggedIn,                       
         invites: invites
        });
     })
@@ -95,8 +100,7 @@ exports.removeInvite = (req, res, next) => {
       err.statusCode = 404;
       throw error;
     }  
-    const idx = cabin.invites.indexOf(req.session.user.email);
-    console.log(idx);
+    const idx = cabin.invites.indexOf(req.session.user.email);    
     if (idx > -1) {    
       cabin.invites.splice(idx, 1);
     }          

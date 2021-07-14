@@ -1,9 +1,10 @@
-<%- include('includes/head.ejs') %>
+<%- include('../includes/head.ejs') %>
     <link rel="stylesheet" href="/css/calendar.css">
+    <link rel="stylesheet" href="/css/admin.css">
 </head>
 
 <body class="no-scroll">
-    <%- include('includes/nav.ejs') %>
+    <%- include('../includes/nav.ejs') %>
     <main>
         <div class="slider-container">
             <div class="">
@@ -37,19 +38,25 @@
                             <% } %>  
                         </div>
                         <div class="card slider-card card-index mb-3 d-block w-100">
-                            <div clss="row no-gutters">
+                            <div class="row no-gutters">
                                 <div class="slider-text">
                                     <div class="col-md-12">
-                                        <div class="card-body">
+                                        <div class="card-body admin-card">
                                             <% if (!isAuthenticated) { %>
-                                                    <a class="faux-button" href="auth/login">Login</a>
-                                                    <a class="faux-button" href="auth/signup">Register</a>
+                                                <a href="auth/login" class="faux-button">Login</a>
+                                                <a href="auth/signup" class="faux-button">Register</a>
                                             <% } else { %>
-                                                    <a class="faux-button" href="/user/list">Make a Reservation</a>
-                                                    <a class="faux-button" href="/reservation">View Reservations</a>
-                                                    <a class="faux-button" href="/user/invites">Manage Property Invites</a>
-                                                    <a class="faux-button" href="/admin/edit-checklist">Checklists</a>
-                                                    <a class="faux-button" href="/inventory/update">Inventory</a>
+                                                <div class="admin-property-dash-ctrls">
+                                                    <a href="/admin/properties">Back to My Property List</a>                                                    
+                                                </div>
+                                                    <h2><%= name %></h2>
+                                                    <h4><%= location %></h4>
+                                                <a href="/admin/reservations" class="faux-button">Manage Reservations</a>
+                                                <a href="/admin/properties/<%= propertyId %>" class="faux-button">Edit Property Details</a>
+                                                <a href="/admin/properties/<%= propertyId %>/invite" class="faux-button">Invite Users</a>
+                                                <a href="/" class="faux-button">Manage Checklists</a>
+                                                <a href="/inventory/inventory/<%= propertyId %>" class="faux-button">Manage Inventory</a>
+                                                <a href="/social/add-post/<%= propertyId %>" class="faux-button">Manage Image Gallery</a>
                                             <% } %>
                                         </div>
                                     </div>
@@ -70,4 +77,4 @@
         </div>          
           
     </main>
-<%- include('includes/end.ejs') %>
+<%- include('../includes/end.ejs') %>

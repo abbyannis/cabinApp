@@ -7,7 +7,7 @@ exports.getIndex = (req, res, next) => {
     const images = [{"imageUrl": '/images/lake.jpg'}, {"imageUrl": '/images/log.jpg'}, {"imageUrl": '/images/log-cabin.jpg'}, {"imageUrl": '/images/cabin.jpg'}, {"imageUrl": '/images/dawn.jpg'}]
     res.render('index', {
         pageTitle: 'Home',
-        path: '/',
+        path: '/home',
         images: images,
         isAuthenticated: req.session.isLoggedIn
     })

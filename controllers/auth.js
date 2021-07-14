@@ -7,11 +7,15 @@ const { validationResult } = require('express-validator');
 const User = require('../models/user');
 const { restart } = require('nodemon');
 
-const transporter = nodemailer.createTransport(sendgridTransport({
-    auth: {
-        api_key: process.env.API_KEY 
-    } 
-}));
+const updateProfile = require('../models/user');
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_ACCOUNT, 
+    pass: process.env.EMAIL_PWD
+  }
+});
  
 exports.getLogin = (req, res, next) => {
     let message = req.flash('error');
@@ -56,10 +60,16 @@ exports.getSignup = (req, res, next) => {
 };
 
 exports.getReset = (req, res, next) => {
+    let message = req.flash('error');
+    if (message.length > 0) {
+        message = message[0];
+    } else {
+        message = null;
+    }
     res.render('auth/reset', {
         path: '/reset',
         pageTitle: 'Reset Password',
-        errorMessage: "",
+        errorMessage: message,
         userType: req.session.userType,
         currentUser: req.session.user,
         isAuthenticated: req.session.isLoggedIn
@@ -95,13 +105,13 @@ exports.getEditProfile = (req, res, next) => {
                     last: user.lastName, 
                     email: user.email, 
                     password: "", 
-                    confirmPassword: "" 
+                    confirmPassword: "" ,
+                    image: user.image
                 },
                 validationErrors: [],
                 isAuthenticated: req.session.isLoggedIn
             });
         })
-    
 };
 
 exports.getUpdatePassword = (req, res, next) => {
@@ -257,7 +267,8 @@ exports.postSignup = (req, res, next) => {
     const display = req.body.display;
     const email = req.body.email;
     const phone = req.body.phone;
-    let imageUrl = req.body.imageUrl;
+    const image = req.file;
+    let imageUrl;
     const password = req.body.password;
     const confirmPassword = req.body.confirmPassword;
 
@@ -285,8 +296,10 @@ exports.postSignup = (req, res, next) => {
     bcrypt
         .hash(password, 12)
         .then(hashedPassword => {
-            if(!imageUrl) {
+            if(!image) {
                 imageUrl = '/images/avatar.jpg';
+            } else {
+                imageUrl = image.path.substring(6);
             }
             const user = new User({
                 firstName: first,
@@ -321,6 +334,8 @@ exports.postSignup = (req, res, next) => {
 };
 
 exports.postReset = (req, res, next) => {
+    // const ROOTURL = process.env.HEROKU_ORIGIN || "http://localhost:5000";
+    const ROOTURL = "http://localhost:5000";
     crypto.randomBytes(32, (err, buffer) => {
         if (err) {
             console.log(err);
@@ -332,22 +347,21 @@ exports.postReset = (req, res, next) => {
                 if (!user) {
                     req.flash('error', 'No account found.');
                     return res.redirect('/auth/reset');
-                }
-                user.resetToken = token;
-                user.resetTokenExpiration = Date.now() + 3600000; // expires in 1 hour
-                return user.save();
-            })
-            .then(result => {
-                res.redirect('/');
-                transporter.sendMail({
-                    to: req.body.email,
-                    from: 'atTheCabin341@gmail.com',
-                    subject: 'Password Reset',
-                    html: `
-                        <p>You requested a password reset</p>
-                        <p>Click this <a href="http://localhost:5000/auth/reset/${token}">link</a> to set a new password.</p>
-                    `
-                });
+                } else {
+                    user.resetToken = token;
+                    user.resetTokenExpiration = Date.now() + 3600000; // expires in 1 hour
+                    user.save();
+                    res.redirect('/auth/login');
+                    return transporter.sendMail({
+                        to: req.body.email,
+                        from: 'atTheCabin341@gmail.com',
+                        subject: 'Password Reset',
+                        html: `
+                            <p>You requested a password reset</p>
+                            <p>Click this <a href="${ROOTURL}/auth/reset/${token}">link</a> to set a new password.</p>
+                        `
+                    });
+                }  
             })
             .catch(err => {
                 if(!err.statusCode) {
@@ -364,7 +378,7 @@ exports.postUpdateProfile = (req, res, next) => {
     const display = req.body.display;
     const email = req.body.email;
     const phone = req.body.phone;
-    const imageUrl = req.body.image;
+    const image = req.file;
     const userId = req.body.userId;
     const errors = validationResult(req);
     
@@ -384,19 +398,26 @@ exports.postUpdateProfile = (req, res, next) => {
                 display: display,
                 phone: phone,
                 password: "", 
-                confirmPassword: "" 
+                confirmPassword: "" ,
+                image: imageUrl
             },
             validationErrors: errors.array(),
             isAuthenticated: req.session.isLoggedIn
         });
     }
-    User.findById(userId).then(user => {
+
+    const imageUrl = image.path;
+
+    User.findById(userId)
+        .then(user => {
         user.firstName = first;
         user.lastName = last;
         user.displayName = display;
         user.email = email;
         user.phone = phone;
-        if(imageUrl) user.photo = imageUrl;
+        if(imageUrl) user.photo = imageUrl.substring(6);
+        console.log(user.photo);
+        req.session.user = user;
         return user.save()
     })  
     .then(result => {
