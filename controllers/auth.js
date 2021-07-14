@@ -60,10 +60,16 @@ exports.getSignup = (req, res, next) => {
 };
 
 exports.getReset = (req, res, next) => {
+    let message = req.flash('error');
+    if (message.length > 0) {
+        message = message[0];
+    } else {
+        message = null;
+    }
     res.render('auth/reset', {
         path: '/reset',
         pageTitle: 'Reset Password',
-        errorMessage: "",
+        errorMessage: message,
         userType: req.session.userType,
         currentUser: req.session.user,
         isAuthenticated: req.session.isLoggedIn
