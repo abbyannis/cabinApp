@@ -19,7 +19,7 @@
             <% for (list of checklist) { %>
                 <a class="btn" href="/checklist/checklist/?listId=<%= list._id %>&propertyId=<%=propertyId%>"><%= list.title %></a>
                 <a class="delete-button" href="/checklist/deleteList/?propertyId=<%= propertyId %>&listId=<%= list._id %>">x</a>
-                <a class="delete-button-mobile" href="/checklist/delete/?propertyId=<%= propertyId %>&listId=<%= list._id %>">Delete</a>
+                <a class="delete-button-mobile" href="/checklist/deleteList/?propertyId=<%= propertyId %>&listId=<%= list._id %>">Delete <%= list.title %></a>
            <% } %>
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <input type="hidden" name="propertyId" value="<%= propertyId %>">

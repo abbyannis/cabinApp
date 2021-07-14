@@ -195,7 +195,7 @@ btn {
 
 .checklist-description-input {
   float: center;
-  width: 55%;
+  width: 90%;
   margin: 0.25rem;
   border: 1px solid #8cb1a8;
   font: inherit;
@@ -271,6 +271,10 @@ btn {
 
     .delete-button {
       display: none;
+    }
+
+    .checklist-description-input {
+      width: 100%;
     }
   }
 

@@ -22,7 +22,7 @@
                 <input type="text" class="checklist-description-input" name="description" value="<%= item.description %>"> 
                 <input type="hidden" name="itemId" value="<%= item._id %>">
                 <a class="delete-button" href="/checklist/delete/?listId=<%= listId %>&itemId=<%= item._id %>&propertyId=<%= propertyId %>">x</a>
-                <a class="delete-button-mobile" href="/checklist/delete/?propertyId=<%= propertyId %>&itemId=<%= item._id %>">Delete <%= item.description %></a>
+                <a class="delete-button-mobile" href="/checklist/delete/?listId=<%= listId %>&itemId=<%= item._id %>&propertyId=<%= propertyId %>">Delete: <%= item.description.substring(0, 15) %> . . . </a>
             </div>
             <% } %>
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
