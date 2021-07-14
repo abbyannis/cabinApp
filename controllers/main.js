@@ -29,7 +29,7 @@ exports.getDashboard = (req, res, next) => {
     Property
         .findById(propId)
         .then(property => {
-            property.imageUrls = images;
+            const imageUrls = [Property.imageUrls];
             res.render('users/property', {            
                 pageTitle: 'Make a Reservation',
                 path: '/dashboard',
@@ -37,7 +37,8 @@ exports.getDashboard = (req, res, next) => {
                 currentUser: req.session.user,
                 isAuthenticated: req.session.isLoggedIn,
                 edit: false,
-                reservation: null
+                reservation: null,
+                imageUrls: imageUrls
             });        
         })
         .catch(err => {

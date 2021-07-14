@@ -150,12 +150,6 @@ exports.getNewPassword = (req, res, next) => {
     const token = req.params.token;
     User.findOne({resetToken: token, resetTokenExpiration: {$gt: Date.now()}})
         .then(user => {
-            let message = req.flash('error');
-            if (message.length > 0) {
-                message = message[0];
-            } else {
-                message = null;
-            }
             res.render('auth/new-password', {
                 path: '/new-password',
                 pageTitle: 'New Password',
@@ -334,8 +328,7 @@ exports.postSignup = (req, res, next) => {
 };
 
 exports.postReset = (req, res, next) => {
-    // const ROOTURL = process.env.HEROKU_ORIGIN || "http://localhost:5000";
-    const ROOTURL = "http://localhost:5000";
+    const ROOTURL = process.env.HEROKU_ORIGIN || "http://localhost:5000";
     crypto.randomBytes(32, (err, buffer) => {
         if (err) {
             console.log(err);
@@ -358,7 +351,7 @@ exports.postReset = (req, res, next) => {
                         subject: 'Password Reset',
                         html: `
                             <p>You requested a password reset</p>
-                            <p>Click this <a href="${ROOTURL}/auth/reset/${token}">link</a> to set a new password.</p>
+                            <p>Click this <a href="${ROOTURL}auth/reset/${token}">link</a> to set a new password.</p>
                         `
                     });
                 }  
@@ -479,18 +472,19 @@ exports.postNewPassword = (req, res, next) => {
     const userId = req.body.userId;
     const passwordToken = req.body.passwordToken;
     let resetUser;
-
-    // const errors = validationResult(req);
-    // if (!errors.isEmpty()) {
-    //     return res.status(422).render('auth/reset/' + passwordToken, {
-    //         path: '/reset',
-    //         pageTitle: 'New Password',
-    //         errorMessage: errors.array()[0].msg,
-    //         currentUser: req.session.user,
-    //         validationErrors: errors.array()
-    //     });
-    // }
-
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.render('auth/new-password', {
+            path: '/new-password',
+            pageTitle: 'New Password',
+            errorMessage: errors.array()[0].msg,
+            userType: req.session.userType,
+            currentUser: req.session.user,
+            userId: userId, 
+            passwordToken: passwordToken,
+            isAuthenticated: req.session.isLoggedIn
+        });
+    }
     User.findOne({
         resetToken: passwordToken, 
         resetTokenExpiration: {$gt: Date.now()}, 
