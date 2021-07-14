@@ -2,35 +2,21 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const checkListSchema = new Schema({
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+    list: [{
+        description: {
+          type: String,
+          required: true,
+        }
+    }],
+    title: {
+      type: String,
+      required: true
     },
-    property: {
-        type: Schema.Types.ObjectId,
-        ref: 'Property',
-        required: true
-    },
-    reservation: {
-        type: Schema.Types.ObjectId,
-        ref: 'Reservation',
-        required: true
-    },
-    userTaskLog: {
-            checklist: [
-                {
-                    task: {type: Schema.Types.ObjectId, 
-                            ref: 'CheckList-Master', 
-                            required: true
-                    },
-                    completed: {
-                        type: Boolean
-                    }
-                }
-            ]
-    }  
-    
-}, { timestamps: true })
-
+    propertyId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: 'Property'
+    }
+  });
+   
 module.exports = mongoose.model('Checklist', checkListSchema);

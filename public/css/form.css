@@ -183,6 +183,24 @@ btn {
   .center-inventory::a {
     text-align: center;
   }
+
+  .checklist-title-input {
+    float: left;
+    width: 31%;
+    margin: 0.25rem;
+    border: 1px solid #8cb1a8;
+    font: inherit;
+    border-radius: 2px;
+}
+
+.checklist-description-input {
+  float: center;
+  width: 55%;
+  margin: 0.25rem;
+  border: 1px solid #8cb1a8;
+  font: inherit;
+  border-radius: 2px;
+}
   
   .delete-button-mobile {
     display: inline-block;
