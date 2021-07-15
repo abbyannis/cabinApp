@@ -373,6 +373,7 @@ exports.postUpdateProfile = (req, res, next) => {
     const phone = req.body.phone;
     const image = req.file;
     const userId = req.body.userId;
+    const imageUrl = "";
     const errors = validationResult(req);
     
     if (!errors.isEmpty()) {
@@ -399,7 +400,9 @@ exports.postUpdateProfile = (req, res, next) => {
         });
     }
 
-    const imageUrl = image.path;
+    if(image) {
+        imageUrl = image.path;
+    }     
 
     User.findById(userId)
         .then(user => {
@@ -414,7 +417,7 @@ exports.postUpdateProfile = (req, res, next) => {
         return user.save()
     })  
     .then(result => {
-        req.flash('notification', 'Profile Updated');
+        // req.flash('notification', 'Profile Updated');
         res.redirect('../auth/edit-profile');
     })
     .catch(err => {
