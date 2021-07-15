@@ -27,6 +27,8 @@ const userChecklistSchema = new Schema({
         required: true,
         ref: 'User'
     }
+  }, { 
+    timestamps: true 
   });
    
 module.exports = mongoose.model('UserChecklist', userChecklistSchema);
