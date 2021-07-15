@@ -65,9 +65,9 @@ router.post('/signup',
             .isStrongPassword({ 
                 minLength: 8, 
                 minLowercase: 1, 
-                minUppercase: 0, 
+                minUppercase: 1, 
                 minNumbers: 0, 
-                minSymbols: 0, 
+                minSymbols: 1, 
                 returnScore: false })
             .trim(),
         body('confirmPassword')
@@ -119,9 +119,9 @@ router.post('/new-password',
             .isStrongPassword({ 
                 minLength: 8, 
                 minLowercase: 1, 
-                minUppercase: 0, 
+                minUppercase: 1, 
                 minNumbers: 0, 
-                minSymbols: 0, 
+                minSymbols: 1, 
                 returnScore: false })
             .trim()
     ],
@@ -137,9 +137,9 @@ router.post('/update-password',
             .isStrongPassword({ 
                 minLength: 8, 
                 minLowercase: 1, 
-                minUppercase: 0, 
+                minUppercase: 1, 
                 minNumbers: 0, 
-                minSymbols: 0, 
+                minSymbols: 1, 
                 returnScore: false })
             .trim(),
         body('confirmPassword')
@@ -154,7 +154,5 @@ router.post('/update-password',
 authController.postUpdatePassword);
 
 router.post('/reset', authController.postReset);
-
-//router.get('/invite/:inviteToken', authController.acceptInvite);
 
 module.exports = router;
