@@ -277,6 +277,11 @@ btn {
       width: 100%;
     }
   }
+  
+  .checkbox-label {
+    font-weight: lighter;
+    width: 95%;
+  }
 
   @media screen and (min-width: 800px) {
     .delete-button-mobile {

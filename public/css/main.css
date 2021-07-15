@@ -61,9 +61,9 @@
 .user-message {
     margin: auto;
     margin-bottom: 1rem;
-    width: 40rem;
-    border: 1px solid #78539b;
-    background: #78539b;
+    width: 95%;
+    border: 1px solid var(--main-color);
+    background: var(--main-color);
     padding: 0.5rem;
     border-radius: 3px;
     color: white;

@@ -10,21 +10,19 @@
         <h2><%= name %></h2>
         <h4><%= location %></h4>
       </div>
-      <% if (checklist) { %>
+      <% if (checklist.length > 0) { %>
       <form class="inventory-form" action="/checklist/userUpdate" method="POST">
         <h4 class="centered"><%= checklist.title %></h4>
+        <div class="centered">
+          <h5 class="">Select Checklist to Complete</h5>
+        </div>
         <div class="inventory-control">
-          <% for (let item of checklist.list) { %>
-            <div class="center-inventory">
-                <input type="checkbox" class="checkbox" name="description" value="<%= item._id %>">
-                <label class="checkbox-label" for="<%= item.description %>"><%= item.description %></label> 
-                <input type="hidden" name="itemId" value="<%= item._id %>">
-            </div>
-            <% } %>
+          <div class="centered">
+            <% for (list of checklist) { %>
+                <a class="btn" href="/checklist/user-list-update/?listId=<%= list._id %>&propertyId=<%=propertyId%>"><%= list.title %></a>
+           <% } %>
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <input type="hidden" name="propertyId" value="<%= propertyId %>">
-            <input type="hidden" name="listId" value="<%= checklist._id %>">
-            <button class="update-button" type="submit" name="update">Submit List</button>
           </div>
       </form>
       <% } else { %>
@@ -32,6 +30,8 @@
           <h4>No checklist is associated with this property.</h4>
         </div>
       <% } %>
-  
+      <% if (message) { %>
+        <div class="user-message"><%= message %></div>
+    <% } %>
     </main>
 <%- include('../includes/end.ejs') %>

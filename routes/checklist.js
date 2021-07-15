@@ -6,7 +6,8 @@ const router = express.Router();
 
 
 router.get('/new-checklist/:propertyId', checklistController.getLists);
-router.get('/checklist-user/:propertyId', checklistController.getUserChecklist);
+router.get('/user-checklists/:propertyId', checklistController.getUserChecklist);
+router.get('/user-list-update', checklistController.getUserChecklistUpdate);
 router.get('/checklist', checklistController.getChecklist);
 router.get('/checklist-user', checklistController.getUserProperties);
 router.get('/delete', checklistController.deleteChecklistItem);
@@ -16,6 +17,7 @@ router.post('/delete', checklistController.deleteChecklistItem);
 router.post('/checklist', checklistController.addChecklist);
 router.post('/addTask', checklistController.addTask);
 router.post('/update', checklistController.updateChecklist);
+router.post('/userUpdate', checklistController.saveUserList);
 
 //router.post('/checklist', checklistController.postChecklist);
 
