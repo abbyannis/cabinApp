@@ -1,5 +1,6 @@
 const Checklist = require('../models/checklist');
 const Cabin = require('../models/property');
+const UserChecklist = require('../models/user-checklist');
 
 exports.getChecklist = (req, res, next) => {
     const propertyId = req.query.propertyId;
@@ -36,8 +37,6 @@ exports.getChecklist = (req, res, next) => {
         propertyId: propertyId
       })
       .then(checklist => {
-
-        console.log(checklist)
         Cabin.findById(propertyId)
             .then(property => {
                 return res.render('checklist/new-checklist', {
@@ -49,20 +48,6 @@ exports.getChecklist = (req, res, next) => {
                     checklist: checklist
                   });
             })
-        // if (!checklist) {
-        //   const inv = new Checklist({
-        //     title: 'Property Checklists',
-        //     path: '/checklist/new-checklist',
-        //     list: [{title: title}],
-        //     propertyId: propertyId
-        //   })
-        // } else {
-        //   checklist.list.push({title: title});
-        //   return checklist.save()
-        //   .then(result => {
-        //     return res.redirect('/checklist/checklist/' + propertyId);
-        //   })
-        //}
       })
       .catch(err => {
         if (!err.statusCode) {
@@ -149,7 +134,6 @@ exports.getChecklist = (req, res, next) => {
     const propertyId = req.query.propertyId; 
     const itemToDelete = req.query.itemId;
     const listId = req.query.listId;
-    console.log(itemToDelete)
     Checklist.findOne({
         propertyId: propertyId
       })
@@ -241,19 +225,31 @@ exports.getChecklist = (req, res, next) => {
   };
 
   exports.getUserChecklist = (req, res, next) => {
+    // let message = req.flash('notification');
+    // if (message.length > 0) {
+    //     message = message[0];
+    // } else {
+    //     message = null;
+    // }
     const propertyId = req.params.propertyId;
     Checklist.find({'propertyId': propertyId})
       .then(checklist => {
-          console.log(checklist)
         Cabin.findById(propertyId)
         .then(property => {
-          res.render('checklist/checklist-user', {
+          // let message = req.flash('notification');
+          // if (message.length > 0) {
+          //     message = message[0];
+          // } else {
+          //     message = null;
+          // }
+          res.render('checklist/user-checklists', {
             checklist: checklist,
             pageTitle: 'Checklist',
-            path: '/checklist/checklist-user',
+            path: '/checklist/user-checklists',
             propertyId: propertyId,
             name: property.name,
-            location: property.location
+            location: property.location,
+            message: ""
           })
         })
       })
@@ -265,8 +261,85 @@ exports.getChecklist = (req, res, next) => {
       });
   };
 
+  exports.getUserChecklistUpdate = (req, res, next) => {
+    const propertyId = req.query.propertyId;
+    const listId = req.query.listId;
+    Checklist.findById(listId)
+      .then(checklist => {
+        Cabin.findById(propertyId)
+          .then(property => {
+            res.render('checklist/checklist-user', {
+              checklist: checklist,
+              pageTitle: 'Checklist',
+              path: '/checklist/checklist-user',
+              propertyId: propertyId,
+              name: property.name,
+              location: property.location
+            })
+          })
+      })
+      .catch(err => {
+        if (!err.statusCode) {
+          err.statusCode = 500;
+        }
+        next(err);
+      });
+  };
+
+  exports.saveUserList = (req,res, next) => {
+    const userList = req.body.description;
+    const listId = req.body.listId;
+    const propertyId = req.body.propertyId;
+    const newList = [];
+    Checklist.findById(listId)
+      .then(checklist => {
+        Cabin.findById(propertyId)
+          .then(property => {
+            for(let i = 0; i < checklist.list.length; i++) {
+              if(Array.isArray(userList)) {
+                if(userList.find(element => element === checklist.list[i]._id.toString())) {
+                  newList.push({ 
+                    description: checklist.list[i].description,
+                    completed: true
+                  })
+                } else {
+                  newList.push({ 
+                    description: checklist.list[i].description,
+                    completed: false
+                  })
+                }
+              } else {
+                if(userList === checklist.list[i]._id.toString()) {
+                  newList.push({ 
+                    description: checklist.list[i].description,
+                    completed: true
+                  })
+                } else {
+                  newList.push({ 
+                    description: checklist.list[i].description,
+                    completed: false
+                  })
+                }
+              }
+            }
+            const userChecklist = new UserChecklist({
+              list: newList,
+              propertyId: propertyId,
+              listId: listId,
+              userId: req.session.user._id
+            })
+            return userChecklist.save()
+            .then(result => {
+              // req.flash('notification', 'Completed ' + checklist.title + ' Saved');
+              res.redirect('../checklist/user-checklists/' + propertyId);
+            })
+          })
+      })
+  }
+  
+
   exports.getUserProperties = (req, res, next) => {
-    const address = '/checklist/checklist-user/' 
+    const address = '/checklist/user-checklists/' 
     Cabin
         .find({ 
           $or: [{members: req.session.user._id},
@@ -287,7 +360,7 @@ exports.getChecklist = (req, res, next) => {
           } else {
             // if only one property, automatically route to add reservation page
             // will need to be updated with correct route after routes set up
-            res.redirect('../checklist/checklist-user/' + properties[0]._id);
+            res.redirect('../checklist/user-checklists/' + properties[0]._id);
           }
           
         })
